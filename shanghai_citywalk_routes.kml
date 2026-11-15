@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>Shanghai CityWalk 4 Routes (@shanghai_guide)</name>
+    <description>แผนที่เดินเที่ยวเซี่ยงไฮ้ 4 เส้นทาง อ้างอิงจาก TikTok @shanghai_guide (https://vt.tiktok.com/ZSbwbTpUS/) พร้อมพิกัดโรงแรมที่พัก 6–11 ธ.ค. 2569</description>
+
+    <!-- Styles: KML color format is aabbggrr -->
+    <Style id="route1-pin">
+      <IconStyle>
+        <color>ff4444ef</color>
+        <scale>1.15</scale>
+        <Icon>
+          <href>https://maps.google.com/mapfiles/kml/paddle/red-circle.png</href>
+        </Icon>
+      </IconStyle>
+    </Style>
+    <Style id="route1-line">
+      <LineStyle>
+        <color>dd4444ef</color>
+        <width>4</width>
+      </LineStyle>
+    </Style>
+
+    <Style id="route2-pin">
+      <IconStyle>
+        <color>fff6823b</color>
+        <scale>1.15</scale>
+        <Icon>
+          <href>https://maps.google.com/mapfiles/kml/paddle/blu-circle.png</href>
+        </Icon>
+      </IconStyle>
+    </Style>
+    <Style id="route2-line">
+      <LineStyle>
+        <color>ddf6823b</color>
+        <width>4</width>
+      </LineStyle>
+    </Style>
+
+    <Style id="route3-pin">
+      <IconStyle>
+        <color>ff81b910</color>
+        <scale>1.15</scale>
+        <Icon>
+          <href>https://maps.google.com/mapfiles/kml/paddle/grn-circle.png</href>
+        </Icon>
+      </IconStyle>
+    </Style>
+    <Style id="route3-line">
+      <LineStyle>
+        <color>dd81b910</color>
+        <width>4</width>
+      </LineStyle>
+    </Style>
+
+    <Style id="route4-pin">
+      <IconStyle>
+        <color>ff1673f9</color>
+        <scale>1.15</scale>
+        <Icon>
+          <href>https://maps.google.com/mapfiles/kml/paddle/orange-circle.png</href>
+        </Icon>
+      </IconStyle>
+    </Style>
+    <Style id="route4-line">
+      <LineStyle>
+        <color>dd1673f9</color>
+        <width>4</width>
+      </LineStyle>
+    </Style>
+
+    <Style id="hotel-pin">
+      <IconStyle>
+        <color>ffed3a7c</color>
+        <scale>1.25</scale>
+        <Icon>
+          <href>https://maps.google.com/mapfiles/kml/paddle/purple-stars.png</href>
+        </Icon>
+      </IconStyle>
+    </Style>
+
+    <!-- Route 1: Yuyuan Road (Red) -->
+    <Folder>
+      <name>เส้นทาง 1 (สีแดง): ถนนยู่หยวน (Yuyuan Road)</name>
+      <description>เดินชมตึกประวัติศาสตร์ ตรอกเก่า และโซนคาเฟ่ฮิปบนถนนยู่หยวน</description>
+
+      <Placemark>
+        <name>1. Paramount Ballroom (百乐门)</name>
+        <description><![CDATA[<b>ชื่อภาษาจีน (Amap):</b> 百乐门 (愚园路218号)<br/><b>รายละเอียด:</b> แลนด์มาร์กเต้นรำสุดคลาสสิกยุค 1930s สไตล์ Art Deco จุดเริ่มต้นเส้นทางเดินชมถนนยู่หยวน<br/><b>Metro ใกล้ที่สุด:</b> Metro สาย 2 / 7 / 14 สถานี Jing'an Temple (静安寺站)]]></description>
+        <styleUrl>#route1-pin</styleUrl>
+        <Point>
+          <coordinates>121.43986,31.22575,0</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>2. Yuyuan Road Lane 144 (愚园路144弄)</name>
+        <description><![CDATA[<b>ชื่อภาษาจีน (Amap):</b> 愚园路144弄<br/><b>รายละเอียด:</b> ตรอกบ้านอิฐเก่าแก่สไตล์เซี่ยงไฮ้ดั้งเดิม บรรยากาศเงียบสงบเหมาะกับถ่ายรูปสตรีตวินเทจ<br/><b>Metro ใกล้ที่สุด:</b> Metro สาย 2 / 7 / 14 สถานี Jing'an Temple (静安寺站)]]></description>
+        <styleUrl>#route1-pin</styleUrl>
+        <Point>
+          <coordinates>121.44140,31.22520,0</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>3. โซนคาเฟ่: Brut Eatery, Five Ports Coffee, Good Bakery, SPADE 钻</name>
+        <description><![CDATA[<b>ชื่อภาษาจีน (Amap):</b> 愚园路698号 悦璞食堂 (Brut Eatery) / 愚园路咖啡街区<br/><b>รายละเอียด:</b> โซนคาเฟ่และเบเกอรี่ยอดฮิตเรียงรายตลอดถนนยู่หยวน ทั้ง Brut Eatery, Five Ports Coffee, Good Bakery และ SPADE 钻<br/><b>Metro ใกล้ที่สุด:</b> Metro สาย 2 / 11 สถานี Jiangsu Road (江苏路站) หรือ Jing'an Temple]]></description>
+        <styleUrl>#route1-pin</styleUrl>
+        <Point>
+          <coordinates>121.43280,31.22210,0</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>4. Yuyuan Public Market (愚园公共市集 Lane 1088)</name>
+        <description><![CDATA[<b>ชื่อภาษาจีน (Amap):</b> 愚园公共市集 (愚园路1088弄)<br/><b>รายละเอียด:</b> ตลาดชุมชนสไตล์มินิมอลใจกลางตรอก 1088 รวมร้านอาหารท้องถิ่น ร้านกาแฟ และแกลเลอรีงานคราฟต์<br/><b>Metro ใกล้ที่สุด:</b> Metro สาย 2 / 11 สถานี Jiangsu Road (江苏路站)]]></description>
+        <styleUrl>#route1-pin</styleUrl>
+        <Point>
+          <coordinates>121.42843,31.22031,0</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>เส้นทางเดิน 1: ถนนยู่หยวน (Yuyuan Road)</name>
+        <styleUrl>#route1-line</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>
+            121.43986,31.22575,0
+            121.44140,31.22520,0
+            121.43280,31.22210,0
+            121.42843,31.22031,0
+          </coordinates>
+        </LineString>
+      </Placemark>
+    </Folder>
+
+    <!-- Route 2: North Suzhou Creek & Waitanyuan (Blue) -->
+    <Folder>
+      <name>เส้นทาง 2 (สีน้ำเงิน): คลองซูโจวเหนือ &amp; ไว่ตานหยวน</name>
+      <description>เดินเลียบคลองซูโจวเหนือ ชมสะพานประวัติศาสตร์และกลุ่มตึกต้นกำเนิดเดอะบันด์</description>
+
+      <Placemark>
+        <name>1. Riverside Apartments (河滨大楼)</name>
+        <description><![CDATA[<b>ชื่อภาษาจีน (Amap):</b> 河滨大楼 (北苏州路400号)<br/><b>รายละเอียด:</b> อาคารอพาร์ตเมนต์ประวัติศาสตร์ทรงโค้งรูปตัว S ริมคลองซูโจว มุมถ่ายรูปสถาปัตยกรรมยุค 1930s<br/><b>Metro ใกล้ที่สุด:</b> Metro สาย 10 / 12 สถานี Tiantong Road (天潼路站)]]></description>
+        <styleUrl>#route2-pin</styleUrl>
+        <Point>
+          <coordinates>121.47820,31.24645,0</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>2. Shanghai Postal Museum (上海邮政博物馆)</name>
+        <description><![CDATA[<b>ชื่อภาษาจีน (Amap):</b> 上海邮政博物馆 (北苏州路250号)<br/><b>รายละเอียด:</b> อาคารไปรษณีย์กลางสไตล์นีโอคลาสสิกหอนาฬิกา จุดเช็กอินมุมสูงยอดนิยมริมแม่น้ำซูโจว<br/><b>Metro ใกล้ที่สุด:</b> Metro สาย 10 / 12 สถานี Tiantong Road (天潼路站)]]></description>
+        <styleUrl>#route2-pin</styleUrl>
+        <Point>
+          <coordinates>121.48040,31.24639,0</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>3. Zhapu Road Bridge (乍浦路桥)</name>
+        <description><![CDATA[<b>ชื่อภาษาจีน (Amap):</b> 乍浦路桥<br/><b>รายละเอียด:</b> สะพานจุดชมวิวที่ดีที่สุดแห่งหนึ่งสำหรับถ่ายภาพหอไข่มุกและอาคารไปรษณีย์คู่กับเงาสะท้อนน้ำ<br/><b>Metro ใกล้ที่สุด:</b> Metro สาย 10 / 12 สถานี Tiantong Road (天潼路站)]]></description>
+        <styleUrl>#route2-pin</styleUrl>
+        <Point>
+          <coordinates>121.48329,31.24615,0</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>4. Waibaidu Bridge (外白渡桥)</name>
+        <description><![CDATA[<b>ชื่อภาษาจีน (Amap):</b> 外白渡桥<br/><b>รายละเอียด:</b> สะพานโครงเหล็กประวัติศาสตร์สัญลักษณ์ปากคลองซูโจว จุดเชื่อมต่อสู่โซนเดอะบันด์<br/><b>Metro ใกล้ที่สุด:</b> Metro สาย 2 / 10 สถานี East Nanjing Road (南京东路站) หรือสาย 12 International Cruise Terminal]]></description>
+        <styleUrl>#route2-pin</styleUrl>
+        <Point>
+          <coordinates>121.48660,31.24470,0</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>5. Waitanyuan / Rockbund (洛克·外滩源)</name>
+        <description><![CDATA[<b>ชื่อภาษาจีน (Amap):</b> 洛克·外滩源<br/><b>รายละเอียด:</b> ย่านต้นกำเนิดเดอะบันด์ รวมตึกเก่าสไตล์ยุโรป คาเฟ่ และพิพิธภัณฑ์ศิลปะ Rockbund<br/><b>Metro ใกล้ที่สุด:</b> Metro สาย 2 / 10 สถานี East Nanjing Road (南京东路站)]]></description>
+        <styleUrl>#route2-pin</styleUrl>
+        <Point>
+          <coordinates>121.48431,31.24300,0</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>6. Huangpu Park (黄浦公园)</name>
+        <description><![CDATA[<b>ชื่อภาษาจีน (Amap):</b> 黄浦公园<br/><b>รายละเอียด:</b> สวนสาธารณะเก่าแก่ที่สุดของเซี่ยงไฮ้หัวมุมเดอะบันด์ ชมวิวตึกระฟ้าผู่ตงเต็มตา<br/><b>Metro ใกล้ที่สุด:</b> Metro สาย 2 / 10 สถานี East Nanjing Road (南京东路站)]]></description>
+        <styleUrl>#route2-pin</styleUrl>
+        <Point>
+          <coordinates>121.48611,31.24389,0</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>7. Peace Hotel (和平饭店)</name>
+        <description><![CDATA[<b>ชื่อภาษาจีน (Amap):</b> 和平饭店 (南京东路20号)<br/><b>รายละเอียด:</b> โรงแรมระดับตำนานหลังคาพีระมิดสีเขียวหัวมุมถนนหนานจิงและเดอะบันด์<br/><b>Metro ใกล้ที่สุด:</b> Metro สาย 2 / 10 สถานี East Nanjing Road (南京东路站)]]></description>
+        <styleUrl>#route2-pin</styleUrl>
+        <Point>
+          <coordinates>121.48458,31.24108,0</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>เส้นทางเดิน 2: คลองซูโจวเหนือ &amp; ไว่ตานหยวน</name>
+        <styleUrl>#route2-line</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>
+            121.47820,31.24645,0
+            121.48040,31.24639,0
+            121.48329,31.24615,0
+            121.48660,31.24470,0
+            121.48431,31.24300,0
+            121.48611,31.24389,0
+            121.48458,31.24108,0
+          </coordinates>
+        </LineString>
+      </Placemark>
+    </Folder>
+
+    <!-- Route 3: Fuzhou Road (Green) -->
+    <Folder>
+      <name>เส้นทาง 3 (สีเขียว): ถนนฝูโจว (Fuzhou Road)</name>
+      <description>เส้นทางวัฒนธรรม โรงละครเก่า ร้านหนังสือ และสถาปัตยกรรมโกธิค/Art Deco บนถนนฝูโจว</description>
+
+      <Placemark>
+        <name>1. The Great World (大世界)</name>
+        <description><![CDATA[<b>ชื่อภาษาจีน (Amap):</b> 大世界 (西藏南路1号)<br/><b>รายละเอียด:</b> อาณาจักรความบันเทิงเก่าแก่ตั้งแต่ปี 1917 โดดเด่นด้วยหอคอยรูปทรงคลาสสิกใจกลางแยกหยานอัน<br/><b>Metro ใกล้ที่สุด:</b> Metro สาย 8 / 14 สถานี Dashijie (大世界站)]]></description>
+        <styleUrl>#route3-pin</styleUrl>
+        <Point>
+          <coordinates>121.47370,31.23030,0</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>2. Shanghai People's Grand Theatre (上海人民大舞台)</name>
+        <description><![CDATA[<b>ชื่อภาษาจีน (Amap):</b> 上海人民大舞台 (九江路663号)<br/><b>รายละเอียด:</b> โรงละครเก่าแก่สไตล์ย้อนยุคใกล้ย่าน People's Square และจุดตัดถนนวัฒนธรรมฝูโจว<br/><b>Metro ใกล้ที่สุด:</b> Metro สาย 1 / 2 / 8 สถานี People's Square (人民广场站)]]></description>
+        <styleUrl>#route3-pin</styleUrl>
+        <Point>
+          <coordinates>121.47480,31.23610,0</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>3. Xinghua Lou (杏花楼)</name>
+        <description><![CDATA[<b>ชื่อภาษาจีน (Amap):</b> 杏花楼 (福州路343号)<br/><b>รายละเอียด:</b> ภัตตาคารกวางตุ้งและร้านขนมเก่าแก่ระดับตำนานอายุกว่า 170 ปี บนถนนฝูโจว<br/><b>Metro ใกล้ที่สุด:</b> Metro สาย 2 / 10 สถานี East Nanjing Road (南京东路站)]]></description>
+        <styleUrl>#route3-pin</styleUrl>
+        <Point>
+          <coordinates>121.47960,31.23630,0</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>4. Shanghai Book City (上海书城)</name>
+        <description><![CDATA[<b>ชื่อภาษาจีน (Amap):</b> 上海书城 (福州路465号)<br/><b>รายละเอียด:</b> ศูนย์หนังสือขนาดใหญ่ใจกลางถนนวัฒนธรรมฝูโจว โดดเด่นด้วยโถงหนังสือสูงโปร่งดีไซน์ใหม่<br/><b>Metro ใกล้ที่สุด:</b> Metro สาย 1 / 2 / 8 สถานี People's Square หรือ East Nanjing Road]]></description>
+        <styleUrl>#route3-pin</styleUrl>
+        <Point>
+          <coordinates>121.47780,31.23560,0</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>5. Holy Trinity Church (圣三一堂)</name>
+        <description><![CDATA[<b>ชื่อภาษาจีน (Amap):</b> 圣三一堂 (九江路219号)<br/><b>รายละเอียด:</b> โบสถ์คริสต์อิฐแดงสไตล์โกธิคที่เก่าแก่ที่สุดในเซี่ยงไฮ้ สร้างตั้งแต่ศตวรรษที่ 19<br/><b>Metro ใกล้ที่สุด:</b> Metro สาย 2 / 10 สถานี East Nanjing Road (南京东路站)]]></description>
+        <styleUrl>#route3-pin</styleUrl>
+        <Point>
+          <coordinates>121.48194,31.23847,0</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>6. Hamilton House &amp; Metropole Hotel (福州大楼 &amp; 新城饭店)</name>
+        <description><![CDATA[<b>ชื่อภาษาจีน (Amap):</b> 福州大楼 / 新城饭店 (江西中路170-180号)<br/><b>รายละเอียด:</b> คู่ตึก Art Deco สุดไอคอนิกหัวมุมถนนฝูโจวตัดเจียงซี มุมถ่ายรูปแนวสตรีตสถาปัตยกรรม<br/><b>Metro ใกล้ที่สุด:</b> Metro สาย 2 / 10 สถานี East Nanjing Road (南京东路站)]]></description>
+        <styleUrl>#route3-pin</styleUrl>
+        <Point>
+          <coordinates>121.48240,31.23740,0</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>เส้นทางเดิน 3: ถนนฝูโจว (Fuzhou Road)</name>
+        <styleUrl>#route3-line</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>
+            121.47370,31.23030,0
+            121.47480,31.23610,0
+            121.47960,31.23630,0
+            121.47780,31.23560,0
+            121.48194,31.23847,0
+            121.48240,31.23740,0
+          </coordinates>
+        </LineString>
+      </Placemark>
+    </Folder>
+
+    <!-- Route 4: Zhapu x Kunshan Road (Orange) -->
+    <Folder>
+      <name>เส้นทาง 4 (สีส้ม): ถนนจ้าผู้ X คุนซาน</name>
+      <description>ย่านหงโข่วสุดคลาสสิก สวนเก่า โบสถ์อิฐแดง ร้านอาหารท้องถิ่น และคอมเพล็กซ์ 1933</description>
+
+      <Placemark>
+        <name>1. Kunshan Park (昆山公园)</name>
+        <description><![CDATA[<b>ชื่อภาษาจีน (Amap):</b> 昆山公园 (昆山花园路13号)<br/><b>รายละเอียด:</b> สวนสาธารณะขนาดกะทัดรัดสไตล์วิกตอเรียนย่านหงโข่ว รายล้อมด้วยตึกอิฐแดงเก่าแก่<br/><b>Metro ใกล้ที่สุด:</b> Metro สาย 10 สถานี Sichuan North Road (四川北路站)]]></description>
+        <styleUrl>#route4-pin</styleUrl>
+        <Point>
+          <coordinates>121.48215,31.25085,0</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>2. Jinglin Church (景林堂)</name>
+        <description><![CDATA[<b>ชื่อภาษาจีน (Amap):</b> 景林堂 (昆山路135号)<br/><b>รายละเอียด:</b> โบสถ์เมโทดิสต์เก่าแก่สถาปัตยกรรมอิฐแดงคลาสสิกบนถนนคุนซาน<br/><b>Metro ใกล้ที่สุด:</b> Metro สาย 10 สถานี Sichuan North Road (四川北路站)]]></description>
+        <styleUrl>#route4-pin</styleUrl>
+        <Point>
+          <coordinates>121.48380,31.25090,0</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>3. Green Lemon Diner &amp; Macaroni Cafe (绿柠食堂)</name>
+        <description><![CDATA[<b>ชื่อภาษาจีน (Amap):</b> 绿柠食堂 (昆山路231号) / 玛格萝妮比萨屋 (昆山路122号)<br/><b>รายละเอียด:</b> โซนร้านอาหารและคาเฟ่บรรยากาศโฮมมี่บนถนนคุนซาน ใกล้จุดถ่ายรูปไวรัล玛格萝妮<br/><b>Metro ใกล้ที่สุด:</b> Metro สาย 10 สถานี Sichuan North Road (四川北路站)]]></description>
+        <styleUrl>#route4-pin</styleUrl>
+        <Point>
+          <coordinates>121.48190,31.25050,0</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>4. Xihua Apartments (西华公寓)</name>
+        <description><![CDATA[<b>ชื่อภาษาจีน (Amap):</b> 西华公寓 / 浦西公寓 (乍浦路199号)<br/><b>รายละเอียด:</b> อาคารอพาร์ตเมนต์เก่าแก่สถาปัตยกรรมยุคสาธารณรัฐบริเวณแยกถนนจ้าผู้–คุนซาน<br/><b>Metro ใกล้ที่สุด:</b> Metro สาย 10 / 12 สถานี Tiantong Road (天潼路站) หรือ Sichuan North Road]]></description>
+        <styleUrl>#route4-pin</styleUrl>
+        <Point>
+          <coordinates>121.48280,31.24960,0</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>5. 1933 Old Millfun (1933 老场坊)</name>
+        <description><![CDATA[<b>ชื่อภาษาจีน (Amap):</b> 1933老场坊 (溧阳路611号)<br/><b>รายละเอียด:</b> อดีตโรงฆ่าสัตว์ปี 1933 ที่รีโนเวตเป็นคอมเพล็กซ์ศิลปะและคาเฟ่โครงสร้างสะพานคอนกรีตเขาวงกตสุดเท่<br/><b>Metro ใกล้ที่สุด:</b> Metro สาย 4 / 10 สถานี Hailun Road (海伦路站)]]></description>
+        <styleUrl>#route4-pin</styleUrl>
+        <Point>
+          <coordinates>121.48785,31.25663,0</coordinates>
+        </Point>
+      </Placemark>
+
+      <Placemark>
+        <name>เส้นทางเดิน 4: ถนนจ้าผู้ X คุนซาน</name>
+        <styleUrl>#route4-line</styleUrl>
+        <LineString>
+          <tessellate>1</tessellate>
+          <coordinates>
+            121.48215,31.25085,0
+            121.48380,31.25090,0
+            121.48190,31.25050,0
+            121.48280,31.24960,0
+            121.48785,31.25663,0
+          </coordinates>
+        </LineString>
+      </Placemark>
+    </Folder>
+
+    <!-- Hotel Base -->
+    <Folder>
+      <name>🏨 โรงแรมที่พัก (6–11 ธ.ค. 2569)</name>
+      <Placemark>
+        <name>Pujing Weiting Hotel (ผู่จิงเว่ยถิง โฮเทล)</name>
+        <description><![CDATA[<b>ชื่อภาษาจีน (Amap):</b> 上海市黄浦区新闸路219号<br/><b>Booking:</b> #1622932103864290 | PIN: 3931<br/><b>หมายเหตุ:</b> แจ้ง Late Check-in ล่วงหน้า (+86-21-63357858 / +86-19921298776)<br/><b>Metro ใกล้ที่สุด:</b> Metro สาย 1 สถานี Xinzha Road (新闸路站)]]></description>
+        <styleUrl>#hotel-pin</styleUrl>
+        <Point>
+          <coordinates>121.46306,31.24056,0</coordinates>
+        </Point>
+      </Placemark>
+    </Folder>
+  </Document>
+</kml>

@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shanghai Master Travel & Transit Map (6–11 Dec 2026)</title>
+
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --panel: #ffffff;
+      --border: #e2e8f0;
+      --text: #0f172a;
+      --muted: #64748b;
+      --sub: #475569;
+
+      --z1: #0284c7; /* Bund & Huangpu */
+      --z2: #9333ea; /* Architecture & Hip */
+      --z3: #d97706; /* Temples & Old Town */
+      --z4: #ef4444; /* Food & Cafes */
+      --z5: #10b981; /* Disney & Museums */
+      --hub: #7c3aed; /* Hotel & Hubs */
+      --daytrip: #0d9488; /* Suzhou & Zhujiajiao */
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; font-family: 'Noto Sans Thai', 'Inter', sans-serif; background: var(--bg); color: var(--text); overflow: hidden; }
+
+    .app { display: flex; height: 100vh; width: 100vw; }
+
+    /* Sidebar */
+    .sidebar {
+      width: 390px;
+      max-width: 100vw;
+      background: var(--panel);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      z-index: 1000;
+      box-shadow: 4px 0 20px rgba(15, 23, 42, 0.06);
+      transition: transform 0.25s ease;
+    }
+
+    .header {
+      padding: 14px 16px 12px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #fff;
+    }
+    .header-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .header h1 { font-size: 16px; font-weight: 700; line-height: 1.3; }
+    .header p { font-size: 12px; color: #cbd5e1; margin-top: 3px; }
+    .badge-link {
+      font-size: 11px; font-weight: 600; color: #38bdf8; text-decoration: none;
+      background: rgba(56, 189, 248, 0.14); border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 4px 8px; border-radius: 999px; white-space: nowrap;
+    }
+    .badge-link:hover { background: rgba(56, 189, 248, 0.25); }
+
+    /* Tabs */
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-bottom: 1px solid var(--border);
+      background: #f1f5f9;
+      padding: 4px;
+      gap: 4px;
+    }
+    .tab-btn {
+      border: none; background: transparent; padding: 7px 6px; font-size: 12px; font-weight: 600;
+      color: var(--sub); border-radius: 7px; cursor: pointer; font-family: inherit;
+      transition: all 0.15s;
+    }
+    .tab-btn.active { background: #fff; color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+
+    .controls { padding: 10px 14px; border-bottom: 1px solid var(--border); background: #fff; }
+    .chip-row { display: flex; flex-wrap: wrap; gap: 6px; }
+    .chip {
+      border: 1px solid var(--border); background: #fff; color: var(--sub);
+      padding: 5px 10px; border-radius: 999px; font-size: 11.5px; font-weight: 600;
+      cursor: pointer; font-family: inherit; display: inline-flex; align-items: center; gap: 5px;
+      transition: all 0.15s;
+    }
+    .chip:hover { border-color: #94a3b8; }
+    .chip.active { background: #0f172a; color: #fff; border-color: #0f172a; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+
+    .search-box {
+      margin-top: 8px; width: 100%; padding: 7px 11px; border: 1px solid var(--border);
+      border-radius: 8px; font-size: 12.5px; font-family: inherit; outline: none;
+    }
+    .search-box:focus { border-color: #3b82f6; }
+
+    .content { flex: 1; overflow-y: auto; padding: 12px 14px 20px; }
+
+    /* Cards */
+    .place-card {
+      border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; margin-bottom: 8px;
+      background: #fff; cursor: pointer; transition: all 0.15s;
+    }
+    .place-card:hover { border-color: #94a3b8; transform: translateY(-1px); box-shadow: 0 3px 10px rgba(15,23,42,0.05); }
+    .place-title { font-size: 13px; font-weight: 700; color: var(--text); display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; }
+    .place-cn { font-family: 'Noto Sans SC', sans-serif; font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+    .place-metro { font-size: 11.5px; color: var(--sub); margin-top: 5px; line-height: 1.45; }
+    .zone-pill {
+      font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 999px; color: #fff; white-space: nowrap;
+    }
+
+    /* Transit cards */
+    .transit-card {
+      border: 1px solid var(--border); border-radius: 10px; padding: 11px 12px; margin-bottom: 9px; background: #fff;
+    }
+    .transit-head { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; margin-bottom: 5px; }
+    .line-tag {
+      font-size: 11px; font-weight: 700; color: #fff; padding: 2px 8px; border-radius: 6px;
+    }
+    .transit-body { font-size: 12px; color: var(--sub); line-height: 1.55; }
+
+    .toggle-row {
+      display: flex; align-items: center; justify-content: space-between; padding: 8px 10px;
+      border: 1px solid var(--border); border-radius: 8px; margin-bottom: 8px; background: #f8fafc;
+      font-size: 12px; font-weight: 600;
+    }
+
+    /* Map */
+    #map { flex: 1; height: 100%; z-index: 1; }
+
+    /* Mobile toggle */
+    .mobile-toggle {
+      display: none; position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%);
+      z-index: 1200; background: #0f172a; color: #fff; border: none; padding: 10px 18px;
+      border-radius: 999px; font-size: 13px; font-weight: 600; font-family: inherit;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.25); cursor: pointer;
+    }
+
+    /* Popup styling */
+    .leaflet-popup-content { margin: 12px 14px; font-family: 'Noto Sans Thai', 'Inter', sans-serif; min-width: 220px; }
+    .pop-title { font-size: 14px; font-weight: 700; color: #0f172a; }
+    .pop-cn { font-family: 'Noto Sans SC', sans-serif; font-size: 12px; color: #64748b; margin-top: 2px; }
+    .pop-info { font-size: 12px; color: #334155; margin-top: 7px; line-height: 1.5; }
+    .pop-actions { display: flex; gap: 6px; margin-top: 9px; flex-wrap: wrap; }
+    .pop-btn {
+      font-size: 11.5px; font-weight: 600; text-decoration: none; padding: 5px 9px;
+      border-radius: 6px; display: inline-flex; align-items: center; gap: 4px;
+    }
+    .pop-amap { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+    .pop-gmap { background: #f8fafc; color: #334155; border: 1px solid #cbd5e1; }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        position: fixed; top: 0; left: 0; bottom: 0; width: 90vw; max-width: 360px;
+        transform: translateX(0);
+      }
+      .sidebar.collapsed { transform: translateX(-105%); }
+      .mobile-toggle { display: block; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="header">
+        <div class="header-top">
+          <h1>🗺️ Shanghai Master Map</h1>
+          <a class="badge-link" href="shanghai_citywalk_map.html" target="_blank">🚶 4 เส้นเดินเที่ยว</a>
+        </div>
+        <p>6–11 ธ.ค. 2569 • โรงแรม Xinzha Rd (Line 1) • 35+ จุด &amp; ขนส่ง</p>
+      </div>
+
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('places', this)">📍 จุดเที่ยวทั้งหมด</button>
+        <button class="tab-btn" onclick="switchTab('plans', this)">🗓️ ตามแผน A–D</button>
+        <button class="tab-btn" onclick="switchTab('transit', this)">🚇 ขนส่งทั้งหมด</button>
+      </div>
+
+      <div class="controls" id="controls-bar">
+        <div class="chip-row" id="filter-chips"></div>
+        <input type="text" class="search-box" id="search-input" placeholder="🔍 ค้นหาชื่อสถานที่, สาย Metro, ย่าน..." oninput="renderList()" />
+      </div>
+
+      <div class="content" id="sidebar-content"></div>
+    </aside>
+
+    <div id="map"></div>
+  </div>
+
+  <button class="mobile-toggle" onclick="toggleSidebar()">☰ เปิด/ปิดรายการ &amp; เส้นทาง</button>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script>
+    const ZONES = {
+      hub: { name: 'โรงแรม & ขนส่ง', color: '#7c3aed' },
+      z1: { name: 'โซน 1: ริมน้ำหวงผู่', color: '#0284c7' },
+      z2: { name: 'โซน 2: ย่านฮิป & สถาปัตย์', color: '#9333ea' },
+      z3: { name: 'โซน 3: วัด & เมืองเก่า', color: '#d97706' },
+      z4: { name: 'โซน 4: ของกิน & คาเฟ่', color: '#ef4444' },
+      z5: { name: 'โซน 5: สวนสนุก & พิพิธภัณฑ์', color: '#10b981' },
+      daytrip: { name: 'นอกเมือง (ซูโจว/จูเจียเจี่ยว)', color: '#0d9488' }
+    };
+
+    const PLACES = [
+      // Hubs
+      { id: 'hotel', name: '🏨 ผู่จิงเว่ยถิง โฮเทล (โรงแรมฐาน)', cn: '浦境威廷酒店 · 上海市黄浦区新闸路219号', zone: 'hub', lat: 31.2385, lng: 121.4660, metro: 'Metro Line 1 สถานี Xinzha Rd (新闸路) | เดิน 3 นาที | เช็กอิน 6 ธ.ค. 20:45+', plans: ['A','B','C','D'] },
+      { id: 'pvg', name: '✈️ สนามบินผู่ตง (PVG Terminal 1)', cn: '上海浦东国际机场 T1', zone: 'hub', lat: 31.1443, lng: 121.8083, metro: 'Maglev (8 นาทีถึง Longyang Rd) หรือ Metro Line 2 / DiDi ~50 นาที', plans: ['A','B','C','D'] },
+      { id: 'sh_station', name: '🚄 สถานีรถไฟ Shanghai Station', cn: '上海站', zone: 'hub', lat: 31.2494, lng: 121.4557, metro: 'Metro Line 1 (2 ป้ายจากโรงแรม!) — ขึ้นรถไฟ CRH ไปซูโจว (25–35 นาที)', plans: ['B'] },
+      { id: 'hongqiao', name: '🚄 สถานีรถไฟ Hongqiao Railway', cn: '上海虹桥站', zone: 'hub', lat: 31.1941, lng: 121.3204, metro: 'Metro Line 2 / 10 / 17 — ต่อสาย 17 ไปจูเจียเจี่ยว หรือ CRH ไปซูโจว', plans: ['B','C'] },
+
+      // Zone 1: Bund & Huangpu (10)
+      { id: 'bund', name: 'หาดไว่ทาน / เดอะบันด์ (The Bund)', cn: '外滩', zone: 'z1', lat: 31.2403, lng: 121.4906, metro: 'Line 2, 10 สถานี East Nanjing Rd ทางออก 2 เดินตรงสุดถนน', plans: ['A','B','C','D'] },
+      { id: 'bund_bull', name: 'รูปปั้นกระทิงเดอะบันด์ (The Bund Bull)', cn: '外滩牛', zone: 'z1', lat: 31.2348, lng: 121.4922, metro: 'Line 10, 14 สถานี Yuyuan Garden ทางออก 1 เดินไปริมน้ำ', plans: ['A','C'] },
+      { id: 'rock_bund', name: 'ร็อกบันด์ (Rock Bund)', cn: '洛克·外滩源', zone: 'z1', lat: 31.2435, lng: 121.4879, metro: 'Line 2, 10 สถานี East Nanjing Rd ทางออก 6 เดินขึ้นเหนือ 500 ม.', plans: ['A','D'] },
+      { id: 'zhapu', name: 'สะพานจ้าผู่ลู่ (Zhapu Road Bridge)', cn: '乍浦路桥', zone: 'z1', lat: 31.2440, lng: 121.4856, metro: 'Line 10, 12 สถานี Tiantong Rd ทางออก 6 เดินลงใต้ 400 ม.', plans: ['A','D'] },
+      { id: 'waibaidu', name: 'สะพานไว่ไป๋ตู้ (Waibaidu Bridge)', cn: '外白渡桥', zone: 'z1', lat: 31.2443, lng: 121.4910, metro: 'Line 10, 12 สถานี Tiantong Rd ทางออก 3', plans: ['A','D'] },
+      { id: 'north_bund', name: 'สวนนอร์ทบันด์ (North Bund Garden)', cn: '北外滩滨江绿地', zone: 'z1', lat: 31.2498, lng: 121.5030, metro: 'Line 12 สถานี Int\'l Cruise Terminal ทางออก 3 เดิน 450 ม.', plans: ['A','C','D'] },
+      { id: 'the_stage', name: 'ตึก The Stage (White Magnolia Plaza)', cn: '白玉兰广场 The Stage', zone: 'z1', lat: 31.2491, lng: 121.4986, metro: 'Line 12 สถานี Int\'l Cruise Terminal', plans: ['A','D'] },
+      { id: 'mingzhu', name: 'วงเวียนหมิงจู (Mingzhu Roundabout)', cn: '明珠环岛', zone: 'z1', lat: 31.2397, lng: 121.4998, metro: 'Line 2, 14 สถานี Lujiazui ทางออก 1 หรือ 2', plans: ['A','B','C'] },
+      { id: 'disney_ljz', name: 'Disney Store สาขา Lujiazui', cn: '迪士尼旗舰店 (陆家嘴)', zone: 'z1', lat: 31.2385, lng: 121.4995, metro: 'Line 2, 14 สถานี Lujiazui ติดวงเวียนหมิงจู', plans: ['A','C'] },
+      { id: 'ljz_walkway', name: 'จุดชมพระอาทิตย์ตกริมน้ำลู่เจียจุ่ย', cn: '陆家嘴滨江大道', zone: 'z1', lat: 31.2374, lng: 121.4962, metro: 'Line 2, 14 สถานี Lujiazui เดินทะลุ Super Brand Mall', plans: ['A','B'] },
+
+      // Zone 2: Architecture & Hip (6)
+      { id: '1000trees', name: 'ตึกต้นไม้พันต้น (Tian An 1,000 Trees)', cn: '天安·千树', zone: 'z2', lat: 31.2463, lng: 121.4422, metro: 'Line 13 สถานี Jiangning Rd ทางออก 1 เดิน 500 ม.', plans: ['A','D'] },
+      { id: 'wukang', name: 'ตึกอู๋คัง (Wukang Mansion)', cn: '武康大楼', zone: 'z2', lat: 31.2063, lng: 121.4375, metro: 'Line 10, 11 สถานี Jiaotong University ทางออก 7', plans: ['A','B','C','D'] },
+      { id: 'anfu', name: 'ถนนอันฝู (Anfu Road)', cn: '安福路', zone: 'z2', lat: 31.2116, lng: 121.4455, metro: 'Line 1, 7 สถานี Changshu Rd ทางออก 8', plans: ['A','B','C','D'] },
+      { id: 'nanjing_e', name: 'ถนนคนเดินนานจิง (East Nanjing Rd)', cn: '南京东路步行街', zone: 'z2', lat: 31.2368, lng: 121.4810, metro: 'Line 1, 2, 8 People\'s Square หรือ Line 2, 10 East Nanjing Rd', plans: ['A','B','C','D'] },
+      { id: 'nanjing_w', name: 'ถนนนานจิงตะวันตก (West Nanjing Rd)', cn: '南京西路', zone: 'z2', lat: 31.2297, lng: 121.4601, metro: 'Line 2, 12, 13 สถานี West Nanjing Rd', plans: ['A','C','D'] },
+      { id: 'zhangyuan', name: 'ย่านจางหยวน (Zhang Yuan)', cn: '张园', zone: 'z2', lat: 31.2287, lng: 121.4623, metro: 'Line 2, 12, 13 สถานี West Nanjing Rd ทางออก 12', plans: ['A','D'] },
+
+      // Zone 3: Temples & Old Town (3)
+      { id: 'yuyuan', name: 'ถนนคนเดินอวี้หยวน (Yuyuan Old Street)', cn: '豫园老街', zone: 'z3', lat: 31.2272, lng: 121.4921, metro: 'Line 10, 14 สถานี Yu Garden ทางออก 1 เดิน 300 ม.', plans: ['A','B','C'] },
+      { id: 'jingan', name: 'วัดจิ้งอัน (Jing\'an Temple)', cn: '静安寺', zone: 'z3', lat: 31.2238, lng: 121.4453, metro: 'Line 2, 7, 14 สถานี Jing\'an Temple ทางออก 1 หรือ 2', plans: ['A','C','D'] },
+      { id: 'longhua', name: 'วัดหลงหัว (Longhua Temple)', cn: '龙华古寺', zone: 'z3', lat: 31.1749, lng: 121.4534, metro: 'Line 11, 12 สถานี Longhua ทางออก 2', plans: ['A','D'] },
+
+      // Zone 4: Food & Cafes (12)
+      { id: 'first_food', name: 'ห้าง Shanghai First Food Hall', cn: '上海第一食品商店', zone: 'z4', lat: 31.2351, lng: 121.4774, metro: 'Line 1, 2, 8 สถานี People\'s Square ทางออก 19', plans: ['A','B','C'] },
+      { id: 'maotou', name: 'Maotou Restaurant (ปลาต้มผักกาดดอง)', cn: '毛头老爹饭店', zone: 'z4', lat: 31.2232, lng: 121.4408, metro: 'Line 2, 7, 14 สถานี Jing\'an Temple (愚园路246弄6号)', plans: ['D'] },
+      { id: 'nanxiang', name: 'Nanxiang Steamed Bun (เสี่ยวหลงเปาอวี้หยวน)', cn: '南翔馒头店', zone: 'z4', lat: 31.2271, lng: 121.4924, metro: 'Line 10, 14 สถานี Yu Garden ข้างสะพานเก้าโค้ง', plans: ['A','C'] },
+      { id: 'lailai', name: 'Lai Lai Xiao Long (มิชลินเสี่ยวหลงเปาปู)', cn: '莱莱小笼', zone: 'z4', lat: 31.2367, lng: 121.4806, metro: 'Line 1, 2, 8 People\'s Square ทางออก 14 ถนน Tianjin Rd', plans: ['A','B','C'] },
+      { id: 'longtago', name: 'ปิ้งย่างเตาหมุน Longtago (ลองทาโกะ)', cn: '很久以前羊肉串', zone: 'z4', lat: 31.2356, lng: 121.4789, metro: 'Line 1, 2, 8 People\'s Square ใกล้ถนนคนเดินหนานจิง', plans: ['A','B'] },
+      { id: 'starbucks_r', name: 'Starbucks Reserve Roastery Shanghai', cn: '星巴克臻选上海烘焙工坊', zone: 'z4', lat: 31.2300, lng: 121.4611, metro: 'Line 2, 12, 13 West Nanjing Rd ทางออก 11', plans: ['A','C','D'] },
+      { id: 'butterful', name: 'BUTTERFUL & CREAMOROUS', cn: '黄油与面包', zone: 'z4', lat: 31.2283, lng: 121.4596, metro: 'Line 2, 12, 13 West Nanjing Rd', plans: ['A','C','D'] },
+      { id: 'baos', name: 'Bao\'s Pastry (鲍师傅) & HEYTEA (喜茶)', cn: '鲍师傅糕点 · 喜茶', zone: 'z4', lat: 31.2364, lng: 121.4819, metro: 'ย่าน East Nanjing Rd / Middle Huaihai Rd', plans: ['A','B','C'] },
+      { id: 'redlip', name: 'หมาล่าทัง Red Lip Spicy Mix', cn: '红唇串串香', zone: 'z4', lat: 31.2504, lng: 121.4995, metro: 'Line 12 Int\'l Cruise Terminal ชั้น LG2 ห้าง SMP', plans: ['A','D'] },
+      { id: 'gaolaojiu', name: 'หม้อไฟฉงชิ่ง เกาเหลาจู (Gao Lao Jiu)', cn: '重庆高老九火锅', zone: 'z4', lat: 31.2370, lng: 121.4852, metro: 'Line 2, 10 East Nanjing Rd', plans: ['A','B'] },
+      { id: 'holiland', name: 'Holiland Travel (ธีมสถานีอวกาศ)', cn: '好利来 Super Brand Mall', zone: 'z4', lat: 31.2372, lng: 121.4989, metro: 'Line 2, 14 Lujiazui ชั้น 1 Super Brand Mall', plans: ['A','C'] },
+      { id: 'gangyuji', name: 'Gangyuji (เป็ด/ห่านย่างมิชลิน)', cn: '港裕记 · 外滩中央', zone: 'z4', lat: 31.2383, lng: 121.4872, metro: 'Line 2, 10 East Nanjing Rd (外滩中央广场 3F)', plans: ['A','D'] },
+
+      // Zone 5: Disney & Museums (4)
+      { id: 'disney', name: '🎢 Shanghai Disney Resort (ล็อกวันอังคาร 8 ธ.ค.)', cn: '上海迪士尼度假区', zone: 'z5', lat: 31.1413, lng: 121.6617, metro: 'Line 1 → Xujiahui ต่อ Line 11 สุดสายสถานี Disney Resort (~55 นาที)', plans: ['A','B','C','D'] },
+      { id: 'china_art', name: 'พิพิธภัณฑ์ศิลปะจีน (China Art Museum)', cn: '中华艺术宫', zone: 'z5', lat: 31.1852, lng: 121.4941, metro: 'Line 8 สถานี China Art Museum ทางออก 3 (ปิดวันจันทร์)', plans: ['D'] },
+      { id: 'world_expo', name: 'พิพิธภัณฑ์ เวิลด์ เอ็กซ์โป (World Expo Museum)', cn: '世博会博物馆', zone: 'z5', lat: 31.1964, lng: 121.4820, metro: 'Line 13 สถานี World Expo Museum ทางออก 2 (ปิดวันจันทร์)', plans: ['D'] },
+      { id: 'natural_hist', name: 'พิพิธภัณฑ์ธรรมชาติวิทยา (Natural History Museum)', cn: '上海自然博物馆', zone: 'z5', lat: 31.2362, lng: 121.4628, metro: 'Line 13 Natural History Museum ทางออก 2 (เดินจากโรงแรม 10 นาที!)', plans: ['A','D'] },
+
+      // Day trips
+      { id: 'zhujiajiao', name: '🛶 เมืองโบราณริมน้ำจูเจียเจี่ยว (Zhujiajiao)', cn: '朱家角古镇', zone: 'daytrip', lat: 31.1112, lng: 121.0537, metro: 'Metro Line 2 → Hongqiao ต่อ Line 17 ลง Zhujiajiao (หรือ DiDi ~1 ชม.)', plans: ['C'] },
+      { id: 'suzhou', name: '🚄 เมืองมรดกโลกซูโจว (สวนจัวเจิ้ง & ถนนผิงเจียง)', cn: '苏州 · 拙政园 · 平江路', zone: 'daytrip', lat: 31.3242, lng: 120.6295, metro: 'รถไฟ CRH จาก Shanghai Station (2 ป้ายจากโรงแรม!) → Suzhou (25–35 นาที)', plans: ['B'] }
+    ];
+
+    const TRANSIT_LINES = [
+      { id: 'L1', name: 'Metro Line 1 (ผ่านหน้าโรงแรม Xinzha Rd)', color: '#E4002B', weight: 4, coords: [[31.2494,121.4557],[31.2431,121.4590],[31.2385,121.4660],[31.2327,121.4754],[31.2244,121.4748],[31.2155,121.4562],[31.2116,121.4455],[31.1945,121.4368]] },
+      { id: 'L2', name: 'Metro Line 2 (แกนหลัก เชื่อมสนามบิน & เดอะบันด์)', color: '#65a30d', weight: 4, coords: [[31.1941,121.3204],[31.2238,121.4453],[31.2297,121.4601],[31.2327,121.4754],[31.2381,121.4848],[31.2397,121.4998],[31.2044,121.5575],[31.1443,121.8083]] },
+      { id: 'L10', name: 'Metro Line 10 (อวี้หยวน · อู๋คัง · ท่าเรือเหนือ)', color: '#9333ea', weight: 3.5, coords: [[31.1941,121.3204],[31.2028,121.4342],[31.2185,121.4752],[31.2272,121.4921],[31.2381,121.4848],[31.2442,121.4844]] },
+      { id: 'L11', name: 'Metro Line 11 (ไป Shanghai Disneyland)', color: '#78350f', weight: 4, coords: [[31.2028,121.4342],[31.1945,121.4368],[31.1749,121.4534],[31.1538,121.5920],[31.1413,121.6617]] },
+      { id: 'L17', name: 'Metro Line 17 (ไปเมืองโบราณจูเจียเจี่ยว)', color: '#b45309', weight: 3.5, dash: '6,6', coords: [[31.1941,121.3204],[31.1450,121.2010],[31.1112,121.0537]] },
+      { id: 'CRH', name: 'รถไฟความเร็วสูง CRH (ไปซูโจว 25–35 นาที)', color: '#1d4ed8', weight: 3.5, dash: '8,6', coords: [[31.2494,121.4557],[31.3242,120.6295]] },
+      { id: 'FERRY', name: 'เรือข้ามฟาก 2 หยวน (East Jinling Rd ↔ Dongchang Rd)', color: '#0ea5e9', weight: 4, dash: '3,5', coords: [[31.2339,121.4926],[31.2335,121.5008]] }
+    ];
+
+    const map = L.map('map', { zoomControl: true }).setView([31.230, 121.475], 12);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; OpenStreetMap &copy; CARTO',
+      maxZoom: 19
+    }).addTo(map);
+
+    const markerLayer = L.layerGroup().addTo(map);
+    const transitLayer = L.layerGroup().addTo(map);
+    let showTransit = true;
+    let activeTab = 'places';
+    let activeFilter = 'all';
+
+    function drawTransit() {
+      transitLayer.clearLayers();
+      if (!showTransit) return;
+      TRANSIT_LINES.forEach(line => {
+        L.polyline(line.coords, {
+          color: line.color,
+          weight: line.weight,
+          opacity: 0.78,
+          dashArray: line.dash || null
+        }).bindTooltip(line.name, { sticky: true }).addTo(transitLayer);
+      });
+    }
+
+    function makeIcon(color, isHub) {
+      const size = isHub ? 18 : 13;
+      return L.divIcon({
+        className: 'custom-pin',
+        html: `<div style="width:${size}px;height:${size}px;background:${color};border:2.5px solid #fff;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,0.35);"></div>`,
+        iconSize: [size, size],
+        iconAnchor: [size / 2, size / 2]
+      });
+    }
+
+    function filteredPlaces() {
+      const q = (document.getElementById('search-input')?.value || '').trim().toLowerCase();
+      return PLACES.filter(p => {
+        if (activeTab === 'places' && activeFilter !== 'all' && p.zone !== activeFilter) return false;
+        if (activeTab === 'plans' && activeFilter !== 'all' && !p.plans.includes(activeFilter)) return false;
+        if (q) {
+          const hay = `${p.name} ${p.cn} ${p.metro}`.toLowerCase();
+          if (!hay.includes(q)) return false;
+        }
+        return true;
+      });
+    }
+
+    function drawMarkers() {
+      markerLayer.clearLayers();
+      filteredPlaces().forEach(p => {
+        const z = ZONES[p.zone];
+        const amapUrl = `https://uri.amap.com/search?keyword=${encodeURIComponent(p.cn.split('·')[0].trim())}&city=310000`;
+        const gmapUrl = `https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lng}`;
+        const m = L.marker([p.lat, p.lng], { icon: makeIcon(z.color, p.zone === 'hub') });
+        m.bindPopup(`
+          <div class="pop-title">${p.name}</div>
+          <div class="pop-cn">${p.cn}</div>
+          <div class="pop-info"><b>🚇 การเดินทาง:</b> ${p.metro}<br/><b>📌 แผน:</b> ${p.plans.map(x => 'Plan ' + x).join(', ')}</div>
+          <div class="pop-actions">
+            <a class="pop-btn pop-amap" href="${amapUrl}" target="_blank">🗺️ เปิด Amap</a>
+            <a class="pop-btn pop-gmap" href="${gmapUrl}" target="_blank">📍 Google Maps</a>
+          </div>
+        `);
+        m.addTo(markerLayer);
+        p._marker = m;
+      });
+    }
+
+    function renderChips() {
+      const box = document.getElementById('filter-chips');
+      const ctrl = document.getElementById('controls-bar');
+      if (activeTab === 'transit') {
+        ctrl.style.display = 'none';
+        return;
+      }
+      ctrl.style.display = 'block';
+      if (activeTab === 'places') {
+        const items = [['all', 'ทั้งหมด', '#0f172a'], ...Object.entries(ZONES).map(([k, v]) => [k, v.name, v.color])];
+        box.innerHTML = items.map(([k, label, col]) =>
+          `<button class="chip ${activeFilter===k?'active':''}" onclick="setFilter('${k}')"><span class="dot" style="background:${col}"></span>${label}</button>`
+        ).join('');
+      } else {
+        const items = [
+          ['all', 'ทุกแผน'],
+          ['A', 'Plan A: Metro 100%'],
+          ['B', 'Plan B: ซูโจว CRH'],
+          ['C', 'Plan C: จูเจียเจี่ยว'],
+          ['D', 'Plan D: สายอาร์ต']
+        ];
+        box.innerHTML = items.map(([k, label]) =>
+          `<button class="chip ${activeFilter===k?'active':''}" onclick="setFilter('${k}')">${label}</button>`
+        ).join('');
+      }
+    }
+
+    function renderList() {
+      drawMarkers();
+      const box = document.getElementById('sidebar-content');
+      if (activeTab === 'transit') {
+        box.innerHTML = `
+          <div class="toggle-row">
+            <span>👁️ แสดงเส้นทางรถไฟ Metro / CRH บนแผนที่</span>
+            <input type="checkbox" ${showTransit?'checked':''} onchange="showTransit=this.checked;drawTransit();" />
+          </div>
+          <div class="transit-card">
+            <div class="transit-head"><span class="line-tag" style="background:#7c3aed">✈️ PVG T1 ↔ โรงแรม</span></div>
+            <div class="transit-body">
+              <b>ขาไป (6 ธ.ค. ถึง 20:45 น.):</b><br/>
+              • <b>DiDi:</b> ~45–55 นาที (สะดวกสุดพร้อมกระเป๋า 23 กก.)<br/>
+              • <b>Maglev + Metro:</b> Maglev รอบท้าย ~21:40 น. (8 นาทีถึง Longyang Rd) ต่อ Line 2 → People's Square ต่อ Line 1 → Xinzha Rd (~55 นาที)<br/>
+              <b>ขากลับ (11 ธ.ค. บิน 08:30 น.):</b> ออก 05:15 น. ใช้ <b>DiDi เท่านั้น</b> (Metro ยังไม่เปิด)
+            </div>
+          </div>
+          <div class="transit-card">
+            <div class="transit-head"><span class="line-tag" style="background:#E4002B">🚇 Line 1 (สายสีแดง — หน้าโรงแรม)</span></div>
+            <div class="transit-body">สถานีฐาน <b>Xinzha Rd (新闸路)</b><br/>• ลงใต้ 1 ป้าย → <b>People's Square</b> (ต่อ Line 2/8)<br/>• ขึ้นเหนือ 2 ป้าย → <b>Shanghai Railway Station</b> (ขึ้นรถไฟไปซูโจว)<br/>• ลงใต้ → <b>Xujiahui</b> (ต่อ Line 11 ไป Disney)</div>
+          </div>
+          <div class="transit-card">
+            <div class="transit-head"><span class="line-tag" style="background:#65a30d">🚇 Line 2 (สายสีเขียว — แกนหลักเที่ยว)</span></div>
+            <div class="transit-body">ต่อจาก People's Square วิ่งตรงถึง <b>Jing'an Temple, West Nanjing Rd, East Nanjing Rd (The Bund), Lujiazui (หอไข่มุก), Hongqiao &amp; PVG</b></div>
+          </div>
+          <div class="transit-card">
+            <div class="transit-head"><span class="line-tag" style="background:#78350f">🎢 Line 11 → Disney (8 ธ.ค.)</span></div>
+            <div class="transit-body">จากโรงแรมนั่ง <b>Line 1 → Xujiahui</b> แล้วต่อ <b>Line 11</b> ยาวถึงสถานี <b>Disney Resort</b> (~55 นาที) หรือเรียก DiDi (~45 นาที)</div>
+          </div>
+          <div class="transit-card">
+            <div class="transit-head"><span class="line-tag" style="background:#1d4ed8">🚄 CRH &amp; Line 17 (ซูโจว / จูเจียเจี่ยว)</span></div>
+            <div class="transit-body">• <b>Plan B ซูโจว:</b> นั่ง Line 1 (2 ป้าย) ไป <b>Shanghai Station</b> ต่อ CRH 25–35 นาทีถึง Suzhou<br/>• <b>Plan C จูเจียเจี่ยว:</b> Line 2 ไป Hongqiao ต่อ <b>Line 17</b> ลง Zhujiajiao (~70 นาที)</div>
+          </div>
+          <div class="transit-card">
+            <div class="transit-head"><span class="line-tag" style="background:#0ea5e9">⛴️ เรือข้ามฟาก 2 หยวน</span></div>
+            <div class="transit-body">ท่า <b>East Jinling Rd (金陵东路渡口) ↔ Dongchang Rd (东昌路渡口)</b> ชมวิว The Bund–Lujiazui กลางแม่น้ำหวงผู่ สแกน Alipay ขึ้นเรือได้เลย</div>
+          </div>
+        `;
+        return;
+      }
+
+      const list = filteredPlaces();
+      box.innerHTML = list.map(p => {
+        const z = ZONES[p.zone];
+        return `
+          <div class="place-card" onclick="focusPlace('${p.id}')">
+            <div class="place-title">
+              <span>${p.name}</span>
+              <span class="zone-pill" style="background:${z.color}">${z.name.split(':')[0]}</span>
+            </div>
+            <div class="place-cn">${p.cn}</div>
+            <div class="place-metro">🚇 ${p.metro}</div>
+          </div>
+        `;
+      }).join('') || '<p style="color:#64748b;font-size:13px;text-align:center;padding:24px;">ไม่พบสถานที่ที่ค้นหา</p>';
+    }
+
+    function focusPlace(id) {
+      const p = PLACES.find(x => x.id === id);
+      if (!p) return;
+      map.setView([p.lat, p.lng], p.zone === 'daytrip' ? 11 : 15, { animate: true });
+      if (p._marker) p._marker.openPopup();
+      if (window.innerWidth <= 768) document.getElementById('sidebar').classList.add('collapsed');
+    }
+
+    function setFilter(val) {
+      activeFilter = val;
+      renderChips();
+      renderList();
+      if (val === 'daytrip' || val === 'B' || val === 'C') map.setView([31.22, 121.15], 9);
+      else if (val === 'all') map.setView([31.230, 121.475], 12);
+    }
+
+    function switchTab(tab, btn) {
+      activeTab = tab;
+      activeFilter = 'all';
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderChips();
+      renderList();
+    }
+
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('collapsed');
+    }
+
+    drawTransit();
+    renderChips();
+    renderList();
+  </script>
+</body>
+</html>

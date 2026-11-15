@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shanghai CityWalk Map — 4 เส้นทางเดินเที่ยวเซี่ยงไฮ้</title>
+
+  <!-- Leaflet CSS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    :root {
+      --bg-app: #f8fafc;
+      --bg-sidebar: #ffffff;
+      --bg-card: #ffffff;
+      --bg-card-hover: #f8fafc;
+      --border: #e2e8f0;
+      --border-strong: #cbd5e1;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #64748b;
+
+      --route-1: #ef4444;
+      --route-1-soft: #fef2f2;
+      --route-2: #3b82f6;
+      --route-2-soft: #eff6ff;
+      --route-3: #10b981;
+      --route-3-soft: #ecfdf5;
+      --route-4: #f97316;
+      --route-4-soft: #fff7ed;
+      --hotel-color: #7c3aed;
+
+      --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+      --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+      --shadow-lg: 0 10px 25px rgba(15, 23, 42, 0.14);
+      --radius-md: 12px;
+      --radius-sm: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+      font-family: "Noto Sans Thai", "Inter", "Noto Sans SC", -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text-primary);
+      background: var(--bg-app);
+      overflow: hidden;
+    }
+
+    .app-layout {
+      display: flex;
+      height: 100vh;
+      width: 100vw;
+      position: relative;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 410px;
+      max-width: 100vw;
+      height: 100%;
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      z-index: 1000;
+      box-shadow: 4px 0 20px rgba(15, 23, 42, 0.06);
+      transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .sidebar-header {
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    }
+
+    .header-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .trip-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #1e40af;
+      background: #dbeafe;
+      padding: 3px 9px;
+      border-radius: 999px;
+      margin-bottom: 8px;
+    }
+
+    .sidebar-title {
+      font-size: 19px;
+      font-weight: 700;
+      line-height: 1.25;
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
+    }
+
+    .sidebar-subtitle {
+      margin-top: 4px;
+      font-size: 12.5px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .sidebar-subtitle a {
+      color: #2563eb;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .sidebar-subtitle a:hover {
+      text-decoration: underline;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 6px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn-ghost {
+      appearance: none;
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text-secondary);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 6px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s ease;
+    }
+
+    .btn-ghost:hover {
+      background: #f1f5f9;
+      border-color: var(--border-strong);
+      color: var(--text-primary);
+    }
+
+    .btn-ghost.active {
+      background: #f5f3ff;
+      border-color: #c4b5fd;
+      color: #6d28d9;
+    }
+
+    /* Route Filter Controls */
+    .filter-section {
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border);
+      background: #ffffff;
+    }
+
+    .filter-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .filter-label {
+      font-size: 11.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+    }
+
+    .filter-quick-links {
+      display: flex;
+      gap: 8px;
+    }
+
+    .link-btn {
+      background: none;
+      border: none;
+      font-family: inherit;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #2563eb;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .link-btn:hover {
+      text-decoration: underline;
+    }
+
+    .route-filters {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+    }
+
+    .route-filter-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      padding: 7px 10px;
+      border-radius: 10px;
+      border: 1.5px solid var(--border);
+      background: #fff;
+      cursor: pointer;
+      font-family: inherit;
+      text-align: left;
+      transition: all 0.16s ease;
+      opacity: 0.52;
+    }
+
+    .route-filter-btn.is-on {
+      opacity: 1;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .route-filter-btn[data-route="1"].is-on {
+      border-color: var(--route-1);
+      background: var(--route-1-soft);
+    }
+    .route-filter-btn[data-route="2"].is-on {
+      border-color: var(--route-2);
+      background: var(--route-2-soft);
+    }
+    .route-filter-btn[data-route="3"].is-on {
+      border-color: var(--route-3);
+      background: var(--route-3-soft);
+    }
+    .route-filter-btn[data-route="4"].is-on {
+      border-color: var(--route-4);
+      background: var(--route-4-soft);
+    }
+
+    .rf-left {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .rf-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      flex-shrink: 0;
+    }
+
+    .rf-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .rf-count {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.85);
+      padding: 1px 6px;
+      border-radius: 999px;
+      flex-shrink: 0;
+    }
+
+    /* Search */
+    .search-wrap {
+      padding: 10px 20px;
+      border-bottom: 1px solid var(--border);
+      background: #f8fafc;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      font-family: inherit;
+      font-size: 13px;
+      color: var(--text-primary);
+      background: #ffffff;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .search-input:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+    }
+
+    /* Card List */
+    .cards-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px 16px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .route-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .route-group-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 4px 2px;
+    }
+
+    .route-group-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .route-badge-bar {
+      width: 4px;
+      height: 16px;
+      border-radius: 99px;
+    }
+
+    .focus-route-btn {
+      border: none;
+      background: #f1f5f9;
+      color: var(--text-secondary);
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .focus-route-btn:hover {
+      background: #e2e8f0;
+      color: var(--text-primary);
+    }
+
+    .stop-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px 13px;
+      cursor: pointer;
+      transition: all 0.16s ease;
+      position: relative;
+      display: flex;
+      gap: 11px;
+      align-items: flex-start;
+    }
+
+    .stop-card:hover {
+      border-color: var(--border-strong);
+      background: var(--bg-card-hover);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .stop-card.is-active {
+      border-color: #0f172a;
+      box-shadow: var(--shadow-md);
+      background: #ffffff;
+    }
+
+    .stop-num {
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.16);
+    }
+
+    .stop-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .stop-name-en {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.3;
+    }
+
+    .stop-zh-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 4px;
+      flex-wrap: wrap;
+    }
+
+    .stop-name-zh {
+      font-family: "Noto Sans SC", sans-serif;
+      font-size: 12.5px;
+      font-weight: 500;
+      color: #334155;
+      background: #f1f5f9;
+      padding: 2px 7px;
+      border-radius: 6px;
+    }
+
+    .copy-btn {
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text-secondary);
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 2px 7px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+    }
+
+    .copy-btn:hover {
+      background: #f8fafc;
+      border-color: #94a3b8;
+      color: var(--text-primary);
+    }
+
+    .copy-btn.copied {
+      background: #dcfce7;
+      border-color: #86efac;
+      color: #166534;
+    }
+
+    .stop-desc {
+      margin-top: 6px;
+      font-size: 12.5px;
+      line-height: 1.48;
+      color: var(--text-secondary);
+    }
+
+    .stop-metro {
+      margin-top: 7px;
+      font-size: 11.5px;
+      font-weight: 500;
+      color: #0369a1;
+      background: #f0f9ff;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 36px 16px;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    /* Map Container */
+    .map-wrap {
+      flex: 1;
+      height: 100%;
+      position: relative;
+    }
+
+    #map {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Mobile Toggle Button */
+    .mobile-sidebar-toggle {
+      display: none;
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      z-index: 1100;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 9px 14px;
+      border-radius: 10px;
+      box-shadow: var(--shadow-md);
+      cursor: pointer;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .sidebar-close-mobile {
+      display: none;
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text-secondary);
+      border-radius: 8px;
+      padding: 5px 9px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* Floating Legend / Tip on Map */
+    .map-floating-tip {
+      position: absolute;
+      bottom: 20px;
+      right: 14px;
+      z-index: 900;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 11.5px;
+      color: var(--text-secondary);
+      box-shadow: var(--shadow-md);
+      max-width: 280px;
+    }
+
+    /* Custom Marker Styles */
+    .citywalk-marker {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      color: #ffffff;
+      font-family: "Inter", sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      border: 2.5px solid #ffffff;
+      box-shadow: 0 3px 10px rgba(15, 23, 42, 0.32);
+      transition: transform 0.15s ease;
+    }
+
+    .citywalk-marker:hover,
+    .citywalk-marker.is-highlighted {
+      transform: scale(1.18);
+    }
+
+    .hotel-marker {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: var(--hotel-color);
+      color: #ffffff;
+      font-size: 16px;
+      border: 2.5px solid #ffffff;
+      box-shadow: 0 4px 12px rgba(109, 40, 217, 0.35);
+    }
+
+    /* Leaflet Popup Customization */
+    .leaflet-popup-content-wrapper {
+      border-radius: 12px;
+      box-shadow: var(--shadow-lg);
+      padding: 2px;
+    }
+
+    .leaflet-popup-content {
+      margin: 12px 14px;
+      font-family: "Noto Sans Thai", "Inter", "Noto Sans SC", sans-serif;
+      min-width: 225px;
+      max-width: 290px;
+    }
+
+    .popup-badge {
+      display: inline-block;
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #fff;
+      padding: 2px 8px;
+      border-radius: 999px;
+      margin-bottom: 6px;
+    }
+
+    .popup-title {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.3;
+    }
+
+    .popup-zh {
+      margin-top: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      background: #f1f5f9;
+      padding: 4px 8px;
+      border-radius: 7px;
+      font-family: "Noto Sans SC", sans-serif;
+      font-size: 12.5px;
+      color: #1e293b;
+    }
+
+    .popup-desc {
+      margin-top: 7px;
+      font-size: 12.5px;
+      line-height: 1.45;
+      color: var(--text-secondary);
+    }
+
+    .popup-metro {
+      margin-top: 8px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #0369a1;
+      background: #f0f9ff;
+      padding: 4px 8px;
+      border-radius: 6px;
+      display: inline-block;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #0f172a;
+      color: #ffffff;
+      font-size: 12.5px;
+      font-weight: 500;
+      padding: 8px 14px;
+      border-radius: 999px;
+      box-shadow: var(--shadow-lg);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.22s ease;
+      z-index: 2000;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 820px) {
+      .sidebar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 88vw;
+        max-width: 390px;
+      }
+
+      .sidebar.is-closed {
+        transform: translateX(-105%);
+      }
+
+      .mobile-sidebar-toggle {
+        display: inline-flex;
+      }
+
+      .sidebar-close-mobile {
+        display: inline-block;
+      }
+
+      .map-floating-tip {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="header-top">
+          <div>
+            <div class="trip-pill">🇨🇳 เซี่ยงไฮ้ 6–11 ธ.ค. 2569</div>
+            <h1 class="sidebar-title">Shanghai CityWalk Map</h1>
+            <div class="sidebar-subtitle">
+              <span>4 เส้นทางเดินเที่ยวจาก</span>
+              <a href="https://vt.tiktok.com/ZSbwbTpUS/" target="_blank" rel="noopener noreferrer">TikTok @shanghai_guide ↗</a>
+            </div>
+          </div>
+          <button class="sidebar-close-mobile" id="closeSidebarBtn" type="button">✕ แผนที่</button>
+        </div>
+
+        <div class="header-actions">
+          <button class="btn-ghost" id="fitAllBtn" type="button">🗺️ ดูครบทั้ง 4 เส้นทาง</button>
+          <button class="btn-ghost active" id="toggleHotelBtn" type="button">🏨 โรงแรมที่พัก</button>
+        </div>
+      </div>
+
+      <div class="filter-section">
+        <div class="filter-header">
+          <span class="filter-label">เลือกเส้นทาง (Filter)</span>
+          <div class="filter-quick-links">
+            <button class="link-btn" id="selectAllRoutesBtn" type="button">เปิดทั้งหมด</button>
+            <button class="link-btn" id="clearRoutesBtn" type="button">ซ่อนทั้งหมด</button>
+          </div>
+        </div>
+        <div class="route-filters" id="routeFilters"></div>
+      </div>
+
+      <div class="search-wrap">
+        <input
+          type="text"
+          id="searchInput"
+          class="search-input"
+          placeholder="🔍 ค้นหาชื่อสถานที่ ภาษาจีน หรือสถานี Metro..."
+        />
+      </div>
+
+      <div class="cards-container" id="cardsContainer"></div>
+    </aside>
+
+    <!-- Map -->
+    <main class="map-wrap">
+      <button class="mobile-sidebar-toggle" id="openSidebarBtn" type="button">☰ รายการเส้นทาง</button>
+      <div id="map"></div>
+      <div class="map-floating-tip">
+        💡 คลิกการ์ดด้านซ้ายเพื่อ <b>FlyTo</b> ไปยังหมุด หรือกด <b>คัดลอกชื่อจีน</b> เพื่อนำไปค้นหาในแอป <b>Amap (高德地图)</b>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast" id="toast">คัดลอกชื่อภาษาจีนแล้ว</div>
+
+  <!-- Leaflet JS -->
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+
+  <script>
+    const HOTEL = {
+      nameEn: "Pujing Weiting Hotel (ผู่จิงเว่ยถิง โฮเทล)",
+      nameZh: "上海浦泾玮庭酒店 (上海市黄浦区新闸路219号)",
+      copyZh: "上海市黄浦区新闸路219号",
+      desc: "ที่พักหลัก 5 คืน (6–11 ธ.ค. 2569) • Booking #1622932103864290 (PIN: 3931) • แจ้ง Late Check-in ล่วงหน้า (+86-21-63357858)",
+      metro: "Metro สาย 1 สถานี Xinzha Road (新闸路站)",
+      lat: 31.24056,
+      lng: 121.46306
+    };
+
+    const ROUTES = [
+      {
+        id: 1,
+        shortTitle: "ถนนยู่หยวน",
+        title: "เส้นทาง 1: ถนนยู่หยวน (Yuyuan Road)",
+        color: "#ef4444",
+        softBg: "#fef2f2",
+        stops: [
+          {
+            order: 1,
+            nameEn: "Paramount Ballroom",
+            nameZh: "百乐门",
+            copyZh: "百乐门 愚园路218号",
+            desc: "แลนด์มาร์กเต้นรำสุดคลาสสิกยุค 1930s สไตล์ Art Deco จุดเริ่มต้นเส้นทางเดินชมถนนยู่หยวน",
+            metro: "Metro สาย 2 / 7 / 14 สถานี Jing'an Temple (静安寺站)",
+            lat: 31.22575,
+            lng: 121.43986
+          },
+          {
+            order: 2,
+            nameEn: "Yuyuan Road Lane 144",
+            nameZh: "愚园路144弄",
+            copyZh: "愚园路144弄",
+            desc: "ตรอกบ้านอิฐเก่าแก่สไตล์เซี่ยงไฮ้ดั้งเดิม บรรยากาศเงียบสงบเหมาะกับถ่ายรูปสตรีตวินเทจ",
+            metro: "Metro สาย 2 / 7 / 14 สถานี Jing'an Temple (静安寺站)",
+            lat: 31.22520,
+            lng: 121.44140
+          },
+          {
+            order: 3,
+            nameEn: "Yuyuan Rd Cafe Zone (Brut Eatery, Five Ports Coffee, Good Bakery, SPADE 钻)",
+            nameZh: "愚园路咖啡甜品街区 (Brut Eatery悦璞食堂 / 咖啡烘焙)",
+            copyZh: "愚园路698号 悦璞食堂",
+            desc: "โซนคาเฟ่และเบเกอรี่ยอดฮิตเรียงรายตลอดถนนยู่หยวน ทั้ง Brut Eatery, Five Ports Coffee, Good Bakery และ SPADE 钻",
+            metro: "Metro สาย 2 / 11 สถานี Jiangsu Road (江苏路站) หรือ Jing'an Temple",
+            lat: 31.22210,
+            lng: 121.43280
+          },
+          {
+            order: 4,
+            nameEn: "Yuyuan Public Market (Lane 1088)",
+            nameZh: "愚园公共市集 (愚园路1088弄)",
+            copyZh: "愚园公共市集 愚园路1088弄",
+            desc: "ตลาดชุมชนสไตล์มินิมอลใจกลางตรอก 1088 รวมร้านอาหารท้องถิ่น ร้านกาแฟ และแกลเลอรีงานคราฟต์",
+            metro: "Metro สาย 2 / 11 สถานี Jiangsu Road (江苏路站)",
+            lat: 31.22031,
+            lng: 121.42843
+          }
+        ]
+      },
+      {
+        id: 2,
+        shortTitle: "คลองซูโจวเหนือ",
+        title: "เส้นทาง 2: คลองซูโจวเหนือ & ไว่ตานหยวน",
+        color: "#3b82f6",
+        softBg: "#eff6ff",
+        stops: [
+          {
+            order: 1,
+            nameEn: "Riverside Apartments (Embankment Building)",
+            nameZh: "河滨大楼",
+            copyZh: "河滨大楼 北苏州路400号",
+            desc: "อาคารอพาร์ตเมนต์ประวัติศาสตร์ทรงโค้งรูปตัว S ริมคลองซูโจว มุมถ่ายรูปสถาปัตยกรรมยุค 1930s",
+            metro: "Metro สาย 10 / 12 สถานี Tiantong Road (天潼路站)",
+            lat: 31.24645,
+            lng: 121.47820
+          },
+          {
+            order: 2,
+            nameEn: "Shanghai Postal Museum",
+            nameZh: "上海邮政博物馆",
+            copyZh: "上海邮政博物馆 北苏州路250号",
+            desc: "อาคารไปรษณีย์กลางสไตล์นีโอคลาสสิกหอนาฬิกา จุดเช็กอินมุมสูงยอดนิยมริมแม่น้ำซูโจว",
+            metro: "Metro สาย 10 / 12 สถานี Tiantong Road (天潼路站)",
+            lat: 31.24639,
+            lng: 121.48040
+          },
+          {
+            order: 3,
+            nameEn: "Zhapu Road Bridge",
+            nameZh: "乍浦路桥",
+            copyZh: "乍浦路桥",
+            desc: "สะพานจุดชมวิวที่ดีที่สุดแห่งหนึ่งสำหรับถ่ายภาพหอไข่มุกและอาคารไปรษณีย์คู่กับเงาสะท้อนน้ำ",
+            metro: "Metro สาย 10 / 12 สถานี Tiantong Road (天潼路站)",
+            lat: 31.24615,
+            lng: 121.48329
+          },
+          {
+            order: 4,
+            nameEn: "Waibaidu Bridge (Garden Bridge)",
+            nameZh: "外白渡桥",
+            copyZh: "外白渡桥",
+            desc: "สะพานโครงเหล็กประวัติศาสตร์สัญลักษณ์ปากคลองซูโจว จุดเชื่อมต่อสู่โซนเดอะบันด์",
+            metro: "Metro สาย 2 / 10 สถานี East Nanjing Road (南京东路站) / สาย 12 International Cruise Terminal",
+            lat: 31.24470,
+            lng: 121.48660
+          },
+          {
+            order: 5,
+            nameEn: "Waitanyuan / Rockbund",
+            nameZh: "洛克·外滩源",
+            copyZh: "洛克·外滩源",
+            desc: "ย่านต้นกำเนิดเดอะบันด์ รวมตึกเก่าสไตล์ยุโรป คาเฟ่ และพิพิธภัณฑ์ศิลปะ Rockbund",
+            metro: "Metro สาย 2 / 10 สถานี East Nanjing Road (南京东路站)",
+            lat: 31.24300,
+            lng: 121.48431
+          },
+          {
+            order: 6,
+            nameEn: "Huangpu Park",
+            nameZh: "黄浦公园",
+            copyZh: "黄浦公园",
+            desc: "สวนสาธารณะเก่าแก่ที่สุดของเซี่ยงไฮ้หัวมุมเดอะบันด์ ชมวิวตึกระฟ้าผู่ตงเต็มตา",
+            metro: "Metro สาย 2 / 10 สถานี East Nanjing Road (南京东路站)",
+            lat: 31.24389,
+            lng: 121.48611
+          },
+          {
+            order: 7,
+            nameEn: "Peace Hotel (Fairmont Peace Hotel)",
+            nameZh: "和平饭店",
+            copyZh: "和平饭店 南京东路20号",
+            desc: "โรงแรมระดับตำนานหลังคาพีระมิดสีเขียวหัวมุมถนนหนานจิงและเดอะบันด์",
+            metro: "Metro สาย 2 / 10 สถานี East Nanjing Road (南京东路站)",
+            lat: 31.24108,
+            lng: 121.48458
+          }
+        ]
+      },
+      {
+        id: 3,
+        shortTitle: "ถนนฝูโจว",
+        title: "เส้นทาง 3: ถนนฝูโจว (Fuzhou Road)",
+        color: "#10b981",
+        softBg: "#ecfdf5",
+        stops: [
+          {
+            order: 1,
+            nameEn: "The Great World",
+            nameZh: "大世界",
+            copyZh: "大世界 西藏南路1号",
+            desc: "อาณาจักรความบันเทิงเก่าแก่ตั้งแต่ปี 1917 โดดเด่นด้วยหอคอยรูปทรงคลาสสิกใจกลางแยกหยานอัน",
+            metro: "Metro สาย 8 / 14 สถานี Dashijie (大世界站)",
+            lat: 31.23030,
+            lng: 121.47370
+          },
+          {
+            order: 2,
+            nameEn: "Shanghai People's Grand Theatre",
+            nameZh: "上海人民大舞台",
+            copyZh: "上海人民大舞台 九江路663号",
+            desc: "โรงละครเก่าแก่สไตล์ย้อนยุคใกล้ย่าน People's Square และจุดตัดถนนวัฒนธรรมฝูโจว",
+            metro: "Metro สาย 1 / 2 / 8 สถานี People's Square (人民广场站)",
+            lat: 31.23610,
+            lng: 121.47480
+          },
+          {
+            order: 3,
+            nameEn: "Xinghua Lou",
+            nameZh: "杏花楼",
+            copyZh: "杏花楼 福州路343号",
+            desc: "ภัตตาคารกวางตุ้งและร้านขนมเก่าแก่ระดับตำนานอายุกว่า 170 ปี บนถนนฝูโจว",
+            metro: "Metro สาย 2 / 10 สถานี East Nanjing Road (南京东路站)",
+            lat: 31.23630,
+            lng: 121.47960
+          },
+          {
+            order: 4,
+            nameEn: "Shanghai Book City",
+            nameZh: "上海书城",
+            copyZh: "上海书城 福州路465号",
+            desc: "ศูนย์หนังสือขนาดใหญ่ใจกลางถนนวัฒนธรรมฝูโจว โดดเด่นด้วยโถงหนังสือสูงโปร่งดีไซน์ใหม่",
+            metro: "Metro สาย 1 / 2 / 8 สถานี People's Square หรือ East Nanjing Road",
+            lat: 31.23560,
+            lng: 121.47780
+          },
+          {
+            order: 5,
+            nameEn: "Holy Trinity Church",
+            nameZh: "圣三一堂",
+            copyZh: "圣三一堂 九江路219号",
+            desc: "โบสถ์คริสต์อิฐแดงสไตล์โกธิคที่เก่าแก่ที่สุดในเซี่ยงไฮ้ สร้างตั้งแต่ศตวรรษที่ 19",
+            metro: "Metro สาย 2 / 10 สถานี East Nanjing Road (南京东路站)",
+            lat: 31.23847,
+            lng: 121.48194
+          },
+          {
+            order: 6,
+            nameEn: "Hamilton House & Metropole Hotel",
+            nameZh: "福州大楼 & 新城饭店",
+            copyZh: "福州大楼 新城饭店 江西中路180号",
+            desc: "คู่ตึก Art Deco สุดไอคอนิกหัวมุมถนนฝูโจวตัดเจียงซี มุมถ่ายรูปแนวสตรีตสถาปัตยกรรม",
+            metro: "Metro สาย 2 / 10 สถานี East Nanjing Road (南京东路站)",
+            lat: 31.23740,
+            lng: 121.48240
+          }
+        ]
+      },
+      {
+        id: 4,
+        shortTitle: "ถนนจ้าผู้ X คุนซาน",
+        title: "เส้นทาง 4: ถนนจ้าผู้ X คุนซาน (Zhapu × Kunshan)",
+        color: "#f97316",
+        softBg: "#fff7ed",
+        stops: [
+          {
+            order: 1,
+            nameEn: "Kunshan Park",
+            nameZh: "昆山公园",
+            copyZh: "昆山公园 昆山花园路13号",
+            desc: "สวนสาธารณะขนาดกะทัดรัดสไตล์วิกตอเรียนย่านหงโข่ว รายล้อมด้วยตึกอิฐแดงเก่าแก่",
+            metro: "Metro สาย 10 สถานี Sichuan North Road (四川北路站)",
+            lat: 31.25085,
+            lng: 121.48215
+          },
+          {
+            order: 2,
+            nameEn: "Jinglin Church",
+            nameZh: "景林堂",
+            copyZh: "景林堂 昆山路135号",
+            desc: "โบสถ์เมโทดิสต์เก่าแก่สถาปัตยกรรมอิฐแดงคลาสสิกบนถนนคุนซาน",
+            metro: "Metro สาย 10 สถานี Sichuan North Road (四川北路站)",
+            lat: 31.25090,
+            lng: 121.48380
+          },
+          {
+            order: 3,
+            nameEn: "Green Lemon Diner & Macaroni Cafe",
+            nameZh: "绿柠食堂 & 玛格萝妮比萨屋",
+            copyZh: "绿柠食堂 昆山路231号",
+            desc: "โซนร้านอาหารและคาเฟ่บรรยากาศโฮมมี่บนถนนคุนซาน ใกล้จุดถ่ายรูปไวรัล玛格萝妮 (122 Kunshan Rd)",
+            metro: "Metro สาย 10 สถานี Sichuan North Road (四川北路站)",
+            lat: 31.25050,
+            lng: 121.48190
+          },
+          {
+            order: 4,
+            nameEn: "Xihua Apartments (Zhapu–Kunshan Area)",
+            nameZh: "西华公寓 (乍浦路历史公寓区)",
+            copyZh: "乍浦路199号 浦西公寓",
+            desc: "อาคารอพาร์ตเมนต์เก่าแก่สถาปัตยกรรมยุคสาธารณรัฐบริเวณแยกถนนจ้าผู้–คุนซาน (ใกล้กลุ่มตึก 浦西公寓)",
+            metro: "Metro สาย 10 / 12 สถานี Tiantong Road (天潼路站) หรือ Sichuan North Road",
+            lat: 31.24960,
+            lng: 121.48280
+          },
+          {
+            order: 5,
+            nameEn: "1933 Old Millfun",
+            nameZh: "1933 老场坊",
+            copyZh: "1933老场坊 溧阳路611号",
+            desc: "อดีตโรงฆ่าสัตว์ปี 1933 ที่รีโนเวตเป็นคอมเพล็กซ์ศิลปะและคาเฟ่โครงสร้างสะพานคอนกรีตเขาวงกตสุดเท่",
+            metro: "Metro สาย 4 / 10 สถานี Hailun Road (海伦路站)",
+            lat: 31.25663,
+            lng: 121.48785
+          }
+        ]
+      }
+    ];
+
+    // Initialize Map
+    const map = L.map("map", {
+      zoomControl: false
+    }).setView([31.238, 121.468], 13);
+
+    L.control.zoom({ position: "topright" }).addTo(map);
+
+    const osmLayer = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    });
+
+    const cartoLightLayer = L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap &copy; CARTO'
+    });
+
+    osmLayer.addTo(map);
+    L.control.layers(
+      { "OpenStreetMap": osmLayer, "Carto Positron (Minimal)": cartoLightLayer },
+      null,
+      { position: "topright" }
+    ).addTo(map);
+
+    // State
+    const activeRoutes = new Set([1, 2, 3, 4]);
+    let showHotel = true;
+    let activeStopKey = null;
+
+    const routeLayerGroups = {};
+    const markerIndex = {}; // key: `${routeId}-${order}` -> { marker, cardEl, route, stop }
+
+    // Hotel Layer
+    const hotelGroup = L.layerGroup().addTo(map);
+    const hotelIcon = L.divIcon({
+      className: "",
+      html: `<div class="hotel-marker" title="${HOTEL.nameEn}">🏨</div>`,
+      iconSize: [34, 34],
+      iconAnchor: [17, 17],
+      popupAnchor: [0, -16]
+    });
+
+    const hotelMarker = L.marker([HOTEL.lat, HOTEL.lng], { icon: hotelIcon, zIndexOffset: 500 })
+      .bindPopup(buildHotelPopupHTML())
+      .addTo(hotelGroup);
+
+    function buildHotelPopupHTML() {
+      return `
+        <div>
+          <span class="popup-badge" style="background:${getComputedStyle(document.documentElement).getPropertyValue('--hotel-color')}">🏨 ที่พักหลัก (5 คืน)</span>
+          <div class="popup-title">${HOTEL.nameEn}</div>
+          <div class="popup-zh">
+            <span>${HOTEL.copyZh}</span>
+            <button class="copy-btn" onclick="copyText('${escapeJs(HOTEL.copyZh)}', this)">📋 คัดลอก</button>
+          </div>
+          <div class="popup-desc">${HOTEL.desc}</div>
+          <div class="popup-metro">🚇 ${HOTEL.metro}</div>
+        </div>
+      `;
+    }
+
+    // Build Route Layers
+    ROUTES.forEach((route) => {
+      const group = L.layerGroup().addTo(map);
+      routeLayerGroups[route.id] = group;
+
+      const latlngs = route.stops.map((s) => [s.lat, s.lng]);
+
+      // Dashed Polyline connecting stops in order
+      L.polyline(latlngs, {
+        color: route.color,
+        weight: 4,
+        opacity: 0.85,
+        dashArray: "8, 8",
+        lineCap: "round",
+        lineJoin: "round"
+      }).addTo(group);
+
+      // Numbered Markers
+      route.stops.forEach((stop) => {
+        const key = `${route.id}-${stop.order}`;
+        const icon = L.divIcon({
+          className: "",
+          html: `<div class="citywalk-marker" data-marker-key="${key}" style="background:${route.color}">${stop.order}</div>`,
+          iconSize: [30, 30],
+          iconAnchor: [15, 15],
+          popupAnchor: [0, -14]
+        });
+
+        const marker = L.marker([stop.lat, stop.lng], { icon })
+          .bindPopup(buildStopPopupHTML(route, stop))
+          .addTo(group);
+
+        marker.on("click", () => {
+          setActiveStop(key, false);
+        });
+
+        markerIndex[key] = { marker, route, stop, cardEl: null };
+      });
+    });
+
+    function buildStopPopupHTML(route, stop) {
+      return `
+        <div>
+          <span class="popup-badge" style="background:${route.color}">เส้นทาง ${route.id} • จุดที่ ${stop.order}</span>
+          <div class="popup-title">${stop.nameEn}</div>
+          <div class="popup-zh">
+            <span>${stop.nameZh}</span>
+            <button class="copy-btn" onclick="copyText('${escapeJs(stop.copyZh)}', this)">📋 คัดลอก</button>
+          </div>
+          <div class="popup-desc">${stop.desc}</div>
+          <div class="popup-metro">🚇 ${stop.metro}</div>
+        </div>
+      `;
+    }
+
+    function escapeJs(str) {
+      return str.replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+    }
+
+    // Toast & Copy
+    const toastEl = document.getElementById("toast");
+    let toastTimer = null;
+
+    window.copyText = function (text, btnEl) {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast(`คัดลอกแล้ว: ${text}`);
+        if (btnEl) {
+          const orig = btnEl.innerHTML;
+          btnEl.classList.add("copied");
+          btnEl.innerHTML = "✓ คัดลอกแล้ว";
+          setTimeout(() => {
+            btnEl.classList.remove("copied");
+            btnEl.innerHTML = orig;
+          }, 1500);
+        }
+      }).catch(() => {
+        showToast("ไม่สามารถคัดลอกอัตโนมัติได้ กรุณากด Ctrl+C");
+      });
+    };
+
+    function showToast(msg) {
+      toastEl.textContent = msg;
+      toastEl.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toastEl.classList.remove("show"), 2000);
+    }
+
+    // Render Filter Buttons
+    const routeFiltersEl = document.getElementById("routeFilters");
+    function renderFilters() {
+      routeFiltersEl.innerHTML = "";
+      ROUTES.forEach((route) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = `route-filter-btn ${activeRoutes.has(route.id) ? "is-on" : ""}`;
+        btn.dataset.route = route.id;
+        btn.innerHTML = `
+          <span class="rf-left">
+            <span class="rf-dot" style="background:${route.color}"></span>
+            <span class="rf-name">เส้นทาง ${route.id}: ${route.shortTitle}</span>
+          </span>
+          <span class="rf-count">${route.stops.length}</span>
+        `;
+        btn.addEventListener("click", () => toggleRoute(route.id));
+        routeFiltersEl.appendChild(btn);
+      });
+    }
+
+    function toggleRoute(routeId) {
+      if (activeRoutes.has(routeId)) {
+        activeRoutes.delete(routeId);
+        map.removeLayer(routeLayerGroups[routeId]);
+      } else {
+        activeRoutes.add(routeId);
+        map.addLayer(routeLayerGroups[routeId]);
+      }
+      renderFilters();
+      renderCards();
+    }
+
+    // Render Sidebar Cards
+    const cardsContainerEl = document.getElementById("cardsContainer");
+    const searchInputEl = document.getElementById("searchInput");
+
+    function renderCards() {
+      const q = searchInputEl.value.trim().toLowerCase();
+      cardsContainerEl.innerHTML = "";
+      let visibleCount = 0;
+
+      ROUTES.forEach((route) => {
+        if (!activeRoutes.has(route.id)) return;
+
+        const filteredStops = route.stops.filter((s) => {
+          if (!q) return true;
+          return (
+            s.nameEn.toLowerCase().includes(q) ||
+            s.nameZh.toLowerCase().includes(q) ||
+            s.desc.toLowerCase().includes(q) ||
+            s.metro.toLowerCase().includes(q)
+          );
+        });
+
+        if (filteredStops.length === 0) return;
+        visibleCount += filteredStops.length;
+
+        const groupEl = document.createElement("section");
+        groupEl.className = "route-group";
+
+        const groupHeader = document.createElement("div");
+        groupHeader.className = "route-group-header";
+        groupHeader.innerHTML = `
+          <div class="route-group-title">
+            <span class="route-badge-bar" style="background:${route.color}"></span>
+            <span>${route.title}</span>
+          </div>
+          <button type="button" class="focus-route-btn">ซูมเส้นทาง</button>
+        `;
+        groupHeader.querySelector(".focus-route-btn").addEventListener("click", () => {
+          fitRoute(route.id);
+        });
+        groupEl.appendChild(groupHeader);
+
+        filteredStops.forEach((stop) => {
+          const key = `${route.id}-${stop.order}`;
+          const card = document.createElement("article");
+          card.className = `stop-card ${activeStopKey === key ? "is-active" : ""}`;
+          card.innerHTML = `
+            <div class="stop-num" style="background:${route.color}">${stop.order}</div>
+            <div class="stop-body">
+              <div class="stop-name-en">${stop.nameEn}</div>
+              <div class="stop-zh-row">
+                <span class="stop-name-zh">${stop.nameZh}</span>
+                <button type="button" class="copy-btn">📋 คัดลอกชื่อจีน</button>
+              </div>
+              <p class="stop-desc">${stop.desc}</p>
+              <div class="stop-metro">🚇 ${stop.metro}</div>
+            </div>
+          `;
+
+          const copyBtn = card.querySelector(".copy-btn");
+          copyBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            copyText(stop.copyZh, copyBtn);
+          });
+
+          card.addEventListener("click", () => {
+            setActiveStop(key, true);
+            if (window.innerWidth <= 820) {
+              sidebarEl.classList.add("is-closed");
+            }
+          });
+
+          markerIndex[key].cardEl = card;
+          groupEl.appendChild(card);
+        });
+
+        cardsContainerEl.appendChild(groupEl);
+      });
+
+      if (visibleCount === 0) {
+        cardsContainerEl.innerHTML = `
+          <div class="empty-state">
+            ไม่พบสถานที่ที่ตรงกับเงื่อนไข<br/>ลองเปิดเส้นทางด้านบน หรือล้างคำค้นหา
+          </div>
+        `;
+      }
+    }
+
+    function setActiveStop(key, flyToStop) {
+      activeStopKey = key;
+      document.querySelectorAll(".stop-card.is-active").forEach((el) => el.classList.remove("is-active"));
+      document.querySelectorAll(".citywalk-marker.is-highlighted").forEach((el) => el.classList.remove("is-highlighted"));
+
+      const entry = markerIndex[key];
+      if (!entry) return;
+
+      if (entry.cardEl) {
+        entry.cardEl.classList.add("is-active");
+        if (!flyToStop) {
+          entry.cardEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
+      }
+
+      const markerDom = document.querySelector(`[data-marker-key="${key}"]`);
+      if (markerDom) markerDom.classList.add("is-highlighted");
+
+      if (flyToStop) {
+        map.flyTo([entry.stop.lat, entry.stop.lng], 16, { duration: 0.85 });
+        setTimeout(() => {
+          entry.marker.openPopup();
+        }, 350);
+      }
+    }
+
+    function fitRoute(routeId) {
+      const route = ROUTES.find((r) => r.id === routeId);
+      if (!route) return;
+      if (!activeRoutes.has(routeId)) {
+        activeRoutes.add(routeId);
+        map.addLayer(routeLayerGroups[routeId]);
+        renderFilters();
+        renderCards();
+      }
+      const bounds = L.latLngBounds(route.stops.map((s) => [s.lat, s.lng]));
+      map.fitBounds(bounds, { padding: [55, 55] });
+    }
+
+    function fitAllVisible() {
+      const coords = [];
+      ROUTES.forEach((r) => {
+        if (activeRoutes.has(r.id)) {
+          r.stops.forEach((s) => coords.push([s.lat, s.lng]));
+        }
+      });
+      if (showHotel) coords.push([HOTEL.lat, HOTEL.lng]);
+      if (coords.length > 0) {
+        map.fitBounds(L.latLngBounds(coords), { padding: [45, 45] });
+      }
+    }
+
+    // Header & Filter Buttons
+    document.getElementById("fitAllBtn").addEventListener("click", fitAllVisible);
+
+    const toggleHotelBtn = document.getElementById("toggleHotelBtn");
+    toggleHotelBtn.addEventListener("click", () => {
+      showHotel = !showHotel;
+      toggleHotelBtn.classList.toggle("active", showHotel);
+      if (showHotel) {
+        map.addLayer(hotelGroup);
+        map.flyTo([HOTEL.lat, HOTEL.lng], 15, { duration: 0.7 });
+        setTimeout(() => hotelMarker.openPopup(), 300);
+      } else {
+        map.removeLayer(hotelGroup);
+      }
+    });
+
+    document.getElementById("selectAllRoutesBtn").addEventListener("click", () => {
+      ROUTES.forEach((r) => {
+        activeRoutes.add(r.id);
+        map.addLayer(routeLayerGroups[r.id]);
+      });
+      renderFilters();
+      renderCards();
+      fitAllVisible();
+    });
+
+    document.getElementById("clearRoutesBtn").addEventListener("click", () => {
+      ROUTES.forEach((r) => {
+        activeRoutes.delete(r.id);
+        map.removeLayer(routeLayerGroups[r.id]);
+      });
+      renderFilters();
+      renderCards();
+    });
+
+    searchInputEl.addEventListener("input", renderCards);
+
+    // Mobile drawer
+    const sidebarEl = document.getElementById("sidebar");
+    document.getElementById("openSidebarBtn").addEventListener("click", () => {
+      sidebarEl.classList.remove("is-closed");
+    });
+    document.getElementById("closeSidebarBtn").addEventListener("click", () => {
+      sidebarEl.classList.add("is-closed");
+    });
+
+    // Initial render
+    renderFilters();
+    renderCards();
+    fitAllVisible();
+  </script>
+</body>
+</html>
