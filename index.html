@@ -136,7 +136,36 @@
     }
 
     /* Map */
-    #map { flex: 1; height: 100%; z-index: 1; }
+    #map { flex: 1; height: 100%; z-index: 1; position: relative; }
+
+    .leaflet-tooltip.map-label {
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid #cbd5e1;
+      border-radius: 5px;
+      color: #0f172a;
+      font-family: 'Noto Sans Thai', 'Inter', sans-serif;
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 1px 6px;
+      box-shadow: 0 2px 5px rgba(15, 23, 42, 0.16);
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    .leaflet-tooltip.map-label::before { display: none; }
+    .leaflet-tooltip.map-label-hub {
+      background: #7c3aed;
+      color: #ffffff;
+      border-color: #6d28d9;
+      font-size: 11px;
+    }
+
+    .map-label-toggle {
+      position: fixed; top: 12px; right: 12px; z-index: 1100;
+      background: rgba(255, 255, 255, 0.95); color: #0f172a; border: 1px solid #cbd5e1;
+      padding: 7px 12px; border-radius: 999px; font-size: 12px; font-weight: 700;
+      font-family: inherit; cursor: pointer; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.14);
+    }
+    .map-label-toggle.off { background: #f1f5f9; color: #64748b; }
 
     /* Mobile toggle */
     .mobile-toggle {
@@ -197,6 +226,7 @@
     <div id="map"></div>
   </div>
 
+  <button class="map-label-toggle" id="label-toggle-btn" onclick="toggleLabels()">🏷️ ป้ายชื่อ: เปิด</button>
   <button class="mobile-toggle" onclick="toggleSidebar()">☰ เปิด/ปิดรายการ &amp; เส้นทาง</button>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
@@ -287,8 +317,28 @@
     const markerLayer = L.layerGroup().addTo(map);
     const transitLayer = L.layerGroup().addTo(map);
     let showTransit = true;
+    let showLabels = true;
     let activeTab = 'places';
     let activeFilter = 'all';
+
+    function shortLabel(p) {
+      if (p.id === 'hotel') return '🏨 โรงแรม (Xinzha Rd)';
+      if (p.id === 'pvg') return '✈️ สนามบิน PVG';
+      if (p.id === 'sh_station') return '🚄 Shanghai Station';
+      if (p.id === 'hongqiao') return '🚄 Hongqiao';
+      if (p.id === 'disney') return '🎢 Disneyland (8 ธ.ค.)';
+      if (p.id === 'zhujiajiao') return '🛶 จูเจียเจี่ยว';
+      if (p.id === 'suzhou') return '🚄 ซูโจว';
+      return p.name.replace(/\s*\(.*?\)\s*/g, '').trim();
+    }
+
+    function toggleLabels() {
+      showLabels = !showLabels;
+      const btn = document.getElementById('label-toggle-btn');
+      btn.textContent = showLabels ? '🏷️ ป้ายชื่อ: เปิด' : '🏷️ ป้ายชื่อ: ปิด';
+      btn.classList.toggle('off', !showLabels);
+      drawMarkers();
+    }
 
     function drawTransit() {
       transitLayer.clearLayers();
@@ -342,6 +392,14 @@
             <a class="pop-btn pop-gmap" href="${gmapUrl}" target="_blank">📍 Google Maps</a>
           </div>
         `);
+        if (showLabels) {
+          m.bindTooltip(shortLabel(p), {
+            permanent: true,
+            direction: 'top',
+            offset: [0, -8],
+            className: p.zone === 'hub' ? 'map-label map-label-hub' : 'map-label'
+          });
+        }
         m.addTo(markerLayer);
         p._marker = m;
       });
