@@ -1054,9 +1054,8 @@
       const map = L.map('map', { zoomControl: false }).setView([31.2304, 121.4737], 12);
       L.control.zoom({ position: 'bottomleft' }).addTo(map);
 
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
-        subdomains: 'abcd',
+      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors',
         maxZoom: 19
       }).addTo(map);
 
