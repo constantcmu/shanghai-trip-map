@@ -118,16 +118,68 @@ window.TRIP_DATA = {
     },
     {
       id: 'suzhou_garden',
-      name: '🏯 ซูโจว: สวนจัวเจิ้ง & ถนนผิงเจียง',
-      cn: '苏州 · 拙政园 · 平江路',
+      name: '🏯 ซูโจว: สวนจัวเจิ้งหยวน (Humble Administrator\'s Garden)',
+      cn: '苏州 · 拙政园',
       zone: 'z5',
       day: 'd4',
-      timeSlot: '09:00–14:30 น.',
+      timeSlot: '09:00–10:30 น.',
       lat: 31.3242,
       lng: 120.6295,
-      metro: 'รถไฟ CRH ลงสถานี Suzhou แล้วต่อ Metro Line 4/6 หรือ DiDi 10 นาที',
-      note: 'Day Trip เมืองมรดกโลก ชมสวนคลาสสิก Humble Administrator\'s Garden เดินเล่นคลองโบราณถนนผิงเจียง',
-      img: null
+      metro: 'CRH ลง Suzhou Station แล้วต่อ DiDi ~10 นาที หรือ Metro Line 6 สถานี Humble Administrator\'s Garden',
+      note: '1 ใน 4 สวนคลาสสิกมรดกโลกของจีน ค่าเข้า ~70–80 หยวน (แนะนำจองล่วงหน้าผ่าน WeChat/Trip.com)',
+      img: 'place_images/suzhou_humble_garden.jpg'
+    },
+    {
+      id: 'suzhou_pingjiang',
+      name: '🏮 ซูโจว: ถนนผิงเจียง (Pingjiang Road)',
+      cn: '苏州 · 平江路',
+      zone: 'z5',
+      day: 'd4',
+      timeSlot: '10:35–11:45 น.',
+      lat: 31.3145,
+      lng: 120.6345,
+      metro: 'เดินต่อจากสวนจัวเจิ้งหยวน ~10 นาที (หรือ Metro Line 1 สถานี Xiangmen)',
+      note: 'ถนนโบราณเลียบคลองอายุกว่า 800 ปี ถ่ายรูปกำแพงแมว โคมแดง และคาเฟ่ริมคลอง (เดินชมฟรี)',
+      img: 'place_images/suzhou_pingjiang.jpg'
+    },
+    {
+      id: 'suzhou_shantang',
+      name: '🛶 ซูโจว: ถนนซานถัง (Shantang Street)',
+      cn: '苏州 · 七里山塘',
+      zone: 'z5',
+      day: 'd4',
+      timeSlot: '12:00–13:15 น.',
+      lat: 31.3183,
+      lng: 120.6063,
+      metro: 'DiDi ~15 นาทีจาก Pingjiang Rd หรือ Metro Line 2 สถานี Shantang Street',
+      note: 'ย่านคลองเก่า 7 ลี้สุดคลาสสิก แวะทานมื้อเที่ยงและถ่ายรูปสะพานโค้ง/เรือพาย (เดินชมฟรี, ล่องเรือ ~45–50 หยวน)',
+      img: 'place_images/suzhou_shantang.jpg'
+    },
+    {
+      id: 'suzhou_jinji_lake',
+      name: '🌊 ซูโจว: ทะเลสาบจินจี (Jinji Lake)',
+      cn: '苏州 · 金鸡湖',
+      zone: 'z5',
+      day: 'd4',
+      timeSlot: '13:35–14:05 น.',
+      lat: 31.3127,
+      lng: 120.7138,
+      metro: 'DiDi ~25 นาที หรือ Metro Line 1 สถานี Dongfangzhimen / Line 8 โซน SIP',
+      note: 'แลนด์มาร์กโซนเมืองใหม่ Suzhou Industrial Park ชมวิวตึก Gate of the Orient ริมทะเลสาบ (เข้าชมฟรี)',
+      img: 'place_images/suzhou_jinji_lake.jpg'
+    },
+    {
+      id: 'suzhou_eye',
+      name: '🎡 ซูโจว: ชิงช้าสวรรค์ Suzhou Eye',
+      cn: '苏州之眼摩天轮',
+      zone: 'z5',
+      day: 'd4',
+      timeSlot: '14:05–14:55 น.',
+      lat: 31.3168,
+      lng: 120.7204,
+      metro: 'เดินเลียบทะเลสาบจินจีฝั่งตะวันออก ~8 นาที (ใกล้สถานี Culture & Expo Center)',
+      note: 'ชิงช้าสวรรค์ริมทะเลสาบจินจี ถ่ายรูปแคปซูลชมวิวพาโนรามา (ขึ้นชิงช้าสวรรค์มีค่าตั๋ว ~120–150 หยวน / ถ่ายรูปด้านนอกฟรี)',
+      img: 'place_images/suzhou_eye_ferris.jpg'
     },
 
     // --- Day 2: French Concession, Temples & West Nanjing (Mon 7 Dec) ---
@@ -840,7 +892,7 @@ window.TRIP_DATA = {
           placeId: 'suzhou_garden',
           time: '09:00',
           mode: 'crh',
-          transitText: 'รถไฟความเร็วสูง CRH (Shanghai Station → Suzhou 25–35 นาที)',
+          transitText: 'รถไฟ CRH (Shanghai Station → Suzhou 25–35 นาที) + DiDi 10 นาทีเข้าสวนจัวเจิ้งหยวน',
           coords: [
             [31.2494, 121.4557],
             [31.2650, 121.3500],
@@ -852,23 +904,71 @@ window.TRIP_DATA = {
         },
         {
           stepNo: 4,
-          placeId: 'sh_station',
-          time: '15:30',
-          mode: 'crh',
-          transitText: 'รถไฟ CRH ขากลับ (Suzhou → Shanghai Station 25–35 นาที)',
+          placeId: 'suzhou_pingjiang',
+          time: '10:35',
+          mode: 'walk',
+          transitText: 'เดินเลียบคลองจากสวนจัวเจิ้งหยวนเข้าสู่ถนนผิงเจียง (~10 นาที)',
           coords: [
             [31.3242, 120.6295],
-            [31.3300, 120.7200],
-            [31.3200, 120.9200],
+            [31.3195, 120.6322],
+            [31.3145, 120.6345]
+          ]
+        },
+        {
+          stepNo: 5,
+          placeId: 'suzhou_shantang',
+          time: '12:00',
+          mode: 'didi',
+          transitText: 'นั่ง DiDi ~15 นาที (หรือ Metro Line 1→2) ไปย่านคลองเก่าถนนซานถัง & ทานมื้อเที่ยง',
+          coords: [
+            [31.3145, 120.6345],
+            [31.3160, 120.6200],
+            [31.3183, 120.6063]
+          ]
+        },
+        {
+          stepNo: 6,
+          placeId: 'suzhou_jinji_lake',
+          time: '13:35',
+          mode: 'didi',
+          transitText: 'นั่ง DiDi ~25 นาที (หรือ Metro Line 2→1) ไปโซนเมืองใหม่ริมทะเลสาบจินจี',
+          coords: [
+            [31.3183, 120.6063],
+            [31.3150, 120.6550],
+            [31.3127, 120.7138]
+          ]
+        },
+        {
+          stepNo: 7,
+          placeId: 'suzhou_eye',
+          time: '14:05',
+          mode: 'walk',
+          transitText: 'เดินเลียบทะเลสาบจินจีฝั่งตะวันออก (~8 นาที) ชมชิงช้าสวรรค์ Suzhou Eye',
+          coords: [
+            [31.3127, 120.7138],
+            [31.3148, 120.7172],
+            [31.3168, 120.7204]
+          ]
+        },
+        {
+          stepNo: 8,
+          placeId: 'sh_station',
+          time: '15:20',
+          mode: 'crh',
+          transitText: 'รถไฟ CRH ขากลับ (Suzhou / Suzhou SIP → Shanghai Station 25–35 นาที)',
+          coords: [
+            [31.3168, 120.7204],
+            [31.3250, 120.8200],
+            [31.3150, 120.9600],
             [31.2950, 121.1500],
             [31.2650, 121.3500],
             [31.2494, 121.4557]
           ]
         },
         {
-          stepNo: 5,
+          stepNo: 9,
           placeId: 'christmas_rockbund',
-          time: '16:15',
+          time: '16:20',
           mode: 'L10',
           transitText: 'Metro Line 1 → People\'s Square ต่อ Line 2/10 → East Nanjing Rd เดิน 6 นาที',
           coords: [
@@ -878,7 +978,7 @@ window.TRIP_DATA = {
           ]
         },
         {
-          stepNo: 6,
+          stepNo: 10,
           placeId: 'rock_bund',
           time: '17:15',
           mode: 'walk',
@@ -889,7 +989,7 @@ window.TRIP_DATA = {
           ]
         },
         {
-          stepNo: 7,
+          stepNo: 11,
           placeId: 'bund',
           time: '18:00',
           mode: 'walk',
@@ -901,7 +1001,7 @@ window.TRIP_DATA = {
           ]
         },
         {
-          stepNo: 8,
+          stepNo: 12,
           placeId: 'nanjing_e',
           time: '19:00',
           mode: 'walk',
@@ -913,7 +1013,7 @@ window.TRIP_DATA = {
           ]
         },
         {
-          stepNo: 9,
+          stepNo: 13,
           placeId: 'feidachu',
           time: '19:30',
           mode: 'walk',
@@ -925,7 +1025,7 @@ window.TRIP_DATA = {
           ]
         },
         {
-          stepNo: 10,
+          stepNo: 14,
           placeId: 'gangyuji',
           time: '20:30',
           mode: 'walk',
