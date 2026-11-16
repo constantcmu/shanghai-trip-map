@@ -1407,6 +1407,16 @@
         stepMarkerRefs = {};
 
         const placeMap = getPlaceMap();
+        function getStepSegments(step) {
+          if (Array.isArray(step.segments) && step.segments.length) {
+            return step.segments.filter((seg) => Array.isArray(seg.coords) && seg.coords.length >= 2);
+          }
+          if (Array.isArray(step.coords) && step.coords.length >= 2) {
+            return [{ mode: step.mode, coords: step.coords }];
+          }
+          return [];
+        }
+
         const boundsPoints = [];
 
         if (currentView === 'overview' || currentView === 'zones') {
@@ -1414,15 +1424,15 @@
           if (currentView === 'overview') {
             DATA.days.forEach((day) => {
               day.steps.forEach((step) => {
-                if (Array.isArray(step.coords) && step.coords.length >= 2) {
-                  const st = getTransitStyle(step.mode);
-                  L.polyline(step.coords, {
+                getStepSegments(step).forEach((seg) => {
+                  const st = getTransitStyle(seg.mode);
+                  L.polyline(seg.coords, {
                     color: st.color,
                     weight: Math.max(2.5, (st.weight || 3.5) - 1),
                     dashArray: st.dash || null,
                     opacity: 0.55
                   }).addTo(routeLayerGroup);
-                }
+                });
               });
             });
           }
@@ -1483,25 +1493,25 @@
           const day = DATA.days.find((d) => d.id === currentView);
           if (day) {
             day.steps.forEach((step) => {
-              const st = getTransitStyle(step.mode);
-              if (Array.isArray(step.coords) && step.coords.length >= 2) {
+              getStepSegments(step).forEach((seg) => {
+                const st = getTransitStyle(seg.mode);
                 // White casing for clarity
-                L.polyline(step.coords, {
+                L.polyline(seg.coords, {
                   color: '#ffffff',
                   weight: (st.weight || 4) + 3,
-                  opacity: 0.75
+                  opacity: 0.78
                 }).addTo(routeLayerGroup);
 
-                const poly = L.polyline(step.coords, {
+                const poly = L.polyline(seg.coords, {
                   color: st.color,
                   weight: st.weight || 4,
                   dashArray: st.dash || null,
-                  opacity: 0.95
+                  opacity: 0.96
                 }).addTo(routeLayerGroup);
 
                 poly.bindTooltip(`Step ${step.stepNo} (${st.label}): ${step.transitText}`, { sticky: true });
-                step.coords.forEach((c) => boundsPoints.push(c));
-              }
+                seg.coords.forEach((c) => boundsPoints.push(c));
+              });
             });
 
             // Track duplicate place coords within same day so markers don't completely hide each other
