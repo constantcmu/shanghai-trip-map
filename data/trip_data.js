@@ -87,7 +87,7 @@ window.TRIP_DATA = {
       lat: 31.2385,
       lng: 121.4660,
       metro: 'Metro Line 1 สถานี Xinzha Rd (新闸路) เดิน 3 นาที',
-      note: 'โรงแรมฐานตลอดทริป เช็กอิน 6 ธ.ค. ~21:30 น. / เช็กเอาท์ 11 ธ.ค. 05:15 น. (เรียก DiDi ไป PVG)',
+      note: 'โรงแรมฐานตลอดทริป เช็กอิน 6 ธ.ค. ~21:30 น. / เช็กเอาท์ 11 ธ.ค. 04:45 น. (เผื่อเวลา +30 นาที เรียก DiDi ไป PVG)',
       img: null
     },
     {
@@ -100,7 +100,7 @@ window.TRIP_DATA = {
       lat: 31.1443,
       lng: 121.8083,
       metro: 'Maglev (8 นาทีถึง Longyang Rd) + Line 2/1 หรือ DiDi ~50 นาที',
-      note: 'ขาไปถึง 6 ธ.ค. 20:45 น. (แนะนำ DiDi เพราะมีกระเป๋าใหญ่) / ขากลับ 11 ธ.ค. ออก 05:15 น. ใช้ DiDi เท่านั้น',
+      note: 'ขาไปถึง 6 ธ.ค. 20:45 น. (แนะนำ DiDi เพราะมีกระเป๋าใหญ่) / ขากลับ 11 ธ.ค. ออก 04:45 น. ถึงสนามบิน ~05:45 น. (เผื่อล่วงหน้าก่อนบิน 2 ชม. 45 น.)',
       img: null
     },
     {
@@ -109,11 +109,11 @@ window.TRIP_DATA = {
       cn: '上海站',
       zone: 'z5',
       day: 'd4',
-      timeSlot: '08:05 น. & 15:30 น.',
+      timeSlot: 'ถึง 07:20 น. (รถออก 08:00 น.) & กลับถึง ~15:55 น.',
       lat: 31.2494,
       lng: 121.4557,
       metro: 'Metro Line 1 (2 ป้ายจาก Xinzha Rd ~6 นาที)',
-      note: 'จุดขึ้น-ลงรถไฟความเร็วสูง CRH ไป-กลับซูโจว (ใช้เวลาวิ่ง 25–35 นาที)',
+      note: 'จุดขึ้น-ลงรถไฟ CRH ไป-กลับซูโจว (ต้องถึงสถานีก่อนรถออกอย่างน้อย 30 นาที: ขาไปถึง 07:20 น. รถออก 08:00 น. / ขากลับถึงสถานีซูโจว 14:50 น. รถออก 15:20 น.)',
       img: null
     },
     {
@@ -161,7 +161,7 @@ window.TRIP_DATA = {
       cn: '苏州 · 金鸡湖',
       zone: 'z5',
       day: 'd4',
-      timeSlot: '13:40–14:15 น.',
+      timeSlot: '13:30–14:00 น.',
       lat: 31.3127,
       lng: 120.7138,
       metro: 'DiDi ~25 นาที หรือ Metro Line 1 สถานี Dongfangzhimen / Line 8 โซน SIP',
@@ -174,7 +174,7 @@ window.TRIP_DATA = {
       cn: '苏州之眼摩天轮',
       zone: 'z5',
       day: 'd4',
-      timeSlot: '14:05–14:55 น.',
+      timeSlot: '14:00–14:30 น.',
       lat: 31.3168,
       lng: 120.7204,
       metro: 'เดินเลียบทะเลสาบจินจีฝั่งตะวันออก ~8 นาที (ใกล้สถานี Culture & Expo Center)',
@@ -880,7 +880,7 @@ window.TRIP_DATA = {
           placeId: 'sh_station',
           time: '07:20',
           mode: 'L1',
-          transitText: 'Metro Line 1 (Xinzha Rd → Shanghai Railway Station, 2 ป้าย ~6 นาที เผื่อตรวจกระเป๋า)',
+          transitText: 'Metro Line 1 ถึง Shanghai Station ~07:20 น. (จำเป็นต้องถึงก่อนรถออกอย่างน้อย 30 นาที เพื่อตรวจกระเป๋า/สแกนพาสปอร์ต)',
           coords: [
             [31.2383, 121.4680],
             [31.2431, 121.4590],
@@ -929,7 +929,7 @@ window.TRIP_DATA = {
         {
           stepNo: 6,
           placeId: 'suzhou_jinji_lake',
-          time: '13:40',
+          time: '13:30',
           mode: 'didi',
           transitText: 'นั่ง DiDi ~25 นาที (หรือ Metro Line 2→1) ไปโซนเมืองใหม่ริมทะเลสาบจินจี',
           coords: [
@@ -941,9 +941,9 @@ window.TRIP_DATA = {
         {
           stepNo: 7,
           placeId: 'suzhou_eye',
-          time: '14:15',
+          time: '14:00',
           mode: 'walk',
-          transitText: 'เดินเลียบทะเลสาบจินจีฝั่งตะวันออก (~8 นาที) ชมชิงช้าสวรรค์ Suzhou Eye',
+          transitText: 'เดินเลียบทะเลสาบ ~8 นาที ชม Suzhou Eye (ออกเดินทางไปสถานีรถไฟ 14:30 น. เพื่อถึงสถานี 14:50 น.)',
           coords: [
             [31.3127, 120.7138],
             [31.3148, 120.7172],
@@ -953,9 +953,9 @@ window.TRIP_DATA = {
         {
           stepNo: 8,
           placeId: 'sh_station',
-          time: '15:20',
+          time: '14:50 → 15:20',
           mode: 'crh',
-          transitText: 'รถไฟ CRH ขากลับ (Suzhou / Suzhou SIP → Shanghai Station 25–35 นาที)',
+          transitText: 'ถึงสถานีซูโจว 14:50 น. (ก่อนรถออก 30 นาที) · ขึ้น CRH 15:20 น. กลับถึง Shanghai Station ~15:55 น.',
           coords: [
             [31.3168, 120.7204],
             [31.3250, 120.8200],
@@ -1242,23 +1242,23 @@ window.TRIP_DATA = {
     {
       id: 'd6',
       title: 'Day 6 • ศุกร์ 11 ธ.ค.',
-      subtitle: 'เช็กเอาท์ตี 5 • เดินทางกลับสนามบิน PVG',
+      subtitle: 'เช็กเอาท์ 04:45 น. • ถึงสนามบิน PVG ก่อนบินล่วงหน้า',
       badge: '🛫 Departure',
       steps: [
         {
           stepNo: 1,
           placeId: 'hotel',
-          time: '05:15',
+          time: '04:45',
           mode: 'didi',
-          transitText: 'เช็กเอาท์จากโรงแรม Xinzha Rd 219 (Metro ยังไม่เปิด)',
+          transitText: 'เช็กเอาท์จากโรงแรม Xinzha Rd 219 (ขยับเร็วขึ้น +30 นาที, Metro ยังไม่เปิด)',
           coords: [[31.2385, 121.4660]]
         },
         {
           stepNo: 2,
           placeId: 'pvg',
-          time: '06:15',
+          time: '05:45',
           mode: 'didi',
-          transitText: 'DiDi ตรงสู่สนามบิน PVG Terminal 1 (~50 นาที) เที่ยวบิน 08:30 น.',
+          transitText: 'DiDi ตรงสู่ PVG Terminal 1 (~50–60 นาที) · ถึงก่อนเครื่องออก 2 ชม. 45 น. (เที่ยวบิน 08:30 น.)',
           coords: [
             [31.2385, 121.4660],
             [31.2340, 121.4690],
