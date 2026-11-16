@@ -122,10 +122,10 @@ window.TRIP_DATA = {
       cn: '苏州 · 拙政园',
       zone: 'z5',
       day: 'd4',
-      timeSlot: '08:15–10:00 น.',
+      timeSlot: '08:45–10:15 น.',
       lat: 31.3242,
       lng: 120.6295,
-      metro: 'CRH รอบเช้าตรู่ (~07:30) ลง Suzhou Station แล้วต่อ DiDi ~10 นาที หรือ Metro Line 6',
+      metro: 'CRH รอบ 08:00 น. (ถึง Suzhou ~08:30 น.) แล้วต่อ DiDi ~10 นาที หรือ Metro Line 6',
       note: '1 ใน 4 สวนคลาสสิกมรดกโลกของจีน ค่าเข้า ~70–80 หยวน (แนะนำจองล่วงหน้าผ่าน WeChat/Trip.com)',
       img: 'place_images/suzhou_humble_garden.jpg'
     },
@@ -135,7 +135,7 @@ window.TRIP_DATA = {
       cn: '苏州 · 平江路',
       zone: 'z5',
       day: 'd4',
-      timeSlot: '10:05–11:30 น.',
+      timeSlot: '10:20–11:40 น.',
       lat: 31.3145,
       lng: 120.6345,
       metro: 'เดินต่อจากสวนจัวเจิ้งหยวน ~10 นาที (หรือ Metro Line 1 สถานี Xiangmen)',
@@ -148,7 +148,7 @@ window.TRIP_DATA = {
       cn: '苏州 · 七里山塘',
       zone: 'z5',
       day: 'd4',
-      timeSlot: '11:45–13:10 น.',
+      timeSlot: '11:55–13:15 น.',
       lat: 31.3183,
       lng: 120.6063,
       metro: 'DiDi ~15 นาทีจาก Pingjiang Rd หรือ Metro Line 2 สถานี Shantang Street',
@@ -161,7 +161,7 @@ window.TRIP_DATA = {
       cn: '苏州 · 金鸡湖',
       zone: 'z5',
       day: 'd4',
-      timeSlot: '13:35–14:10 น.',
+      timeSlot: '13:40–14:15 น.',
       lat: 31.3127,
       lng: 120.7138,
       metro: 'DiDi ~25 นาที หรือ Metro Line 1 สถานี Dongfangzhimen / Line 8 โซน SIP',
@@ -870,15 +870,15 @@ window.TRIP_DATA = {
         {
           stepNo: 1,
           placeId: 'hotel',
-          time: '06:45',
+          time: '07:05',
           mode: 'walk',
-          transitText: 'ออกจากโรงแรมรอบเช้าตรู่ เดินไปสถานี Xinzha Rd (Line 1)',
+          transitText: 'ออกจากโรงแรม เดินไปสถานี Xinzha Rd (Line 1)',
           coords: [[31.2385, 121.4660], [31.2383, 121.4680]]
         },
         {
           stepNo: 2,
           placeId: 'sh_station',
-          time: '06:55',
+          time: '07:20',
           mode: 'L1',
           transitText: 'Metro Line 1 (Xinzha Rd → Shanghai Railway Station, 2 ป้าย ~6 นาที เผื่อตรวจกระเป๋า)',
           coords: [
@@ -890,9 +890,9 @@ window.TRIP_DATA = {
         {
           stepNo: 3,
           placeId: 'suzhou_garden',
-          time: '08:15',
+          time: '08:45',
           mode: 'crh',
-          transitText: 'รถไฟ CRH รอบเช้าตรู่ (~07:30 Shanghai Station → Suzhou ~08:00) + DiDi 10 นาทีเข้าสวน',
+          transitText: 'รถไฟ CRH 08:00 น. (จองแล้ว · ชั้นสอง Shanghai → Suzhou ~08:30 น.) + DiDi 10 นาที',
           coords: [
             [31.2494, 121.4557],
             [31.2650, 121.3500],
@@ -905,7 +905,7 @@ window.TRIP_DATA = {
         {
           stepNo: 4,
           placeId: 'suzhou_pingjiang',
-          time: '10:05',
+          time: '10:20',
           mode: 'walk',
           transitText: 'เดินเลียบคลองจากสวนจัวเจิ้งหยวนเข้าสู่ถนนผิงเจียง (~10 นาที)',
           coords: [
@@ -917,7 +917,7 @@ window.TRIP_DATA = {
         {
           stepNo: 5,
           placeId: 'suzhou_shantang',
-          time: '11:45',
+          time: '11:55',
           mode: 'didi',
           transitText: 'นั่ง DiDi ~15 นาที (หรือ Metro Line 1→2) ไปย่านคลองเก่าถนนซานถัง & ทานมื้อเที่ยง',
           coords: [
@@ -929,7 +929,7 @@ window.TRIP_DATA = {
         {
           stepNo: 6,
           placeId: 'suzhou_jinji_lake',
-          time: '13:35',
+          time: '13:40',
           mode: 'didi',
           transitText: 'นั่ง DiDi ~25 นาที (หรือ Metro Line 2→1) ไปโซนเมืองใหม่ริมทะเลสาบจินจี',
           coords: [
@@ -941,7 +941,7 @@ window.TRIP_DATA = {
         {
           stepNo: 7,
           placeId: 'suzhou_eye',
-          time: '14:10',
+          time: '14:15',
           mode: 'walk',
           transitText: 'เดินเลียบทะเลสาบจินจีฝั่งตะวันออก (~8 นาที) ชมชิงช้าสวรรค์ Suzhou Eye',
           coords: [
