@@ -574,6 +574,97 @@
       color: #ffffff;
       border-color: #0f172a;
     }
+    .map-ctrl-btn.measure-active {
+      background: #7c3aed;
+      color: #ffffff;
+      border-color: #6d28d9;
+    }
+    #map.measuring { cursor: crosshair !important; }
+    .measure-panel {
+      position: absolute;
+      bottom: 20px;
+      left: 56px;
+      z-index: 905;
+      background: rgba(255, 255, 255, 0.97);
+      backdrop-filter: blur(8px);
+      border: 1.5px solid #c4b5fd;
+      border-radius: 12px;
+      box-shadow: var(--shadow-md);
+      padding: 10px 12px;
+      min-width: 245px;
+      max-width: 310px;
+      display: none;
+    }
+    .measure-panel.open { display: block; }
+    .measure-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .measure-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #5b21b6;
+    }
+    .measure-total {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.2;
+    }
+    .measure-sub {
+      font-size: 11.5px;
+      color: var(--sub);
+      margin-top: 3px;
+      line-height: 1.4;
+    }
+    .measure-btns {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .measure-btn {
+      flex: 1;
+      border: 1px solid var(--border);
+      background: #f8fafc;
+      color: var(--text);
+      border-radius: 7px;
+      padding: 5px 8px;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .measure-btn:hover { background: #e2e8f0; }
+    .measure-btn.close { background: #fef2f2; color: #b91c1c; border-color: #fecaca; }
+    .measure-leg-label {
+      background: rgba(91, 33, 182, 0.92) !important;
+      color: #ffffff !important;
+      border: 1px solid #ffffff !important;
+      border-radius: 6px !important;
+      padding: 1px 6px !important;
+      font-size: 10.5px !important;
+      font-weight: 700 !important;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25) !important;
+    }
+    .dist-chip {
+      display: inline-block;
+      margin-left: 6px;
+      padding: 1px 6px;
+      border-radius: 5px;
+      background: #f1f5f9;
+      color: #334155;
+      font-size: 10.5px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .popup-btn.measure {
+      background: #f5f3ff;
+      color: #6d28d9;
+      border: 1px solid #ddd6fe;
+    }
 
     /* Floating Transit Legend */
     .legend-box {
@@ -943,12 +1034,29 @@
       </button>
 
       <div class="map-top-right">
+        <button class="map-ctrl-btn" id="btn-toggle-measure" type="button">
+          📏 วัดระยะทาง: <span id="measure-state">ปิด</span>
+        </button>
         <button class="map-ctrl-btn" id="btn-toggle-labels" type="button">
           🏷️ ป้ายชื่อ: <span id="labels-state">ปิด</span>
         </button>
         <button class="map-ctrl-btn" id="btn-fit-bounds" type="button">
           🎯 ซูมพอดีเส้นทาง
         </button>
+      </div>
+
+      <div class="measure-panel" id="measure-panel">
+        <div class="measure-head">
+          <span class="measure-title">📏 โหมดวัดระยะทาง</span>
+          <span id="measure-count" style="font-size:11px; color:#64748b; font-weight:600;">0 จุด</span>
+        </div>
+        <div class="measure-total" id="measure-total">0 ม.</div>
+        <div class="measure-sub" id="measure-sub">คลิกบนแผนที่หรือหมุดสถานที่เพื่อวัดระยะเดิน/เดินทาง</div>
+        <div class="measure-btns">
+          <button class="measure-btn" id="btn-measure-undo" type="button">↩️ ย้อน</button>
+          <button class="measure-btn" id="btn-measure-clear" type="button">🗑️ ล้าง</button>
+          <button class="measure-btn close" id="btn-measure-close" type="button">✕ ปิด</button>
+        </div>
       </div>
 
       <div id="map"></div>
@@ -1063,8 +1171,58 @@
 
       const routeLayerGroup = L.layerGroup().addTo(map);
       const markerLayerGroup = L.layerGroup().addTo(map);
+      const measureLayerGroup = L.layerGroup().addTo(map);
       let markerRefsByPlaceId = {};
       let stepMarkerRefs = {};
+      let measureMode = false;
+      let measurePoints = [];
+
+      // Distance Helpers
+      function calcDistMeters(lat1, lng1, lat2, lng2) {
+        const R = 6371000;
+        const toRad = (d) => (d * Math.PI) / 180;
+        const dLat = toRad(lat2 - lat1);
+        const dLng = toRad(lng2 - lng1);
+        const a = Math.sin(dLat / 2) ** 2 +
+          Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
+        return 2 * R * Math.asin(Math.sqrt(a));
+      }
+
+      function calcCoordsMeters(coords) {
+        if (!Array.isArray(coords) || coords.length < 2) return 0;
+        let total = 0;
+        for (let i = 1; i < coords.length; i++) {
+          total += calcDistMeters(coords[i - 1][0], coords[i - 1][1], coords[i][0], coords[i][1]);
+        }
+        return total;
+      }
+
+      function formatDist(m) {
+        if (m < 1000) return `${Math.round(m / 10) * 10 || Math.round(m)} ม.`;
+        return `${(m / 1000).toFixed(2)} กม.`;
+      }
+
+      function formatWalkTime(m) {
+        const mins = Math.max(1, Math.round(m / 75)); // ~4.5 km/h city walking pace
+        if (mins < 60) return `เดิน ~${mins} นาที`;
+        const h = Math.floor(mins / 60);
+        const rem = mins % 60;
+        return rem ? `เดิน ~${h} ชม. ${rem} น.` : `เดิน ~${h} ชม.`;
+      }
+
+      function getStepDistanceStats(step) {
+        const segs = Array.isArray(step.segments) && step.segments.length
+          ? step.segments
+          : (Array.isArray(step.coords) && step.coords.length >= 2 ? [{ mode: step.mode, coords: step.coords }] : []);
+        let totalMeters = 0;
+        let walkMeters = 0;
+        segs.forEach((seg) => {
+          const d = calcCoordsMeters(seg.coords);
+          totalMeters += d;
+          if (seg.mode === 'walk') walkMeters += d;
+        });
+        return { totalMeters, walkMeters };
+      }
 
       // Helpers
       function esc(str) {
@@ -1135,6 +1293,7 @@
             <div class="popup-actions">
               <a class="popup-btn amap" href="${amapUrl}" target="_blank" rel="noopener">เปิด Amap</a>
               <a class="popup-btn gmap" href="${gmapUrl}" target="_blank" rel="noopener">Google Maps</a>
+              <button class="popup-btn measure js-measure-from" type="button" data-lat="${place.lat}" data-lng="${place.lng}" data-name="${esc(place.name)}">📏 วัดจากนี่</button>
             </div>
           </div>
         `;
@@ -1339,13 +1498,20 @@
             ? `<img class="step-thumb" src="${esc(place.img)}" alt="${esc(place.name)}" onerror="this.style.display='none'" />`
             : '';
 
+          const { totalMeters, walkMeters } = getStepDistanceStats(step);
+          const distChip = totalMeters > 0
+            ? (step.mode === 'walk'
+              ? `<span class="dist-chip">📏 ${formatDist(totalMeters)} · ${formatWalkTime(totalMeters)}</span>`
+              : `<span class="dist-chip">📏 ${formatDist(totalMeters)}${walkMeters > 60 ? ` · เดิน ${formatDist(walkMeters)}` : ''}</span>`)
+            : '';
+
           const connectorHtml = idx > 0
             ? `
               <div class="timeline-connector">
                 <div class="connector-line" style="background:${esc(tStyle.color)}; ${tStyle.dash ? 'opacity:0.75;' : ''}"></div>
                 <div class="connector-pill">
                   <span class="connector-dot" style="background:${esc(tStyle.color)};"></span>
-                  <span><strong>${esc(tStyle.label)}</strong> · ${esc(step.transitText)}</span>
+                  <span><strong>${esc(tStyle.label)}</strong> · ${esc(step.transitText)}${distChip}</span>
                 </div>
               </div>
             `
@@ -1354,7 +1520,7 @@
                 <div class="timeline-connector">
                   <div class="connector-pill">
                     <span class="connector-dot" style="background:${esc(tStyle.color)};"></span>
-                    <span>${esc(step.transitText)}</span>
+                    <span>${esc(step.transitText)}${distChip}</span>
                   </div>
                 </div>
               `
@@ -1484,6 +1650,14 @@
               marker.bindTooltip(place.name, { permanent: true, direction: 'top', offset: [0, -10], className: 'place-label' });
             }
 
+            marker.on('click', (e) => {
+              if (measureMode) {
+                L.DomEvent.stopPropagation(e);
+                marker.closePopup();
+                addMeasurePoint(place.lat, place.lng, place.name);
+              }
+            });
+
             marker.addTo(markerLayerGroup);
             markerRefsByPlaceId[place.id] = marker;
             boundsPoints.push([place.lat, place.lng]);
@@ -1547,6 +1721,14 @@
                   className: 'place-label'
                 });
               }
+
+              marker.on('click', (e) => {
+                if (measureMode) {
+                  L.DomEvent.stopPropagation(e);
+                  marker.closePopup();
+                  addMeasurePoint(lat, lng, `${step.stepNo}. ${place.name}`);
+                }
+              });
 
               marker.addTo(markerLayerGroup);
               stepMarkerRefs[step.stepNo] = marker;
@@ -1672,6 +1854,141 @@
           renderMap();
         });
       }
+
+      // Measure Distance Mode
+      function renderMeasureOverlay() {
+        measureLayerGroup.clearLayers();
+        const countEl = document.getElementById('measure-count');
+        const totalEl = document.getElementById('measure-total');
+        const subEl = document.getElementById('measure-sub');
+
+        countEl.textContent = `${measurePoints.length} จุด`;
+        if (measurePoints.length === 0) {
+          totalEl.textContent = '0 ม.';
+          subEl.textContent = 'คลิกจุดบนแผนที่หรือหมุดสถานที่เพื่อวัดระยะเดิน/เดินทาง';
+          return;
+        }
+
+        let totalMeters = 0;
+        const latlngs = measurePoints.map((pt) => [pt.lat, pt.lng]);
+
+        if (latlngs.length >= 2) {
+          L.polyline(latlngs, {
+            color: '#ffffff',
+            weight: 6.5,
+            opacity: 0.85
+          }).addTo(measureLayerGroup);
+
+          L.polyline(latlngs, {
+            color: '#7c3aed',
+            weight: 3.5,
+            dashArray: '7,6',
+            opacity: 0.98
+          }).addTo(measureLayerGroup);
+
+          for (let i = 1; i < measurePoints.length; i++) {
+            const p1 = measurePoints[i - 1];
+            const p2 = measurePoints[i];
+            const legM = calcDistMeters(p1.lat, p1.lng, p2.lat, p2.lng);
+            totalMeters += legM;
+            const midLat = (p1.lat + p2.lat) / 2;
+            const midLng = (p1.lng + p2.lng) / 2;
+            L.tooltip({
+              permanent: true,
+              direction: 'center',
+              className: 'measure-leg-label'
+            })
+              .setLatLng([midLat, midLng])
+              .setContent(formatDist(legM))
+              .addTo(measureLayerGroup);
+          }
+        }
+
+        measurePoints.forEach((pt, idx) => {
+          const c = L.circleMarker([pt.lat, pt.lng], {
+            radius: 6,
+            color: '#ffffff',
+            weight: 2,
+            fillColor: idx === 0 ? '#059669' : '#7c3aed',
+            fillOpacity: 1
+          }).addTo(measureLayerGroup);
+          if (pt.label) {
+            c.bindTooltip(pt.label, { direction: 'top', offset: [0, -6] });
+          }
+        });
+
+        totalEl.textContent = formatDist(totalMeters);
+        if (measurePoints.length === 1) {
+          const first = measurePoints[0];
+          subEl.textContent = `เริ่มจาก: ${first.label || 'จุดที่ 1'} — คลิกจุดถัดไปบนแผนที่หรือหมุด`;
+        } else {
+          const didiMins = Math.max(2, Math.round(totalMeters / 450)); // ~27 km/h city speed
+          subEl.innerHTML = `🚶 <strong>${formatWalkTime(totalMeters)}</strong> &nbsp;·&nbsp; 🚕 DiDi ~${didiMins} นาที<br><span style="color:#64748b; font-size:10.5px;">(ระยะทางตรงเส้นประ; เดินตามถนนจริงบวก ~15–20%)</span>`;
+        }
+      }
+
+      function toggleMeasureMode(force) {
+        measureMode = typeof force === 'boolean' ? force : !measureMode;
+        const btn = document.getElementById('btn-toggle-measure');
+        const stateEl = document.getElementById('measure-state');
+        const panel = document.getElementById('measure-panel');
+        const mapEl = document.getElementById('map');
+
+        btn.classList.toggle('measure-active', measureMode);
+        stateEl.textContent = measureMode ? 'เปิด' : 'ปิด';
+        panel.classList.toggle('open', measureMode);
+        mapEl.classList.toggle('measuring', measureMode);
+        renderMeasureOverlay();
+      }
+
+      function addMeasurePoint(lat, lng, label) {
+        measurePoints.push({ lat, lng, label });
+        renderMeasureOverlay();
+      }
+
+      window.startMeasureFrom = function (lat, lng, label) {
+        measurePoints = [{ lat, lng, label }];
+        map.closePopup();
+        toggleMeasureMode(true);
+      };
+
+      map.on('click', (e) => {
+        if (measureMode) {
+          addMeasurePoint(e.latlng.lat, e.latlng.lng, `จุดที่ ${measurePoints.length + 1}`);
+        }
+      });
+
+      map.on('popupopen', (e) => {
+        const el = e.popup && e.popup.getElement();
+        if (!el) return;
+        const btn = el.querySelector('.js-measure-from');
+        if (btn) {
+          btn.addEventListener('click', () => {
+            window.startMeasureFrom(
+              Number(btn.dataset.lat),
+              Number(btn.dataset.lng),
+              btn.dataset.name || 'จุดเริ่มต้น'
+            );
+          });
+        }
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && measureMode) {
+          toggleMeasureMode(false);
+        }
+      });
+
+      document.getElementById('btn-toggle-measure').addEventListener('click', () => toggleMeasureMode());
+      document.getElementById('btn-measure-undo').addEventListener('click', () => {
+        measurePoints.pop();
+        renderMeasureOverlay();
+      });
+      document.getElementById('btn-measure-clear').addEventListener('click', () => {
+        measurePoints = [];
+        renderMeasureOverlay();
+      });
+      document.getElementById('btn-measure-close').addEventListener('click', () => toggleMeasureMode(false));
 
       // Global Controls
       document.getElementById('btn-toggle-sidebar').addEventListener('click', () => {
