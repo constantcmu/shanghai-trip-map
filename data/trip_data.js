@@ -110,10 +110,36 @@ window.TRIP_DATA = {
       zone: 'z5',
       day: 'd4',
       timeSlot: 'ถึง 07:20 น. (รถออก 08:00 น.) & กลับถึง ~15:55 น.',
-      lat: 31.2494,
-      lng: 121.4557,
+      lat: 31.2497,
+      lng: 121.4550,
       metro: 'Metro Line 1 (2 ป้ายจาก Xinzha Rd ~6 นาที)',
       note: 'จุดขึ้น-ลงรถไฟ CRH ไป-กลับซูโจว (ต้องถึงสถานีก่อนรถออกอย่างน้อย 30 นาที: ขาไปถึง 07:20 น. รถออก 08:00 น. / ขากลับถึงสถานีซูโจว 14:50 น. รถออก 15:20 น.)',
+      img: null
+    },
+    {
+      id: 'suzhou_station',
+      name: '🚄 สถานีรถไฟซูโจว (Suzhou Railway Station)',
+      cn: '苏州站',
+      zone: 'z5',
+      day: 'd4',
+      timeSlot: 'ถึง 08:30 น.',
+      lat: 31.3284,
+      lng: 120.6102,
+      metro: 'เชื่อมต่อ Metro Line 2 / Line 4 หรือจุดขึ้น DiDi เข้าเมืองเก่า',
+      note: 'สถานีหลักใจกลางเมืองเก่าซูโจว จุดลงรถไฟ CRH รอบเช้า 08:00 น. ต่อ DiDi 10 นาทีถึงสวนจัวเจิ้งหยวน',
+      img: null
+    },
+    {
+      id: 'suzhou_sip_station',
+      name: '🚄 สถานีรถไฟซูโจว พาร์ค (Suzhou Industrial Park)',
+      cn: '苏州园区站',
+      zone: 'z5',
+      day: 'd4',
+      timeSlot: 'ถึงสถานี 14:50 น. (รถออก 15:20 น.)',
+      lat: 31.3406,
+      lng: 120.7109,
+      metro: 'ใกล้ทะเลสาบจินจี & Suzhou Eye (นั่ง DiDi 10 นาที หรือ Metro Line 3/8)',
+      note: 'สถานีใกล้โซน Jinji Lake ที่สุด (หรือเลือกกลับจาก Suzhou Station ถ้าขบวนที่จองออกที่นั่น)',
       img: null
     },
     {
@@ -934,26 +960,47 @@ window.TRIP_DATA = {
             [31.2387, 121.4676],
             [31.2408, 121.4590],
             [31.2498, 121.4574],
-            [31.2494, 121.4557]
+            [31.2497, 121.4550]
+          ],
+          segments: [
+            { mode: 'L1', coords: [[31.2387, 121.4676], [31.2408, 121.4590], [31.2498, 121.4574]] },
+            { mode: 'walk', coords: [[31.2498, 121.4574], [31.2497, 121.4550]] }
           ]
         },
         {
           stepNo: 3,
-          placeId: 'suzhou_garden',
-          time: '08:45',
+          placeId: 'suzhou_station',
+          time: '08:00 → 08:30',
           mode: 'crh',
-          transitText: 'รถไฟ CRH 08:00 น. (จองแล้ว · ชั้นสอง Shanghai → Suzhou ~08:30 น.) + DiDi 10 นาที',
+          transitText: 'รถไฟ CRH 08:00 น. (จองแล้ว · ชั้นสอง Shanghai Station → Suzhou Station ตามแนวรางจริง)',
           coords: [
-            [31.2494, 121.4557],
-            [31.2650, 121.3500],
-            [31.2950, 121.1500],
-            [31.3200, 120.9200],
-            [31.3300, 120.7200],
-            [31.3242, 120.6295]
+            [31.2497, 121.4550],
+            [31.2635, 121.4008],
+            [31.2794, 121.3135],
+            [31.3146, 121.1584],
+            [31.3660, 120.9576],
+            [31.3798, 120.8613],
+            [31.3406, 120.7109],
+            [31.3284, 120.6102]
           ]
         },
         {
           stepNo: 4,
+          placeId: 'suzhou_garden',
+          time: '08:45',
+          mode: 'didi',
+          transitText: 'จากสถานี Suzhou ต่อ DiDi ~10 นาที (หรือ Metro Line 4→6) เข้าสวนจัวเจิ้งหยวน',
+          coords: [
+            [31.3284, 120.6102],
+            [31.3275, 120.6077],
+            [31.3280, 120.6153],
+            [31.3308, 120.6224],
+            [31.3273, 120.6259],
+            [31.3242, 120.6295]
+          ]
+        },
+        {
+          stepNo: 5,
           placeId: 'suzhou_pingjiang',
           time: '10:20',
           mode: 'walk',
@@ -965,7 +1012,7 @@ window.TRIP_DATA = {
           ]
         },
         {
-          stepNo: 5,
+          stepNo: 6,
           placeId: 'suzhou_shantang',
           time: '11:55',
           mode: 'didi',
@@ -981,7 +1028,7 @@ window.TRIP_DATA = {
           ]
         },
         {
-          stepNo: 6,
+          stepNo: 7,
           placeId: 'suzhou_jinji_lake',
           time: '13:30',
           mode: 'didi',
@@ -1000,7 +1047,7 @@ window.TRIP_DATA = {
           ]
         },
         {
-          stepNo: 7,
+          stepNo: 8,
           placeId: 'suzhou_eye',
           time: '14:00',
           mode: 'walk',
@@ -1012,28 +1059,44 @@ window.TRIP_DATA = {
           ]
         },
         {
-          stepNo: 8,
-          placeId: 'sh_station',
-          time: '14:50 → 15:20',
-          mode: 'crh',
-          transitText: 'ถึงสถานีซูโจว 14:50 น. (ก่อนรถออก 30 นาที) · ขึ้น CRH 15:20 น. กลับถึง Shanghai Station ~15:55 น.',
+          stepNo: 9,
+          placeId: 'suzhou_sip_station',
+          time: '14:50',
+          mode: 'didi',
+          transitText: 'DiDi ~10 นาทีขึ้นเหนือไปสถานี Suzhou Industrial Park (ถึงก่อนรถออกอย่างน้อย 30 นาที)',
           coords: [
             [31.3143, 120.7127],
-            [31.3250, 120.8200],
-            [31.3150, 120.9600],
-            [31.2950, 121.1500],
-            [31.2650, 121.3500],
-            [31.2494, 121.4557]
+            [31.3183, 120.7137],
+            [31.3306, 120.7126],
+            [31.3400, 120.7155],
+            [31.3413, 120.7064],
+            [31.3406, 120.7109]
           ]
         },
         {
-          stepNo: 9,
+          stepNo: 10,
+          placeId: 'sh_station',
+          time: '15:20 → 15:55',
+          mode: 'crh',
+          transitText: 'รถไฟ CRH ขากลับ 15:20 น. (Suzhou SIP / Suzhou → Shanghai Station ตามแนวรางจริง)',
+          coords: [
+            [31.3406, 120.7109],
+            [31.3798, 120.8613],
+            [31.3660, 120.9576],
+            [31.3146, 121.1584],
+            [31.2794, 121.3135],
+            [31.2635, 121.4008],
+            [31.2497, 121.4550]
+          ]
+        },
+        {
+          stepNo: 11,
           placeId: 'christmas_rockbund',
           time: '16:20',
           mode: 'L10',
           transitText: 'Metro Line 1 (Shanghai Station → People\'s Sq) ต่อ Line 2 → East Nanjing Rd เดิน 6 นาที',
           coords: [
-            [31.2494, 121.4557],
+            [31.2497, 121.4550],
             [31.2408, 121.4590],
             [31.2387, 121.4676],
             [31.2321, 121.4754],
@@ -1041,13 +1104,13 @@ window.TRIP_DATA = {
             [31.2426, 121.4881]
           ],
           segments: [
-            { mode: 'L1', coords: [[31.2494, 121.4557], [31.2408, 121.4590], [31.2387, 121.4676], [31.2321, 121.4754]] },
+            { mode: 'L1', coords: [[31.2497, 121.4550], [31.2408, 121.4590], [31.2387, 121.4676], [31.2321, 121.4754]] },
             { mode: 'L2', coords: [[31.2321, 121.4754], [31.2378, 121.4842]] },
             { mode: 'walk', coords: [[31.2378, 121.4842], [31.2426, 121.4881]] }
           ]
         },
         {
-          stepNo: 10,
+          stepNo: 12,
           placeId: 'rock_bund',
           time: '17:15',
           mode: 'walk',
@@ -1058,7 +1121,7 @@ window.TRIP_DATA = {
           ]
         },
         {
-          stepNo: 11,
+          stepNo: 13,
           placeId: 'bund',
           time: '18:00',
           mode: 'walk',
@@ -1070,7 +1133,7 @@ window.TRIP_DATA = {
           ]
         },
         {
-          stepNo: 12,
+          stepNo: 14,
           placeId: 'nanjing_e',
           time: '19:00',
           mode: 'walk',
@@ -1083,7 +1146,7 @@ window.TRIP_DATA = {
           ]
         },
         {
-          stepNo: 13,
+          stepNo: 15,
           placeId: 'feidachu',
           time: '19:30',
           mode: 'walk',
@@ -1095,7 +1158,7 @@ window.TRIP_DATA = {
           ]
         },
         {
-          stepNo: 14,
+          stepNo: 16,
           placeId: 'gangyuji',
           time: '20:30',
           mode: 'walk',
