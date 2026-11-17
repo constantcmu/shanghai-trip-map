@@ -1294,6 +1294,7 @@
               <a class="popup-btn amap" href="${amapUrl}" target="_blank" rel="noopener">เปิด Amap</a>
               <a class="popup-btn gmap" href="${gmapUrl}" target="_blank" rel="noopener">Google Maps</a>
               <button class="popup-btn measure js-measure-from" type="button" data-lat="${place.lat}" data-lng="${place.lng}" data-name="${esc(place.name)}">📏 วัดจากนี่</button>
+              ${place.isCustom ? `<button class="popup-btn js-delete-custom" type="button" data-del-id="${esc(place.id)}" style="background:#fef2f2; color:#dc2626; border:1px solid #fecaca;">🗑️ ลบหมุด</button>` : ''}
             </div>
           </div>
         `;
@@ -1906,29 +1907,36 @@
 
         measurePoints.forEach((pt, idx) => {
           const c = L.circleMarker([pt.lat, pt.lng], {
-            radius: 6,
+            radius: 7,
             color: '#ffffff',
-            weight: 2,
+            weight: 2.5,
             fillColor: idx === 0 ? '#059669' : '#7c3aed',
             fillOpacity: 1
           }).addTo(measureLayerGroup);
-          if (pt.label) {
-            c.bindTooltip(pt.label, { direction: 'top', offset: [0, -6] });
-          }
+          const tip = pt.label ? `${pt.label} (คลิกเพื่อลบจุดนี้)` : `จุดที่ ${idx + 1} (คลิกเพื่อลบจุดนี้)`;
+          c.bindTooltip(tip, { direction: 'top', offset: [0, -6] });
+          c.on('click', (e) => {
+            L.DomEvent.stopPropagation(e);
+            measurePoints.splice(idx, 1);
+            renderMeasureOverlay();
+          });
         });
 
         totalEl.textContent = formatDist(totalMeters);
         if (measurePoints.length === 1) {
           const first = measurePoints[0];
-          subEl.textContent = `เริ่มจาก: ${first.label || 'จุดที่ 1'} — คลิกจุดถัดไปบนแผนที่หรือหมุด`;
+          subEl.textContent = `เริ่มจาก: ${first.label || 'จุดที่ 1'} — คลิกจุดถัดไป (หรือคลิกจุดเดิมเพื่อลบ)`;
         } else {
           const didiMins = Math.max(2, Math.round(totalMeters / 450)); // ~27 km/h city speed
-          subEl.innerHTML = `🚶 <strong>${formatWalkTime(totalMeters)}</strong> &nbsp;·&nbsp; 🚕 DiDi ~${didiMins} นาที<br><span style="color:#64748b; font-size:10.5px;">(ระยะทางตรงเส้นประ; เดินตามถนนจริงบวก ~15–20%)</span>`;
+          subEl.innerHTML = `🚶 <strong>${formatWalkTime(totalMeters)}</strong> &nbsp;·&nbsp; 🚕 DiDi ~${didiMins} นาที<br><span style="color:#64748b; font-size:10.5px;">คลิกจุดวงกลมเพื่อลบจุดนั้น • คลิกขวาเพื่อย้อนกลับ</span>`;
         }
       }
 
       function toggleMeasureMode(force) {
         measureMode = typeof force === 'boolean' ? force : !measureMode;
+        if (!measureMode) {
+          measurePoints = [];
+        }
         const btn = document.getElementById('btn-toggle-measure');
         const stateEl = document.getElementById('measure-state');
         const panel = document.getElementById('measure-panel');
@@ -1958,6 +1966,14 @@
         }
       });
 
+      map.on('contextmenu', (e) => {
+        if (measureMode && measurePoints.length > 0) {
+          L.DomEvent.preventDefault(e);
+          measurePoints.pop();
+          renderMeasureOverlay();
+        }
+      });
+
       map.on('popupopen', (e) => {
         const el = e.popup && e.popup.getElement();
         if (!el) return;
@@ -1969,6 +1985,17 @@
               Number(btn.dataset.lng),
               btn.dataset.name || 'จุดเริ่มต้น'
             );
+          });
+        }
+        const delBtn = el.querySelector('.js-delete-custom');
+        if (delBtn) {
+          delBtn.addEventListener('click', () => {
+            const delId = delBtn.dataset.delId;
+            saveCustomPlaces(loadCustomPlaces().filter((x) => x.id !== delId));
+            map.closePopup();
+            renderHeader();
+            renderSidebarContent();
+            renderMap();
           });
         }
       });
