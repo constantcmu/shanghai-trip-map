@@ -71,7 +71,7 @@ window.TRIP_DATA = {
     L12:    { label: 'Metro Line 12', color: '#007B5F', weight: 4 },
     L13:    { label: 'Metro Line 13', color: '#EF95CF', weight: 4 },
     L14:    { label: 'Metro Line 14', color: '#827A04', weight: 4 },
-    maglev: { label: 'Maglev (430 km/h)', color: '#008B95', weight: 4.5 },
+    maglev: { label: 'Maglev (300 km/h)', color: '#008B95', weight: 4.5 },
     crh:    { label: 'รถไฟ CRH (ไป-กลับ ซูโจว)', color: '#1D4ED8', dash: '10,6', weight: 4 },
     didi:   { label: 'DiDi / แท็กซี่', color: '#D97706', dash: '6,6', weight: 3.5 }
   },
@@ -88,7 +88,8 @@ window.TRIP_DATA = {
       lat: 31.2385,
       lng: 121.4660,
       metro: 'Metro Line 1 สถานี Xinzha Rd (新闸路) เดิน 3 นาที',
-      note: 'โรงแรมฐานตลอดทริป เช็กอิน 6 ธ.ค. ~21:30 น. / เช็กเอาท์ 11 ธ.ค. 04:45 น. (เผื่อเวลา +30 นาที เรียก DiDi ไป PVG)',
+      note: 'โรงแรมฐานตลอดทริป เช็กอิน 6 ธ.ค. ~22:30–23:15 น. (หลัง ตม.+รับกระเป๋า+DiDi) / เช็กเอาท์ 11 ธ.ค. 04:45 น. (เผื่อเวลา +30 นาที เรียก DiDi ไป PVG)',
+      lastVerified: '2026-11-19',
       img: null
     },
     {
@@ -97,11 +98,12 @@ window.TRIP_DATA = {
       cn: '上海浦东国际机场 T1',
       zone: 'z6',
       day: 'd1',
-      timeSlot: 'ขาไป 20:45 น. / ขากลับ 08:30 น.',
+      timeSlot: 'ขาไป 20:45 น. / ขากลับ 05:45 น. (บิน 08:30 น.)',
       lat: 31.1443,
       lng: 121.8083,
-      metro: 'Maglev (8 นาทีถึง Longyang Rd) + Line 2/1 หรือ DiDi ~50 นาที',
-      note: 'ขาไปถึง 6 ธ.ค. 20:45 น. (แนะนำ DiDi เพราะมีกระเป๋าใหญ่) / ขากลับ 11 ธ.ค. ออก 04:45 น. ถึงสนามบิน ~05:45 น. (เผื่อล่วงหน้าก่อนบิน 2 ชม. 45 น.)',
+      metro: 'DiDi ~50–60 นาที (แผนหลัก) หรือ Maglev (300 km/h, 8 นาทีถึง Longyang Rd)',
+      note: 'ขาไปถึง 6 ธ.ค. 20:45 น. → ตม.+รับกระเป๋า 45–75 น. + DiDi 50–60 น. ถึงโรงแรม ~22:30–23:15 น. / ขากลับ 11 ธ.ค. ออก 04:45 น. ถึงสนามบิน ~05:45 น.',
+      lastVerified: '2026-11-19',
       img: null
     },
     {
@@ -110,37 +112,42 @@ window.TRIP_DATA = {
       cn: '龙阳路站 (磁浮/2/7/16/18号线)',
       zone: 'z2',
       day: 'd1',
-      timeSlot: 'ทางเลือก Maglev (รอบสุดท้าย 21:42 น.)',
+      timeSlot: '21:42 น. (ทางเลือก Maglev)',
       lat: 31.2031,
       lng: 121.5583,
-      metro: 'เชื่อมต่อ Maglev จาก PVG ↔ Metro Line 2 / 7 / 16 / 18 หรือต่อ DiDi เข้าโรงแรม',
-      note: 'ทางเลือก Day 1 กรณีผ่าน ตม.+รับกระเป๋าออกมาทันก่อน 21:42 น.: นั่ง Maglev ~8 นาที (40 หยวนเมื่อโชว์ Boarding Pass) แล้วต่อ Line 2→Line 1 หรือ DiDi (~20 นาที)',
+      metro: 'เชื่อมต่อ Maglev (300 km/h) จาก PVG ↔ Metro Line 2 / 7 / 16 / 18 หรือต่อ DiDi เข้าโรงแรม',
+      ticketPrice: '50 หยวน (โชว์ Boarding Pass เหลือ 40 หยวน)',
+      openHours: 'จาก PVG 07:02–21:42 น. (บางตารางมีรอบดึก 22:15 / 22:40 — เช็กหน้างาน)',
+      note: 'ทางเลือกสำรอง Day 1 เงื่อนไข: ต้องออกจาก Arrivals ก่อน 21:42 น. ซึ่งแทบเป็นไปไม่ได้ถ้ามีกระเป๋าโหลด (บางตารางมีรอบดึก 22:15 / 22:40 — เช็กหน้างาน) นั่ง Maglev ~8 นาที แล้วต่อ Metro/DiDi ถึงโรงแรม ~22:35–23:15 น.',
+      lastVerified: '2026-11-19',
       img: null
     },
     {
       id: 'sh_station',
-      name: '🚄 สถานีรถไฟ Shanghai Railway Station',
-      cn: '上海站',
+      name: '🚄 สถานีรถไฟ Shanghai Railway Station (ลานฝั่งใต้)',
+      cn: '上海站南广场 · 秣陵路303号',
       zone: 'z5',
       day: 'd4',
-      timeSlot: 'ถึง 07:20 น. (รถออก 08:00 น.) & กลับถึง ~15:55 น.',
-      lat: 31.2497,
-      lng: 121.4550,
-      metro: 'Metro Line 1 (2 ป้ายจาก Xinzha Rd ~6 นาที)',
-      note: 'จุดขึ้น-ลงรถไฟ CRH ไป-กลับซูโจว (ต้องถึงสถานีก่อนรถออกอย่างน้อย 30 นาที: ขาไปถึง 07:20 น. รถออก 08:00 น. / ขากลับถึงสถานีซูโจว 14:50 น. รถออก 15:20 น.)',
+      timeSlot: '07:20 น. (รถออก 08:00 น.) & กลับถึง 15:55 น.',
+      lat: 31.2480,
+      lng: 121.4548,
+      metro: 'Metro Line 1 สถานี Shanghai Railway Station (2 ป้ายจาก Xinzha Rd ~6 น.) ออกฝั่งลานใต้ (南广场) / ทางออก 1–3',
+      note: 'ประตูเข้าจริงฝั่งลานใต้ (南广场 · ถนน Moling 303 เชื่อมโถงใต้ Metro Line 1) — ต้องถึงสถานีก่อนรถออกอย่างน้อย 30 นาที: ขาไปถึง 07:20 น. รถออก 08:00 น. / ขากลับถึง ~15:55 น.',
+      lastVerified: '2026-11-19',
       img: null
     },
     {
       id: 'suzhou_station',
-      name: '🚄 สถานีรถไฟซูโจว (Suzhou Railway Station)',
-      cn: '苏州站',
+      name: '🚄 สถานีรถไฟซูโจว (Suzhou Station · ลานฝั่งใต้)',
+      cn: '苏州站南广场',
       zone: 'z5',
       day: 'd4',
-      timeSlot: 'ถึง 08:30 น.',
-      lat: 31.3284,
-      lng: 120.6102,
-      metro: 'เชื่อมต่อ Metro Line 2 / Line 4 หรือจุดขึ้น DiDi เข้าเมืองเก่า',
-      note: 'สถานีหลักใจกลางเมืองเก่าซูโจว จุดลงรถไฟ CRH รอบเช้า 08:00 น. ต่อ DiDi 10 นาทีถึงสวนจัวเจิ้งหยวน',
+      timeSlot: '08:30 น.',
+      lat: 31.3278,
+      lng: 120.6111,
+      metro: 'ลานใต้ (南广场) เชื่อม Metro Line 2 / Line 4 และจุดรับ-ส่ง DiDi เข้าเมืองเก่า',
+      note: 'ลานที่ลงรถจริงฝั่งใต้ (南广场) จุดลงรถไฟ CRH รอบเช้า 08:00 น. เดินออกทางออกฝั่งใต้เพื่อเรียก DiDi 10 นาทีถึงสวนจัวเจิ้งหยวน',
+      lastVerified: '2026-11-19',
       img: null
     },
     {
@@ -149,11 +156,12 @@ window.TRIP_DATA = {
       cn: '苏州园区站',
       zone: 'z5',
       day: 'd4',
-      timeSlot: 'ถึงสถานี 14:50 น. (รถออก 15:20 น.)',
+      timeSlot: '14:50 น. (รถออก 15:20 น.)',
       lat: 31.3406,
       lng: 120.7109,
-      metro: 'ใกล้ทะเลสาบจินจี & Suzhou Eye (นั่ง DiDi 10 นาที หรือ Metro Line 3/8)',
-      note: 'สถานีใกล้โซน Jinji Lake ที่สุด (หรือเลือกกลับจาก Suzhou Station ถ้าขบวนที่จองออกที่นั่น)',
+      metro: 'ใกล้ทะเลสาบจินจี & Suzhou Eye (นั่ง DiDi 10–15 นาที เผื่อเวลาก่อนรถออก 30 นาที)',
+      note: 'สถานีใกล้โซน Jinji Lake ที่สุด (ถึงสถานีก่อนรถออก 15:20 น. อย่างน้อย 30 นาที) หรือเลือกกลับจาก Suzhou Station ตามขบวนที่จอง',
+      lastVerified: '2026-11-19',
       img: null
     },
     {
@@ -162,10 +170,15 @@ window.TRIP_DATA = {
       cn: '苏州 · 拙政园',
       zone: 'z5',
       day: 'd4',
-      timeSlot: '08:45–10:15 น.',
+      timeSlot: '08:45 น.',
       lat: 31.3242,
       lng: 120.6295,
       metro: 'CRH รอบ 08:00 น. (ถึง Suzhou ~08:30 น.) แล้วต่อ DiDi ~10 นาที หรือ Metro Line 6',
+      openHours: '07:30–17:00 น.',
+      ticketPrice: '70–80 หยวน',
+      bookingUrl: 'https://www.trip.com/',
+      showBadge: 'ต้องจอง',
+      lastVerified: '2026-11-19',
       note: '1 ใน 4 สวนคลาสสิกมรดกโลกของจีน ค่าเข้า ~70–80 หยวน (แนะนำจองล่วงหน้าผ่าน WeChat/Trip.com)',
       img: 'place_images/suzhou_humble_garden.jpg'
     },
@@ -175,10 +188,14 @@ window.TRIP_DATA = {
       cn: '苏州 · 平江路',
       zone: 'z5',
       day: 'd4',
-      timeSlot: '10:20–11:40 น.',
+      timeSlot: '10:20 น.',
       lat: 31.3145,
       lng: 120.6345,
       metro: 'เดินต่อจากสวนจัวเจิ้งหยวน ~10 นาที (หรือ Metro Line 1 สถานี Xiangmen)',
+      openHours: 'เปิด 24 ชม. (ร้านค้า ~10:00–22:00 น.)',
+      ticketPrice: 'เข้าฟรี',
+      showBadge: 'เข้าฟรี',
+      lastVerified: '2026-11-19',
       note: 'ถนนโบราณเลียบคลองอายุกว่า 800 ปี ถ่ายรูปกำแพงแมว โคมแดง และคาเฟ่ริมคลอง (เดินชมฟรี)',
       img: 'place_images/suzhou_pingjiang.jpg'
     },
@@ -188,10 +205,14 @@ window.TRIP_DATA = {
       cn: '苏州 · 七里山塘',
       zone: 'z5',
       day: 'd4',
-      timeSlot: '11:55–13:15 น.',
+      timeSlot: '11:55 น.',
       lat: 31.3183,
       lng: 120.6063,
       metro: 'DiDi ~15 นาทีจาก Pingjiang Rd หรือ Metro Line 2 สถานี Shantang Street',
+      openHours: 'เปิด 24 ชม. (ร้านค้า ~09:30–22:00 น.)',
+      ticketPrice: 'เข้าฟรี (ล่องเรือ ~45–50 หยวน)',
+      showBadge: 'เข้าฟรี',
+      lastVerified: '2026-11-19',
       note: 'ย่านคลองเก่า 7 ลี้สุดคลาสสิก แวะทานมื้อเที่ยงและถ่ายรูปสะพานโค้ง/เรือพาย (เดินชมฟรี, ล่องเรือ ~45–50 หยวน)',
       img: 'place_images/suzhou_shantang.jpg'
     },
@@ -201,10 +222,14 @@ window.TRIP_DATA = {
       cn: '苏州 · 金鸡湖',
       zone: 'z5',
       day: 'd4',
-      timeSlot: '13:30–14:00 น.',
+      timeSlot: '13:25 น.',
       lat: 31.3208,
       lng: 120.7025,
-      metro: 'DiDi ~25 นาที หรือ Metro Line 1 สถานี Culture & Expo Center / Moon Harbor',
+      metro: 'DiDi ~25–30 นาที หรือ Metro Line 1 สถานี Culture & Expo Center / Moon Harbor',
+      openHours: 'เปิด 24 ชม.',
+      ticketPrice: 'เข้าฟรี',
+      showBadge: 'เข้าฟรี',
+      lastVerified: '2026-11-19',
       note: 'แลนด์มาร์กโซนเมืองใหม่ Suzhou Industrial Park ชมวิวตึก Gate of the Orient ริมทะเลสาบ (เข้าชมฟรี)',
       img: 'place_images/suzhou_jinji_lake.jpg'
     },
@@ -214,11 +239,15 @@ window.TRIP_DATA = {
       cn: '苏州之眼摩天轮',
       zone: 'z5',
       day: 'd4',
-      timeSlot: '14:00–14:30 น.',
+      timeSlot: '13:55 น.',
       lat: 31.3143,
       lng: 120.7127,
-      metro: 'เดินเลียบทะเลสาบจินจีฝั่งตะวันออก ~10 นาที (ใกล้สถานี Culture & Expo Center)',
-      note: 'ชิงช้าสวรรค์ริมทะเลสาบจินจี ถ่ายรูปแคปซูลชมวิวพาโนรามา (ขึ้นชิงช้าสวรรค์มีค่าตั๋ว ~120–150 หยวน / ถ่ายรูปด้านนอกฟรี)',
+      metro: 'เดินเลียบทะเลสาบจินจีฝั่งตะวันออก ~10 นาที (เผื่อเรียก DiDi ~14:25 น. ไป Suzhou SIP)',
+      openHours: '10:00–22:00 น.',
+      ticketPrice: 'ถ่ายรูปด้านนอกฟรี (ขึ้นชิงช้า ~120–150 หยวน)',
+      showBadge: 'เข้าฟรี',
+      lastVerified: '2026-11-19',
+      note: 'ชิงช้าสวรรค์ริมทะเลสาบจินจี ถ่ายรูปแคปซูลชมวิวพาโนรามา ออกเดินทางไปสถานี SIP ไม่เกิน 14:25 น. เพื่อเผื่อเวลาก่อนรถออก 30 นาที',
       img: 'place_images/suzhou_eye_ferris.jpg'
     },
 
@@ -242,10 +271,14 @@ window.TRIP_DATA = {
       cn: '黄金城道步行街',
       zone: 'z4',
       day: 'd2',
-      timeSlot: '09:35–10:15 น. (แสงเช้า)',
+      timeSlot: '09:35 น. (แสงเช้า)',
       lat: 31.1938,
       lng: 121.4047,
       metro: 'Metro Line 10 สถานี Yili Road ทางออก 3 เดิน 5 นาที (หรือ Line 15 Hongbaoshi Rd ทางออก 2)',
+      openHours: 'เปิด 24 ชม.',
+      ticketPrice: 'เข้าฟรี',
+      showBadge: 'เข้าฟรี',
+      lastVerified: '2026-11-19',
       note: 'ถนนคนเดินยาว ~800 ม. เรียงรายด้วยต้นแปะก๊วยสีทอง & อาคารยุโรป ไปช่วง 09:00–10:00 น. แสงนุ่มคนน้อย ชุดโทนคาเมล/ขาวถ่ายสวยสุด',
       img: null
     },
@@ -259,6 +292,10 @@ window.TRIP_DATA = {
       lat: 31.2044,
       lng: 121.4384,
       metro: 'Metro Line 10 / 11 สถานี Jiaotong University ทางออก 7',
+      openHours: 'ถ่ายรูปด้านนอก 24 ชม.',
+      ticketPrice: 'เข้าฟรี',
+      showBadge: 'เข้าฟรี',
+      lastVerified: '2026-11-19',
       note: 'แลนด์มาร์กตึกหัวเรือย่านเขตเช่าฝรั่งเศส ถ่ายรูปมุมยอดฮิตหัวมุมถนน Huaihai & Wukang',
       img: 'place_images/wukang_mansion.jpg'
     },
@@ -268,10 +305,14 @@ window.TRIP_DATA = {
       cn: '安福路',
       zone: 'z4',
       day: 'd2',
-      timeSlot: '11:15 น.',
+      timeSlot: '11:20 น.',
       lat: 31.2137,
       lng: 121.4427,
       metro: 'Metro Line 1 / 7 สถานี Changshu Rd ทางออก 8 (หรือเดินต่อจากตึกอู๋คังตามถนน Wukang Rd)',
+      openHours: 'ร้านค้า ~10:00–22:00 น.',
+      ticketPrice: 'เข้าฟรี',
+      showBadge: 'เข้าฟรี',
+      lastVerified: '2026-11-19',
       note: 'ถนนคาเฟ่และร้านไลฟ์สไตล์สุดชิค แวะ Wiggle Wiggle, 13DE MARZO, BM และร้านกาแฟใต้ร่มไม้',
       img: 'place_images/anfu_road.jpg'
     },
@@ -285,6 +326,10 @@ window.TRIP_DATA = {
       lat: 31.2233,
       lng: 121.4454,
       metro: 'Metro Line 2 / 7 / 14 สถานี Jing\'an Temple ทางออก 1 หรือ 2',
+      openHours: '07:30–17:00 น.',
+      ticketPrice: '50 หยวน',
+      showBadge: 'ซื้อตั๋วหน้างาน',
+      lastVerified: '2026-11-19',
       note: 'วัดทองคำใจกลางย่านธุรกิจเซี่ยงไฮ้ ค่าเข้า 50 หยวน (ถ่ายรูปมุมสะพานลอยหน้าวัดสวยมาก)',
       img: 'place_images/ex_jingan_temple.jpg'
     },
@@ -298,6 +343,10 @@ window.TRIP_DATA = {
       lat: 31.1749,
       lng: 121.4518,
       metro: 'Metro Line 11 / 12 สถานี Longhua ทางออก 2',
+      openHours: '07:00–16:30 น.',
+      ticketPrice: 'เข้าฟรี',
+      showBadge: 'เข้าฟรี',
+      lastVerified: '2026-11-19',
       note: 'วัดเก่าแก่ที่สุดในเซี่ยงไฮ้ (อายุกว่า 1,700 ปี) มีเจดีย์หลงหัว 7 ชั้นและบะหมี่เจขึ้นชื่อ',
       img: 'place_images/ex_longhua_temple.jpg'
     },
@@ -311,6 +360,10 @@ window.TRIP_DATA = {
       lat: 31.2188,
       lng: 121.4748,
       metro: 'Metro Line 10 / 13 สถานี Site of the First CPC · Xintiandi',
+      openHours: 'ร้านค้า ~10:00–22:30 น.',
+      ticketPrice: 'เข้าฟรี',
+      showBadge: 'เข้าฟรี',
+      lastVerified: '2026-11-19',
       note: 'ย่านบ้านอิฐสือคู่เหมิน (Shikumen) ผสมผสานร้านอาหาร คาเฟ่ และช้อปปิ้งสุดหรู',
       img: 'place_images/ex_xintiandi.jpg'
     },
@@ -378,6 +431,11 @@ window.TRIP_DATA = {
       lat: 31.1440,
       lng: 121.6618,
       metro: 'Metro Line 1 → Xujiahui ต่อ Line 11 สุดสายสถานี Disney Resort (~55 นาที)',
+      openHours: '08:30–21:30 น. (เช็กแอปตามวัน)',
+      ticketPrice: '~475–719 หยวน (ตามวัน)',
+      bookingUrl: 'https://www.shanghaidisneyresort.com/en/',
+      showBadge: 'ต้องจอง',
+      lastVerified: '2026-11-19',
       note: 'ล็อกวันอังคารที่ 8 ธ.ค. คนน้อยกว่าวันหยุด! โซนแนะนำ: Zootopia, TRON, Pirates of the Caribbean และชมพลุหน้าปราสาท',
       img: 'place_images/disney.jpg'
     },
@@ -406,7 +464,13 @@ window.TRIP_DATA = {
       lat: 31.2426,
       lng: 121.4881,
       metro: 'Metro Line 2 / 10 สถานี East Nanjing Rd ทางออก 6 หรือ Line 12 Tiantong Rd',
-      note: 'ตลาดคริสต์มาสสไตล์เยอรมันสุดคึกคักหน้าโบสถ์ Union Church จุดเช็กอินไฮไลต์ช่วง ธ.ค. (วันพุธเปิด 15:00–22:00 น. เข้าช่วง 18:30–19:00 ไฟสวยที่สุด)',
+      openHours: '25 พ.ย.–27 ธ.ค. 2026 · พ.–ศ. 15:00–22:00 / ส.–อา. 12:00–22:00',
+      closedDays: ['จันทร์', 'อังคาร'],
+      ticketPrice: 'ล่วงหน้า 30 หยวน (พ.–ศ.) / 38 (ส.–อา.) · หน้างาน 40 / 48 หยวน',
+      bookingUrl: 'https://www.smartshanghai.com/events/',
+      showBadge: 'ต้องซื้อตั๋ว',
+      lastVerified: '2026-11-19',
+      note: 'ตลาดคริสต์มาสสไตล์เยอรมันหน้าโบสถ์ Union Church จุดเช็กอินไฮไลต์ช่วง ธ.ค. (วันพุธเปิด 15:00–22:00 น. จองตั๋วล่วงหน้าผ่าน SmartShanghai ถูกกว่าและเข้าเร็ว)',
       img: 'place_images/shanghai_christmas_rockbund.jpg'
     },
     {
@@ -419,6 +483,10 @@ window.TRIP_DATA = {
       lat: 31.2422,
       lng: 121.4874,
       metro: 'Metro Line 2 / 10 สถานี East Nanjing Rd ทางออก 6 เดินขึ้นเหนือ 500 ม.',
+      openHours: 'เปิด 24 ชม.',
+      ticketPrice: 'เข้าฟรี',
+      showBadge: 'เข้าฟรี',
+      lastVerified: '2026-11-19',
       note: 'กลุ่มตึกประวัติศาสตร์ต้นกำเนิดเดอะบันด์ บรรยากาศยุโรปคลาสสิกและแกลเลอรีศิลปะ',
       img: 'place_images/rockbund.jpg'
     },
@@ -432,6 +500,10 @@ window.TRIP_DATA = {
       lat: 31.2395,
       lng: 121.4901,
       metro: 'Metro Line 2 / 10 สถานี East Nanjing Rd ทางออก 2 เดินตรงสุดถนน',
+      openHours: 'เปิด 24 ชม. (เปิดไฟ ~18:00–22:00 น.)',
+      ticketPrice: 'เข้าฟรี',
+      showBadge: 'เข้าฟรี',
+      lastVerified: '2026-11-19',
       note: 'ชมวิวเปิดไฟตึกระฟ้าฝั่งผู่ตงและหอไข่มุกเวลา 18:00 น. ตรง พร้อมแนวตึกยุโรปฝั่งผู่ซี',
       img: 'place_images/ex_the_bund.jpg'
     },
@@ -495,24 +567,16 @@ window.TRIP_DATA = {
       cn: '上海自然博物馆',
       zone: 'z3',
       day: 'd5',
-      timeSlot: '10:00 น.',
+      timeSlot: '09:50 น.',
       lat: 31.2362,
       lng: 121.4628,
       metro: 'Metro Line 13 สถานี Natural History Museum ทางออก 2 (เดินจากโรงแรม 10 นาที)',
-      note: 'พิพิธภัณฑ์ขนาดใหญ่ทันสมัย ชมโครงกระดูกไดโนเสาร์และโซนธรรมชาติ (ปิดวันจันทร์)',
-      img: null
-    },
-    {
-      id: '1000trees',
-      name: '🌳 ตึกต้นไม้พันต้น (Tian An 1,000 Trees)',
-      cn: '天安·千树',
-      zone: 'z3',
-      day: 'd5',
-      timeSlot: '11:15 น.',
-      lat: 31.2463,
-      lng: 121.4422,
-      metro: 'Metro Line 13 สถานี Jiangning Rd ทางออก 1 เดิน 500 ม.',
-      note: 'สถาปัตยกรรมภูเขาต้นไม้พันต้นริมคลองซูโจว ถ่ายรูปมุมสะพาน Changhua Rd Bridge สวยที่สุด',
+      openHours: 'พ.–จ. 09:00–17:00 น. (เข้าได้ถึง 16:00 น.)',
+      closedDays: ['อังคาร'],
+      ticketPrice: '30 หยวน',
+      showBadge: 'ปิดวันอังคาร',
+      lastVerified: '2026-11-19',
+      note: 'พิพิธภัณฑ์ขนาดใหญ่ทันสมัย ชมโครงกระดูกไดโนเสาร์และโซนธรรมชาติ (ปิดวันอังคาร · พฤหัสบดีเปิดปกติ)',
       img: null
     },
     {
@@ -521,10 +585,15 @@ window.TRIP_DATA = {
       cn: '徐家汇天主堂',
       zone: 'z4',
       day: 'd5',
-      timeSlot: '12:00–12:35 น.',
+      timeSlot: '11:20 น.',
       lat: 31.1904,
       lng: 121.4418,
       metro: 'Metro Line 1 / 9 / 11 สถานี Xujiahui ทางออก 3 เดิน 4 นาที',
+      openHours: 'อ.–ส. 09:00–16:00 น. (เข้าได้ถึง 15:30 น.)',
+      closedDays: ['จันทร์'],
+      ticketPrice: 'เข้าฟรี',
+      showBadge: 'ปิดวันจันทร์',
+      lastVerified: '2026-11-19',
       note: 'มหาวิหารโกธิคอิฐแดงคู่ที่สวยที่สุดในเซี่ยงไฮ้ เข้าฟรี! เปิด อ.–ส. 09:00–16:00 น. (ปิดวันจันทร์ จึงจัดมาไว้วันพฤหัสฯ)',
       img: 'place_images/xujiahui_cathedral.jpg'
     },
@@ -534,10 +603,14 @@ window.TRIP_DATA = {
       cn: '局门路 · 八号桥三期',
       zone: 'z5',
       day: 'd5',
-      timeSlot: '12:55–13:35 น.',
+      timeSlot: '12:15 น.',
       lat: 31.1985,
       lng: 121.4834,
       metro: 'Metro Line 13 สถานี World Expo Museum ทางออก 3 เดิน ~600 ม. (หรือ Line 4/8 Xizang South Rd)',
+      openHours: 'เปิด 24 ชม.',
+      ticketPrice: 'เข้าฟรี',
+      showBadge: 'เข้าฟรี',
+      lastVerified: '2026-11-19',
       note: 'ถนนใบแปะก๊วยสไตล์วินเทจกำแพงอิฐแดง มุมลับ: ขึ้นลิฟต์ไประเบียงชั้น 3 ตึก 8th Bridge เฟส 3 ถ่ายมุมสูงคนน้อย แนะนำชุดโทนครีม/โอ๊ต/แดงไวน์',
       img: null
     },
@@ -547,11 +620,16 @@ window.TRIP_DATA = {
       cn: '中华艺术宫',
       zone: 'z5',
       day: 'd5',
-      timeSlot: '13:35 น.',
+      timeSlot: '13:15 น.',
       lat: 31.1852,
       lng: 121.4941,
-      metro: 'Metro Line 8 สถานี China Art Museum ทางออก 3 (ปิดวันจันทร์)',
-      note: 'อดีต China Pavilion งาน World Expo อาคารทรงมงกุฎสีแดงขนาดมหึมา เข้าชมฟรี (จองคิวหน้างาน/WeChat)',
+      metro: 'Metro Line 8 สถานี China Art Museum ทางออก 3',
+      openHours: 'อ.–อา. 10:00–18:00 น. (เข้าได้ถึง 17:00 น.)',
+      closedDays: ['จันทร์'],
+      ticketPrice: 'เข้าฟรี (พกพาสปอร์ต)',
+      showBadge: 'ปิดวันจันทร์',
+      lastVerified: '2026-11-19',
+      note: 'อดีต China Pavilion งาน World Expo อาคารทรงมงกุฎสีแดงขนาดมหึมา เข้าชมฟรี (ยื่นพาสปอร์ตที่ทางเข้า · นิทรรศการพิเศษบางโซนมีค่าใช้จ่าย)',
       img: null
     },
     {
@@ -560,10 +638,15 @@ window.TRIP_DATA = {
       cn: '浦东美术馆 · 滨江大道2777号',
       zone: 'z2',
       day: 'd5',
-      timeSlot: '14:45 น.',
+      timeSlot: '14:30 น.',
       lat: 31.2381,
       lng: 121.4963,
       metro: 'Metro Line 2 / 14 สถานี Lujiazui ทางออก 2 เดิน 5–10 นาที',
+      openHours: '10:00–21:00 น.',
+      ticketPrice: '~100–150 หยวน',
+      bookingUrl: 'https://www.trip.com/',
+      showBadge: 'ต้องจอง',
+      lastVerified: '2026-11-19',
       note: 'พิพิธภัณฑ์ศิลปะร่วมสมัยริมแม่น้ำหวงผู่ จุดถ่ายรูปกระจกบานยักษ์สะท้อนวิวฝั่งเดอะบันด์',
       img: 'place_images/museum_of_art_pudong.jpg'
     },
@@ -573,10 +656,14 @@ window.TRIP_DATA = {
       cn: '明珠环岛',
       zone: 'z2',
       day: 'd5',
-      timeSlot: '16:15 น.',
+      timeSlot: '15:45 น.',
       lat: 31.2397,
       lng: 121.4998,
       metro: 'Metro Line 2 / 14 สถานี Lujiazui ทางออก 1 หรือ 2',
+      openHours: 'เปิด 24 ชม.',
+      ticketPrice: 'เข้าฟรี',
+      showBadge: 'เข้าฟรี',
+      lastVerified: '2026-11-19',
       note: 'สกายวอล์กวงเวียนใจกลางลู่เจียจุ่ย จุดถ่ายรูปคู่หอไข่มุกและกลุ่มตึกระฟ้าสามพี่น้อง',
       img: 'place_images/mingzhu_roundabout.jpg'
     },
@@ -586,10 +673,14 @@ window.TRIP_DATA = {
       cn: '迪士尼旗舰店 (陆家嘴)',
       zone: 'z2',
       day: 'd5',
-      timeSlot: '16:45 น.',
+      timeSlot: '16:15 น.',
       lat: 31.2385,
       lng: 121.4995,
       metro: 'Metro Line 2 / 14 สถานี Lujiazui ติดวงเวียนหมิงจู',
+      openHours: '10:00–22:00 น.',
+      ticketPrice: 'เข้าฟรี',
+      showBadge: 'เข้าฟรี',
+      lastVerified: '2026-11-19',
       note: 'สาขาแฟลกชิปใหญ่ที่สุดในเอเชีย (ไม่ต้องใช้ตั๋วสวนสนุก) เก็บของฝากดิสนีย์ที่พลาดจากวันอังคาร',
       img: null
     },
@@ -599,10 +690,11 @@ window.TRIP_DATA = {
       cn: '好利来 · 正大广场 1F',
       zone: 'z2',
       day: 'd5',
-      timeSlot: '17:15 น.',
+      timeSlot: '16:45 น.',
       lat: 31.2372,
       lng: 121.4989,
       metro: 'Metro Line 2 / 14 สถานี Lujiazui ชั้น 1 ห้าง Super Brand Mall',
+      openHours: '10:00–22:00 น.',
       note: 'ร้านเบเกอรี่ตกแต่งธีมสถานีอวกาศสุดล้ำ ชีสเค้กกึ่งสุก (Half-baked Cheesecake) เป็นของฝากยอดฮิต',
       img: null
     },
@@ -612,10 +704,14 @@ window.TRIP_DATA = {
       cn: '北外滩滨江绿地',
       zone: 'z2',
       day: 'd5',
-      timeSlot: '17:50 น. (ชมไฟพลบค่ำ)',
+      timeSlot: '17:20 น. (ชมไฟพลบค่ำ)',
       lat: 31.2475,
       lng: 121.4995,
       metro: 'Metro Line 12 สถานี Int\'l Cruise Terminal ทางออก 3 เดิน 450 ม.',
+      openHours: 'เปิด 24 ชม.',
+      ticketPrice: 'เข้าฟรี',
+      showBadge: 'เข้าฟรี',
+      lastVerified: '2026-11-19',
       note: 'จุดถ่ายรูปโดมเงิน "หยดน้ำสีเงิน" คู่ฉากหลังหอไข่มุกและเส้นขอบฟ้าผู่ตงแบบพาโนรามา',
       img: 'place_images/north_bund.jpg'
     },
@@ -625,10 +721,14 @@ window.TRIP_DATA = {
       cn: '外滩牛',
       zone: 'z1',
       day: 'd5',
-      timeSlot: '18:45 น.',
+      timeSlot: '18:15 น.',
       lat: 31.2328,
       lng: 121.4909,
       metro: 'Metro Line 10 / 14 สถานี Yu Garden ทางออก 1 เดินไปริมน้ำ',
+      openHours: 'เปิด 24 ชม.',
+      ticketPrice: 'เข้าฟรี',
+      showBadge: 'เข้าฟรี',
+      lastVerified: '2026-11-19',
       note: 'รูปปั้นกระทิงทองแดงสุดขลังย่านการเงินเดอะบันด์ตอนใต้ ใกล้ท่าเรือข้ามฟาก',
       img: null
     },
@@ -638,10 +738,14 @@ window.TRIP_DATA = {
       cn: '豫园老街',
       zone: 'z1',
       day: 'd5',
-      timeSlot: '19:15 น.',
+      timeSlot: '18:45 น.',
       lat: 31.2272,
       lng: 121.4921,
       metro: 'Metro Line 10 / 14 สถานี Yu Garden ทางออก 1 เดิน 300 ม.',
+      openHours: '09:00–22:00 น. (เปิดไฟถึง 22:00 น.)',
+      ticketPrice: 'เข้าฟรี (โซนสวนอวี้หยวนปิด 16:30 น.)',
+      showBadge: 'เข้าฟรี',
+      lastVerified: '2026-11-19',
       note: 'ตลาดเมืองเก่าสถาปัตยกรรมจีนโบราณเปิดไฟสีทองอร่ามยามค่ำคืน เดินชมสะพานเก้าโค้ง',
       img: 'place_images/ex_yuyuan_old_street.jpg'
     },
@@ -651,10 +755,11 @@ window.TRIP_DATA = {
       cn: '陶陶居 · 新世界城 7F',
       zone: 'z1',
       day: 'd5',
-      timeSlot: '20:15 น. (มื้อค่ำ)',
+      timeSlot: '19:40 น. (มื้อค่ำ)',
       lat: 31.2348,
       lng: 121.4738,
       metro: 'Metro Line 1 / 2 / 8 สถานี People\'s Square (ห้าง New World City ชั้น 7)',
+      openHours: '10:00–21:30 น.',
       note: 'ติ่มซัมกวางตุ้งระดับตำนาน ฮะเก๋ากุ้งตัวโตและหมูกรอบขึ้นชื่อ',
       img: 'place_images/tao_tao_ju.jpg'
     },
@@ -664,10 +769,11 @@ window.TRIP_DATA = {
       cn: '蟹叁宝 · 南京东路',
       zone: 'z1',
       day: 'd5',
-      timeSlot: '21:00 น.',
+      timeSlot: '20:25 น.',
       lat: 31.2360,
       lng: 121.4818,
       metro: 'Metro Line 1 / 2 / 8 สถานี People\'s Square / East Nanjing Rd',
+      openHours: '11:00–23:00 น.',
       note: 'บะหมี่และข้าวราดซอสมันปูเข้มข้นเต็มคำ ปิดดึกเหมาะเป็นมื้อปิดท้ายวัน',
       img: 'place_images/xie_san_bao.jpg'
     },
@@ -677,10 +783,11 @@ window.TRIP_DATA = {
       cn: '上海第一食品商店',
       zone: 'z1',
       day: 'd5',
-      timeSlot: '21:30 น.',
+      timeSlot: '20:55 น.',
       lat: 31.2351,
       lng: 121.4774,
       metro: 'Metro Line 1 / 2 / 8 สถานี People\'s Square ทางออก 19',
+      openHours: '09:30–22:00 น.',
       note: 'ศูนย์รวมของฝากเซี่ยงไฮ้ ขนมผีเสื้อ (Butterfly Cookies), ลูกอม White Rabbit และชาจีน',
       img: null
     },
@@ -690,11 +797,12 @@ window.TRIP_DATA = {
       cn: '鲍师傅糕点 · 喜茶',
       zone: 'z1',
       day: 'd5',
-      timeSlot: '22:00 น.',
+      timeSlot: '21:15 น.',
       lat: 31.2364,
       lng: 121.4819,
-      metro: 'ย่าน East Nanjing Rd (เดินจาก First Food Hall 4 นาที)',
-      note: 'ขนมเปี๊ยะหน้าหมูหยองสาหร่าย (Xiao Bei) ของ Bao\'s Pastry คู่ชาองุ่นชีส HEYTEA',
+      metro: 'ย่าน East Nanjing Rd (เดินจาก First Food Hall 4 นาที · กลับโรงแรมไม่เกิน 21:30 น. พักผ่อนก่อนบิน)',
+      openHours: '10:00–22:00 น.',
+      note: 'ขนมเปี๊ยะหน้าหมูหยองสาหร่าย (Xiao Bei) ของ Bao\'s Pastry คู่ชาองุ่นชีส HEYTEA ปิดทริปไม่เกิน 21:30 น. เพื่อเตรียมตัวเช็กเอาท์ 04:45 น.',
       img: null
     }
   ],
@@ -717,9 +825,9 @@ window.TRIP_DATA = {
         {
           stepNo: 2,
           placeId: 'hotel',
-          time: '21:30',
+          time: '22:45',
           mode: 'didi',
-          transitText: 'DiDi ~50 นาที (สะดวกสุดพร้อมกระเป๋า) หรือ Maglev+Line 2/1',
+          transitText: 'DiDi ~50–60 นาที (แผนหลัก · หลัง ตม.+รับกระเป๋า 45–75 น. ถึงโรงแรม ~22:30–23:15 น.)',
           coords: [
             [31.1443, 121.8083],
             [31.1811, 121.7876],
@@ -736,14 +844,14 @@ window.TRIP_DATA = {
           ]
         }
       ],
-      altTitle: '🔀 ทางเลือกสำรอง (Option B): Maglev → สถานีถนนหลงหยาง → Metro Line 2/1',
+      altTitle: '🔀 ทางเลือกสำรอง (Option B): Maglev (300 km/h) → ถนนหลงหยาง → Metro Line 2/1',
       altSteps: [
         {
           stepNo: 'B1',
           placeId: 'longyang',
           time: '21:42',
           mode: 'maglev',
-          transitText: 'Maglev (PVG T1 → Longyang Rd ~8 นาที · รอบสุดท้าย 21:42 น. · โชว์ Boarding Pass 40 หยวน)',
+          transitText: 'Maglev PVG T1 → Longyang Rd ~8 นาที (ต้องออกจาก Arrivals ก่อน 21:42 น. ซึ่งแทบเป็นไปไม่ได้ถ้ามีกระเป๋าโหลด · บางตารางมีรอบดึก 22:15 / 22:40 — เช็กหน้างาน · โชว์ Boarding Pass 40 หยวน)',
           coords: [
             [31.1443, 121.8083],
             [31.1518, 121.8053],
@@ -756,9 +864,9 @@ window.TRIP_DATA = {
         {
           stepNo: 'B2',
           placeId: 'hotel',
-          time: '22:25',
+          time: '22:35',
           mode: 'L2',
-          transitText: 'Metro Line 2 (Longyang Rd → People\'s Sq) ต่อ Line 1 → Xinzha Rd (หรือเรียก DiDi ~20 นาที)',
+          transitText: 'Metro Line 2 (Longyang Rd → People\'s Sq) ต่อ Line 1 → Xinzha Rd หรือ DiDi ~20–25 น. (ถึงโรงแรม ~22:35–23:15 น.)',
           coords: [
             [31.2031, 121.5583],
             [31.2091, 121.5509],
@@ -1070,16 +1178,16 @@ window.TRIP_DATA = {
           placeId: 'sh_station',
           time: '07:20',
           mode: 'L1',
-          transitText: 'Metro Line 1 ถึง Shanghai Station ~07:20 น. (จำเป็นต้องถึงก่อนรถออกอย่างน้อย 30 นาที เพื่อตรวจกระเป๋า/สแกนพาสปอร์ต)',
+          transitText: 'Metro Line 1 ถึง Shanghai Station ลานใต้ (南广场) ~07:20 น. (ต้องถึงก่อนรถออกอย่างน้อย 30 นาที เพื่อตรวจกระเป๋า/สแกนพาสปอร์ต)',
           coords: [
             [31.2387, 121.4676],
             [31.2408, 121.4590],
             [31.2498, 121.4574],
-            [31.2497, 121.4550]
+            [31.2480, 121.4548]
           ],
           segments: [
             { mode: 'L1', coords: [[31.2387, 121.4676], [31.2408, 121.4590], [31.2498, 121.4574]] },
-            { mode: 'walk', coords: [[31.2498, 121.4574], [31.2497, 121.4550]] }
+            { mode: 'walk', coords: [[31.2498, 121.4574], [31.2480, 121.4548]] }
           ]
         },
         {
@@ -1087,16 +1195,16 @@ window.TRIP_DATA = {
           placeId: 'suzhou_station',
           time: '08:00 → 08:30',
           mode: 'crh',
-          transitText: 'รถไฟ CRH 08:00 น. (จองแล้ว · ชั้นสอง Shanghai Station → Suzhou Station ตามแนวรางจริง)',
+          transitText: 'รถไฟ CRH 08:00 น. (จองแล้ว · ชั้นสอง Shanghai Station → ลานใต้ Suzhou Station ตามแนวรางจริง)',
           coords: [
-            [31.2497, 121.4550],
+            [31.2480, 121.4548],
             [31.2635, 121.4008],
             [31.2794, 121.3135],
             [31.3146, 121.1584],
             [31.3660, 120.9576],
             [31.3798, 120.8613],
             [31.3406, 120.7109],
-            [31.3284, 120.6102]
+            [31.3278, 120.6111]
           ]
         },
         {
@@ -1104,9 +1212,9 @@ window.TRIP_DATA = {
           placeId: 'suzhou_garden',
           time: '08:45',
           mode: 'didi',
-          transitText: 'จากสถานี Suzhou ต่อ DiDi ~10 นาที (หรือ Metro Line 4→6) เข้าสวนจัวเจิ้งหยวน',
+          transitText: 'จากลานใต้สถานี Suzhou (南广场) ต่อ DiDi ~10 นาที (หรือ Metro Line 4→6) เข้าสวนจัวเจิ้งหยวน',
           coords: [
-            [31.3284, 120.6102],
+            [31.3278, 120.6111],
             [31.3275, 120.6077],
             [31.3280, 120.6153],
             [31.3308, 120.6224],
@@ -1145,9 +1253,9 @@ window.TRIP_DATA = {
         {
           stepNo: 7,
           placeId: 'suzhou_jinji_lake',
-          time: '13:30',
+          time: '13:25',
           mode: 'didi',
-          transitText: 'นั่ง DiDi ~25 นาที (หรือ Metro Line 2→1) ไปโซนเมืองใหม่ริมทะเลสาบจินจี',
+          transitText: 'นั่ง DiDi ~25–30 นาที (เผื่อรถติดกลางวัน หรือ Metro Line 2→1) ไปริมทะเลสาบจินจี',
           coords: [
             [31.3183, 120.6063],
             [31.3234, 120.6089],
@@ -1164,9 +1272,9 @@ window.TRIP_DATA = {
         {
           stepNo: 8,
           placeId: 'suzhou_eye',
-          time: '14:00',
+          time: '13:55',
           mode: 'walk',
-          transitText: 'เดินเลียบทะเลสาบ ~10 นาที ชม Suzhou Eye (ออกเดินทางไปสถานีรถไฟ 14:30 น. เพื่อถึงสถานี 14:50 น.)',
+          transitText: 'เดินเลียบทะเลสาบ ~10 นาที ชม Suzhou Eye (เริ่มเรียก DiDi ช่วง 14:25 น. เผื่อเวลา 15–20 น. ไปสถานี)',
           coords: [
             [31.3208, 120.7025],
             [31.3175, 120.7078],
@@ -1178,7 +1286,7 @@ window.TRIP_DATA = {
           placeId: 'suzhou_sip_station',
           time: '14:50',
           mode: 'didi',
-          transitText: 'DiDi ~10 นาทีขึ้นเหนือไปสถานี Suzhou Industrial Park (ถึงก่อนรถออกอย่างน้อย 30 นาที)',
+          transitText: 'DiDi ~10–15 นาที (+เผื่อรอรถ 10 น.) ไปสถานี Suzhou SIP (คง buffer ถึงสถานีก่อนรถออก 30 นาที)',
           coords: [
             [31.3143, 120.7127],
             [31.3183, 120.7137],
@@ -1193,7 +1301,7 @@ window.TRIP_DATA = {
           placeId: 'sh_station',
           time: '15:20 → 15:55',
           mode: 'crh',
-          transitText: 'รถไฟ CRH ขากลับ 15:20 น. (Suzhou SIP / Suzhou → Shanghai Station ตามแนวรางจริง)',
+          transitText: 'รถไฟ CRH ขากลับ 15:20 น. (Suzhou SIP → ลานใต้ Shanghai Station ตามแนวรางจริง)',
           coords: [
             [31.3406, 120.7109],
             [31.3798, 120.8613],
@@ -1201,7 +1309,7 @@ window.TRIP_DATA = {
             [31.3146, 121.1584],
             [31.2794, 121.3135],
             [31.2635, 121.4008],
-            [31.2497, 121.4550]
+            [31.2480, 121.4548]
           ]
         },
         {
@@ -1209,9 +1317,10 @@ window.TRIP_DATA = {
           placeId: 'nanjing_e',
           time: '16:15',
           mode: 'L2',
-          transitText: 'Metro Line 1 (Shanghai Station → People\'s Sq) ต่อ Line 2 → East Nanjing Rd ช้อปก่อนค่ำ',
+          transitText: 'Metro Line 1 (Shanghai Station ลานใต้ → People\'s Sq) ต่อ Line 2 → East Nanjing Rd ช้อปก่อนค่ำ',
           coords: [
-            [31.2497, 121.4550],
+            [31.2480, 121.4548],
+            [31.2498, 121.4574],
             [31.2408, 121.4590],
             [31.2387, 121.4676],
             [31.2321, 121.4754],
@@ -1219,7 +1328,8 @@ window.TRIP_DATA = {
             [31.2368, 121.4810]
           ],
           segments: [
-            { mode: 'L1', coords: [[31.2497, 121.4550], [31.2408, 121.4590], [31.2387, 121.4676], [31.2321, 121.4754]] },
+            { mode: 'walk', coords: [[31.2480, 121.4548], [31.2498, 121.4574]] },
+            { mode: 'L1', coords: [[31.2498, 121.4574], [31.2408, 121.4590], [31.2387, 121.4676], [31.2321, 121.4754]] },
             { mode: 'L2', coords: [[31.2321, 121.4754], [31.2378, 121.4842]] },
             { mode: 'walk', coords: [[31.2378, 121.4842], [31.2368, 121.4810]] }
           ]
@@ -1319,7 +1429,7 @@ window.TRIP_DATA = {
         {
           stepNo: 3,
           placeId: 'natural_hist',
-          time: '10:00',
+          time: '09:50',
           mode: 'L13',
           transitText: 'Line 2 (People\'s Sq → W. Nanjing Rd) ต่อ Line 13 → Natural History Museum',
           coords: [
@@ -1337,31 +1447,13 @@ window.TRIP_DATA = {
         },
         {
           stepNo: 4,
-          placeId: '1000trees',
-          time: '11:15',
-          mode: 'L13',
-          transitText: 'Metro Line 13 (Natural History Museum → Hanzhong Rd → Jiangning Rd) เดิน 500 ม.',
+          placeId: 'xujiahui_cathedral',
+          time: '11:20',
+          mode: 'L1',
+          transitText: 'Line 13 (Natural History Museum → Hanzhong Rd) ต่อ Line 1 → Xujiahui ทางออก 3',
           coords: [
             [31.2362, 121.4628],
             [31.2363, 121.4624],
-            [31.2408, 121.4590],
-            [31.2443, 121.4446],
-            [31.2463, 121.4422]
-          ],
-          segments: [
-            { mode: 'L13', coords: [[31.2362, 121.4628], [31.2363, 121.4624], [31.2408, 121.4590], [31.2443, 121.4446]] },
-            { mode: 'walk', coords: [[31.2443, 121.4446], [31.2463, 121.4422]] }
-          ]
-        },
-        {
-          stepNo: 5,
-          placeId: 'xujiahui_cathedral',
-          time: '12:00',
-          mode: 'L1',
-          transitText: 'Line 13 (Jiangning Rd → Hanzhong Rd) ต่อ Line 1 → Xujiahui ทางออก 3 (หรือ DiDi 15 นาที)',
-          coords: [
-            [31.2463, 121.4422],
-            [31.2443, 121.4446],
             [31.2408, 121.4590],
             [31.2387, 121.4676],
             [31.2321, 121.4754],
@@ -1373,16 +1465,15 @@ window.TRIP_DATA = {
             [31.1904, 121.4418]
           ],
           segments: [
-            { mode: 'walk', coords: [[31.2463, 121.4422], [31.2443, 121.4446]] },
-            { mode: 'L13', coords: [[31.2443, 121.4446], [31.2408, 121.4590]] },
+            { mode: 'L13', coords: [[31.2362, 121.4628], [31.2363, 121.4624], [31.2408, 121.4590]] },
             { mode: 'L1', coords: [[31.2408, 121.4590], [31.2387, 121.4676], [31.2321, 121.4754], [31.2227, 121.4732], [31.2170, 121.4586], [31.2133, 121.4511], [31.2045, 121.4465], [31.1948, 121.4369]] },
             { mode: 'walk', coords: [[31.1948, 121.4369], [31.1904, 121.4418]] }
           ]
         },
         {
-          stepNo: 6,
+          stepNo: 5,
           placeId: 'jumen_ginkgo',
-          time: '12:55',
+          time: '12:15',
           mode: 'L9',
           transitText: 'Metro Line 9 (Xujiahui → Madang Rd) ต่อ Line 13 → World Expo Museum ทางออก 3 เดิน 600 ม.',
           coords: [
@@ -1403,9 +1494,9 @@ window.TRIP_DATA = {
           ]
         },
         {
-          stepNo: 7,
+          stepNo: 6,
           placeId: 'china_art',
-          time: '13:50',
+          time: '13:15',
           mode: 'L8',
           transitText: 'เดินไป Xizang South Rd นั่ง Metro Line 8 → China Art Museum ทางออก 3 (2 ป้าย)',
           coords: [
@@ -1420,9 +1511,9 @@ window.TRIP_DATA = {
           ]
         },
         {
-          stepNo: 8,
+          stepNo: 7,
           placeId: 'map_pudong',
-          time: '15:00',
+          time: '14:30',
           mode: 'L2',
           transitText: 'Line 8 (China Art Museum → People\'s Sq) ต่อ Line 2 → Lujiazui ทางออก 2',
           coords: [
@@ -1442,9 +1533,9 @@ window.TRIP_DATA = {
           ]
         },
         {
-          stepNo: 9,
+          stepNo: 8,
           placeId: 'mingzhu',
-          time: '16:15',
+          time: '15:45',
           mode: 'walk',
           transitText: 'เดินจากพิพิธภัณฑ์ MAP ขึ้นสกายวอล์กวงเวียนหมิงจู (~6 นาที)',
           coords: [
@@ -1454,9 +1545,9 @@ window.TRIP_DATA = {
           ]
         },
         {
-          stepNo: 10,
+          stepNo: 9,
           placeId: 'disney_ljz',
-          time: '16:45',
+          time: '16:15',
           mode: 'walk',
           transitText: 'เดินบนสกายวอล์กติดวงเวียนหมิงจู (2 นาที) ถึง Disney Store',
           coords: [
@@ -1466,9 +1557,9 @@ window.TRIP_DATA = {
           ]
         },
         {
-          stepNo: 11,
+          stepNo: 10,
           placeId: 'holiland',
-          time: '17:15',
+          time: '16:45',
           mode: 'walk',
           transitText: 'เดินเข้าห้าง Super Brand Mall ชั้น 1 (~3 นาที) ร้าน Holiland Travel',
           coords: [
@@ -1478,9 +1569,9 @@ window.TRIP_DATA = {
           ]
         },
         {
-          stepNo: 12,
+          stepNo: 11,
           placeId: 'north_bund',
-          time: '17:50',
+          time: '17:20',
           mode: 'L12',
           transitText: 'Metro Line 2 (Lujiazui → E. Nanjing Rd) ต่อ Line 10 → Tiantong Rd ต่อ Line 12 → Int\'l Cruise Terminal',
           coords: [
@@ -1500,9 +1591,9 @@ window.TRIP_DATA = {
           ]
         },
         {
-          stepNo: 13,
+          stepNo: 12,
           placeId: 'bund_bull',
-          time: '18:45',
+          time: '18:15',
           mode: 'didi',
           transitText: 'DiDi ข้ามสะพาน Waibaidu Bridge เลียบเดอะบันด์ลงใต้ (~10 นาที)',
           coords: [
@@ -1518,9 +1609,9 @@ window.TRIP_DATA = {
           ]
         },
         {
-          stepNo: 14,
+          stepNo: 13,
           placeId: 'yuyuan',
-          time: '19:15',
+          time: '18:45',
           mode: 'walk',
           transitText: 'เดินจากรูปปั้นกระทิงเข้าถนนคนเดินอวี้หยวน (~8 นาที)',
           coords: [
@@ -1530,9 +1621,9 @@ window.TRIP_DATA = {
           ]
         },
         {
-          stepNo: 15,
+          stepNo: 14,
           placeId: 'taotaoju',
-          time: '20:15',
+          time: '19:40',
           mode: 'L14',
           transitText: 'Metro Line 14/8 (Yu Garden → Dashijie → People\'s Square) ห้าง New World City 7F',
           coords: [
@@ -1550,9 +1641,9 @@ window.TRIP_DATA = {
           ]
         },
         {
-          stepNo: 16,
+          stepNo: 15,
           placeId: 'xiesanbao',
-          time: '21:00',
+          time: '20:25',
           mode: 'walk',
           transitText: 'เดินเข้าถนน East Nanjing Rd (~8 นาที) ชิมบะหมี่มันปู Xie San Bao',
           coords: [
@@ -1562,9 +1653,9 @@ window.TRIP_DATA = {
           ]
         },
         {
-          stepNo: 17,
+          stepNo: 16,
           placeId: 'first_food',
-          time: '21:30',
+          time: '20:55',
           mode: 'walk',
           transitText: 'เดินย้อนไปฝั่ง People\'s Square (~5 นาที) ซื้อของฝาก First Food Hall',
           coords: [
@@ -1574,11 +1665,11 @@ window.TRIP_DATA = {
           ]
         },
         {
-          stepNo: 18,
+          stepNo: 17,
           placeId: 'baos',
-          time: '22:00',
+          time: '21:15',
           mode: 'walk',
-          transitText: 'เดินปิดท้าย Bao\'s Pastry & ชาผลไม้ HEYTEA (~4 นาที)',
+          transitText: 'เดินปิดท้าย Bao\'s Pastry & HEYTEA (~4 นาที) แล้วกลับโรงแรมไม่เกิน 21:30 น.',
           coords: [
             [31.2351, 121.4774],
             [31.2358, 121.4798],

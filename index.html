@@ -1587,6 +1587,31 @@
         return DATA.transitStyles[mode] || { label: mode, color: '#475569', weight: 3.5 };
       }
 
+      function getBadgeStyle(label) {
+        const s = String(label || '');
+        if (s.includes('ปิด')) return { bg: '#ffe4e6', fg: '#be123c', solid: '#e11d48' };
+        if (s.includes('ฟรี')) return { bg: '#d1fae5', fg: '#047857', solid: '#059669' };
+        return { bg: '#fef3c7', fg: '#b45309', solid: '#d97706' };
+      }
+
+      function getDaySummaryStats(day) {
+        const steps = Array.isArray(day && day.steps) ? day.steps : [];
+        let totalWalkMeters = 0;
+        steps.forEach((s) => {
+          totalWalkMeters += getStepDistanceStats(s).walkMeters;
+        });
+        const walkKm = (totalWalkMeters / 1000).toFixed(2);
+        const startTime = steps.length ? String(steps[0].time).split(/[–→]/)[0].trim() : '';
+        const endTime = steps.length ? String(steps[steps.length - 1].time).split(/[–→]/).pop().trim() : '';
+        let pace = { label: '🟢 เบา', bg: '#dcfce7', fg: '#166534' };
+        if (totalWalkMeters >= 4500 || steps.length >= 14) {
+          pace = { label: '🔴 หนัก', bg: '#fee2e2', fg: '#991b1b' };
+        } else if (totalWalkMeters >= 1800 || steps.length >= 8) {
+          pace = { label: '🟡 กลาง', bg: '#fef3c7', fg: '#92400e' };
+        }
+        return { count: steps.length, totalWalkMeters, walkKm, startTime, endTime, pace };
+      }
+
       function buildPopupHtml(place, stepInfo) {
         const zone = DATA.zones[place.zone] || { shortName: place.zone, color: '#0284c7' };
         const amapUrl = `https://uri.amap.com/marker?position=${place.lng},${place.lat}&name=${encodeURIComponent(place.cn || place.name)}`;
@@ -1595,8 +1620,30 @@
         const stepBadge = stepInfo
           ? `<span class="popup-badge" style="background:#0f172a;">Step ${esc(stepInfo.stepNo)} • ${esc(stepInfo.time)}</span>`
           : '';
+        const statusBadge = place.showBadge
+          ? (() => {
+              const st = getBadgeStyle(place.showBadge);
+              return `<span class="popup-badge" style="background:${st.solid};">${esc(place.showBadge)}</span>`;
+            })()
+          : '';
         const customBadge = place.isCustom
           ? `<span class="popup-badge" style="background:#d97706;">หมุดที่เพิ่มเอง</span>`
+          : '';
+
+        const metaLines = [];
+        if (place.openHours) metaLines.push(`🕒 <strong>เปิด:</strong> ${esc(place.openHours)}`);
+        if (Array.isArray(place.closedDays) && place.closedDays.length) {
+          metaLines.push(`🚫 <strong>ปิด:</strong> วัน${esc(place.closedDays.join(', '))}`);
+        }
+        if (place.ticketPrice) metaLines.push(`🎟️ <strong>ค่าเข้า:</strong> ${esc(place.ticketPrice)}`);
+        const metaBox = metaLines.length
+          ? `<div class="popup-metro">${metaLines.join('<br>')}</div>`
+          : '';
+        const bookingBtn = place.bookingUrl
+          ? `<a class="popup-btn" href="${esc(place.bookingUrl)}" target="_blank" rel="noopener" style="background:#059669; color:#ffffff;">🎟️ จองตั๋ว</a>`
+          : '';
+        const verifiedNote = place.lastVerified
+          ? `<div style="margin-top:6px; font-size:10px; color:#64748b;">เช็กข้อมูลล่าสุด: ${esc(place.lastVerified)}</div>`
           : '';
 
         return `
@@ -1605,19 +1652,23 @@
             <div class="popup-badges">
               ${stepBadge}
               <span class="popup-badge" style="background:${esc(zone.color)};">${esc(zone.shortName)}</span>
+              ${statusBadge}
               ${customBadge}
             </div>
             <div class="popup-title">${esc(place.name)}</div>
             ${place.cn ? `<div class="popup-cn">${esc(place.cn)}</div>` : ''}
             ${stepInfo && stepInfo.transitText ? `<div class="popup-metro">🚇 <strong>การเดินทาง:</strong> ${esc(stepInfo.transitText)}</div>` : ''}
+            ${metaBox}
             ${place.metro ? `<div class="popup-metro">📍 <strong>สถานี/จุดสังเกต:</strong> ${esc(place.metro)}</div>` : ''}
             ${place.note ? `<div class="popup-info">${esc(place.note)}</div>` : ''}
             <div class="popup-actions">
               <a class="popup-btn amap" href="${amapUrl}" target="_blank" rel="noopener">เปิด Amap</a>
               <a class="popup-btn gmap" href="${gmapUrl}" target="_blank" rel="noopener">Google Maps</a>
+              ${bookingBtn}
               <button class="popup-btn measure js-measure-from" type="button" data-lat="${place.lat}" data-lng="${place.lng}" data-name="${esc(place.name)}">📏 วัดจากนี่</button>
               ${place.isCustom ? `<button class="popup-btn js-delete-custom" type="button" data-del-id="${esc(place.id)}" style="background:#fef2f2; color:#dc2626; border:1px solid #fecaca;">🗑️ ลบหมุด</button>` : ''}
             </div>
+            ${verifiedNote}
           </div>
         `;
       }
@@ -1668,7 +1719,9 @@
 
         if (currentView === 'overview') {
           const hotel = DATA.meta.hotel;
-          const dayCards = DATA.days.map((d) => `
+          const dayCards = DATA.days.map((d) => {
+            const sum = getDaySummaryStats(d);
+            return `
             <div class="day-summary-card" data-jump-day="${esc(d.id)}">
               <div class="day-summary-top">
                 <div class="day-summary-title">${esc(d.title)}</div>
@@ -1676,11 +1729,12 @@
               </div>
               <div class="day-summary-sub">${esc(d.subtitle)}</div>
               <div class="day-summary-meta">
-                <span>${d.steps.length} ขั้นตอนการเดินทาง</span>
+                <span>${sum.count} สเต็ป · 🚶 ${sum.walkKm} กม. · <span style="padding:1px 6px; border-radius:999px; background:${sum.pace.bg}; color:${sum.pace.fg}; font-weight:700;">${sum.pace.label}</span></span>
                 <span style="color:#0284c7; font-weight:600;">ดูไทม์ไลน์ →</span>
               </div>
             </div>
-          `).join('');
+          `;
+          }).join('');
 
           body.innerHTML = `
             <div class="overview-banner">
@@ -1737,6 +1791,12 @@
             ? filtered.map((p) => {
                 const z = DATA.zones[p.zone] || { shortName: p.zone, color: '#64748b' };
                 const thumb = buildPlaceImageHtml(p.img, p.name, 'thumb');
+                const showBadgeHtml = p.showBadge
+                  ? (() => {
+                      const st = getBadgeStyle(p.showBadge);
+                      return `<span class="mini-badge" style="background:${st.bg}; color:${st.fg};">${esc(p.showBadge)}</span>`;
+                    })()
+                  : '';
                 const delBtn = p.isCustom
                   ? `<button class="btn-del-custom" data-del-id="${esc(p.id)}" type="button">ลบหมุดนี้</button>`
                   : '';
@@ -1746,10 +1806,12 @@
                       <div class="place-card-badges">
                         <span class="mini-badge" style="background:${esc(z.color)}18; color:${esc(z.color)};">${esc(z.shortName)}</span>
                         ${p.day ? `<span class="mini-badge">${esc(p.day.toUpperCase())}</span>` : ''}
+                        ${showBadgeHtml}
                         ${p.isCustom ? `<span class="mini-badge custom">เพิ่มเอง</span>` : ''}
                       </div>
                       <div class="step-title">${esc(p.name)}</div>
                       ${p.cn ? `<div class="step-cn">${esc(p.cn)}</div>` : ''}
+                      ${p.openHours || p.ticketPrice ? `<div style="font-size:11px; color:#475569; margin-top:3px;">${p.openHours ? `🕒 ${esc(p.openHours)}` : ''}${p.openHours && p.ticketPrice ? ' · ' : ''}${p.ticketPrice ? `🎟️ ${esc(p.ticketPrice)}` : ''}</div>` : ''}
                       ${p.note ? `<div class="step-note">${esc(p.note)}</div>` : ''}
                       ${delBtn}
                     </div>
@@ -1879,6 +1941,7 @@
           `
           : '';
 
+        const sum = getDaySummaryStats(day);
         body.innerHTML = `
           <div class="day-header-box">
             <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
@@ -1886,6 +1949,12 @@
               <span class="day-badge">${esc(day.badge)}</span>
             </div>
             <p>${esc(day.subtitle)}</p>
+            <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:8px;">
+              <span class="mini-badge">${sum.count} สเต็ป</span>
+              <span class="mini-badge">🕒 ${esc(sum.startTime)}–${esc(sum.endTime)} น.</span>
+              <span class="mini-badge">🚶 เดินรวม ~${sum.walkKm} กม.</span>
+              <span class="mini-badge" style="background:${sum.pace.bg}; color:${sum.pace.fg}; font-weight:700;">${sum.pace.label}</span>
+            </div>
           </div>
           <div class="timeline">${timelineHtml}</div>
           ${altHtml}
