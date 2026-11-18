@@ -1491,59 +1491,75 @@
         if (!day) return;
 
         const placeMap = getPlaceMap();
-        const timelineHtml = day.steps.map((step, idx) => {
-          const place = placeMap[step.placeId] || { id: step.placeId, name: step.placeId, zone: 'z1' };
-          const zone = DATA.zones[place.zone] || { shortName: place.zone, color: '#0284c7' };
-          const tStyle = getTransitStyle(step.mode);
-          const thumb = place.img
-            ? `<img class="step-thumb" src="${esc(place.img)}" alt="${esc(place.name)}" onerror="this.style.display='none'" />`
-            : '';
+        function renderStepsList(steps) {
+          return steps.map((step, idx) => {
+            const place = placeMap[step.placeId] || { id: step.placeId, name: step.placeId, zone: 'z1' };
+            const zone = DATA.zones[place.zone] || { shortName: place.zone, color: '#0284c7' };
+            const tStyle = getTransitStyle(step.mode);
+            const thumb = place.img
+              ? `<img class="step-thumb" src="${esc(place.img)}" alt="${esc(place.name)}" onerror="this.style.display='none'" />`
+              : '';
 
-          const { totalMeters, walkMeters } = getStepDistanceStats(step);
-          const distChip = totalMeters > 0
-            ? (step.mode === 'walk'
-              ? `<span class="dist-chip">📏 ${formatDist(totalMeters)} · ${formatWalkTime(totalMeters)}</span>`
-              : `<span class="dist-chip">📏 ${formatDist(totalMeters)}${walkMeters > 60 ? ` · เดิน ${formatDist(walkMeters)}` : ''}</span>`)
-            : '';
+            const { totalMeters, walkMeters } = getStepDistanceStats(step);
+            const distChip = totalMeters > 0
+              ? (step.mode === 'walk'
+                ? `<span class="dist-chip">📏 ${formatDist(totalMeters)} · ${formatWalkTime(totalMeters)}</span>`
+                : `<span class="dist-chip">📏 ${formatDist(totalMeters)}${walkMeters > 60 ? ` · เดิน ${formatDist(walkMeters)}` : ''}</span>`)
+              : '';
 
-          const connectorHtml = idx > 0
-            ? `
-              <div class="timeline-connector">
-                <div class="connector-line" style="background:${esc(tStyle.color)}; ${tStyle.dash ? 'opacity:0.75;' : ''}"></div>
-                <div class="connector-pill">
-                  <span class="connector-dot" style="background:${esc(tStyle.color)};"></span>
-                  <span><strong>${esc(tStyle.label)}</strong> · ${esc(step.transitText)}${distChip}</span>
-                </div>
-              </div>
-            `
-            : (step.transitText
+            const connectorHtml = idx > 0 || step.isAltStart
               ? `
                 <div class="timeline-connector">
+                  <div class="connector-line" style="background:${esc(tStyle.color)}; ${tStyle.dash ? 'opacity:0.75;' : ''}"></div>
                   <div class="connector-pill">
                     <span class="connector-dot" style="background:${esc(tStyle.color)};"></span>
-                    <span>${esc(step.transitText)}${distChip}</span>
+                    <span><strong>${esc(tStyle.label)}</strong> · ${esc(step.transitText)}${distChip}</span>
                   </div>
                 </div>
               `
-              : '');
+              : (step.transitText
+                ? `
+                  <div class="timeline-connector">
+                    <div class="connector-pill">
+                      <span class="connector-dot" style="background:${esc(tStyle.color)};"></span>
+                      <span>${esc(step.transitText)}${distChip}</span>
+                    </div>
+                  </div>
+                `
+                : '');
 
-          return `
-            ${connectorHtml}
-            <div class="step-card ${activeStepNo === step.stepNo ? 'active' : ''}" data-step-no="${esc(step.stepNo)}" data-place-id="${esc(place.id)}">
-              <div class="step-num" style="background:${esc(tStyle.color)};">${esc(step.stepNo)}</div>
-              <div class="step-content">
-                <div class="step-top-row">
-                  <span class="step-time">${esc(step.time)}</span>
-                  <span class="step-zone-tag">${esc(zone.shortName)}</span>
+            return `
+              ${connectorHtml}
+              <div class="step-card ${String(activeStepNo) === String(step.stepNo) ? 'active' : ''}" data-step-no="${esc(step.stepNo)}" data-place-id="${esc(place.id)}">
+                <div class="step-num" style="background:${esc(tStyle.color)}; font-size:${String(step.stepNo).length > 1 ? '10.5px' : '12px'};">${esc(step.stepNo)}</div>
+                <div class="step-content">
+                  <div class="step-top-row">
+                    <span class="step-time">${esc(step.time)}</span>
+                    <span class="step-zone-tag">${esc(zone.shortName)}</span>
+                  </div>
+                  <div class="step-title">${esc(place.name)}</div>
+                  ${place.cn ? `<div class="step-cn">${esc(place.cn)}</div>` : ''}
+                  ${place.note ? `<div class="step-note">${esc(place.note)}</div>` : ''}
                 </div>
-                <div class="step-title">${esc(place.name)}</div>
-                ${place.cn ? `<div class="step-cn">${esc(place.cn)}</div>` : ''}
-                ${place.note ? `<div class="step-note">${esc(place.note)}</div>` : ''}
+                ${thumb}
               </div>
-              ${thumb}
+            `;
+          }).join('');
+        }
+
+        const timelineHtml = renderStepsList(day.steps);
+        const altHtml = Array.isArray(day.altSteps) && day.altSteps.length
+          ? `
+            <div style="margin-top:14px; padding:10px 12px; border-radius:12px; background:#f0fdfa; border:1px dashed #0d9488;">
+              <div style="font-size:12px; font-weight:700; color:#0f766e; margin-bottom:8px;">
+                ${esc(day.altTitle || '🔀 ทางเลือกการเดินทางเสริม')}
+              </div>
+              <div class="timeline" style="margin:0;">
+                ${renderStepsList(day.altSteps.map((s, i) => i === 0 ? { ...s, isAltStart: true } : s))}
+              </div>
             </div>
-          `;
-        }).join('');
+          `
+          : '';
 
         body.innerHTML = `
           <div class="day-header-box">
@@ -1554,13 +1570,14 @@
             <p>${esc(day.subtitle)}</p>
           </div>
           <div class="timeline">${timelineHtml}</div>
+          ${altHtml}
         `;
 
         body.querySelectorAll('.step-card').forEach((card) => {
           card.addEventListener('click', () => {
-            const stepNo = Number(card.dataset.stepNo);
+            const stepNo = card.dataset.stepNo;
             activeStepNo = stepNo;
-            body.querySelectorAll('.step-card').forEach((c) => c.classList.toggle('active', Number(c.dataset.stepNo) === stepNo));
+            body.querySelectorAll('.step-card').forEach((c) => c.classList.toggle('active', String(c.dataset.stepNo) === String(stepNo)));
             focusStep(stepNo, card.dataset.placeId);
           });
         });
@@ -1667,21 +1684,22 @@
           // Specific Day: render multi-point polylines + numbered step markers
           const day = DATA.days.find((d) => d.id === currentView);
           if (day) {
-            day.steps.forEach((step) => {
+            [...day.steps, ...(Array.isArray(day.altSteps) ? day.altSteps : [])].forEach((step) => {
               getStepSegments(step).forEach((seg) => {
                 const st = getTransitStyle(seg.mode);
+                const isAlt = typeof step.stepNo === 'string' && step.stepNo.startsWith('B');
                 // White casing for clarity
                 L.polyline(seg.coords, {
                   color: '#ffffff',
                   weight: (st.weight || 4) + 3,
-                  opacity: 0.78
+                  opacity: isAlt ? 0.65 : 0.78
                 }).addTo(routeLayerGroup);
 
                 const poly = L.polyline(seg.coords, {
                   color: st.color,
                   weight: st.weight || 4,
-                  dashArray: st.dash || null,
-                  opacity: 0.96
+                  dashArray: st.dash || (isAlt ? '8,6' : null),
+                  opacity: isAlt ? 0.85 : 0.96
                 }).addTo(routeLayerGroup);
 
                 poly.bindTooltip(`Step ${step.stepNo} (${st.label}): ${step.transitText}`, { sticky: true });
@@ -1691,7 +1709,7 @@
 
             // Track duplicate place coords within same day so markers don't completely hide each other
             const seenCoordCount = {};
-            day.steps.forEach((step) => {
+            [...day.steps, ...(Array.isArray(day.altSteps) ? day.altSteps : [])].forEach((step, idx) => {
               const place = placeMap[step.placeId];
               if (!place) return;
               const st = getTransitStyle(step.mode);
@@ -1706,12 +1724,12 @@
 
               const icon = L.divIcon({
                 className: '',
-                html: `<div class="num-marker" style="background:${esc(st.color)};">${esc(step.stepNo)}</div>`,
+                html: `<div class="num-marker" style="background:${esc(st.color)}; font-size:${String(step.stepNo).length > 1 ? '10px' : '12px'};">${esc(step.stepNo)}</div>`,
                 iconSize: [28, 28],
                 iconAnchor: [14, 14]
               });
 
-              const marker = L.marker([lat, lng], { icon, zIndexOffset: 100 + step.stepNo })
+              const marker = L.marker([lat, lng], { icon, zIndexOffset: 100 + idx })
                 .bindPopup(buildPopupHtml(place, step), { maxWidth: 300 });
 
               if (showLabels) {
@@ -1732,7 +1750,7 @@
               });
 
               marker.addTo(markerLayerGroup);
-              stepMarkerRefs[step.stepNo] = marker;
+              stepMarkerRefs[String(step.stepNo)] = marker;
               markerRefsByPlaceId[place.id] = marker;
               boundsPoints.push([lat, lng]);
             });
@@ -1753,7 +1771,7 @@
       }
 
       function focusStep(stepNo, placeId) {
-        const marker = stepMarkerRefs[stepNo] || markerRefsByPlaceId[placeId];
+        const marker = stepMarkerRefs[String(stepNo)] || markerRefsByPlaceId[placeId];
         if (!marker) return;
         const ll = marker.getLatLng();
         map.setView(ll, Math.max(map.getZoom(), 15), { animate: true });
