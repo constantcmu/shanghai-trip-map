@@ -65,6 +65,7 @@ window.TRIP_DATA = {
     L2:     { label: 'Metro Line 2', color: '#97D700', weight: 4 },
     L7:     { label: 'Metro Line 7', color: '#FF6900', weight: 4 },
     L8:     { label: 'Metro Line 8', color: '#009EDB', weight: 4 },
+    L9:     { label: 'Metro Line 9', color: '#71C5E8', weight: 4 },
     L10:    { label: 'Metro Line 10', color: '#C1A7E2', weight: 4 },
     L11:    { label: 'Metro Line 11', color: '#76232F', weight: 4 },
     L12:    { label: 'Metro Line 12', color: '#007B5F', weight: 4 },
@@ -246,7 +247,7 @@ window.TRIP_DATA = {
       lng: 121.4384,
       metro: 'Metro Line 10 / 11 สถานี Jiaotong University ทางออก 7',
       note: 'แลนด์มาร์กตึกหัวเรือย่านเขตเช่าฝรั่งเศส ถ่ายรูปมุมยอดฮิตหัวมุมถนน Huaihai & Wukang',
-      img: null
+      img: 'place_images/wukang_mansion.jpg'
     },
     {
       id: 'anfu',
@@ -259,7 +260,7 @@ window.TRIP_DATA = {
       lng: 121.4427,
       metro: 'Metro Line 1 / 7 สถานี Changshu Rd ทางออก 8 (หรือเดินต่อจากตึกอู๋คังตามถนน Wukang Rd)',
       note: 'ถนนคาเฟ่และร้านไลฟ์สไตล์สุดชิค แวะ Wiggle Wiggle, 13DE MARZO, BM และร้านกาแฟใต้ร่มไม้',
-      img: null
+      img: 'place_images/anfu_road.jpg'
     },
     {
       id: 'jingan',
@@ -365,7 +366,7 @@ window.TRIP_DATA = {
       lng: 121.6618,
       metro: 'Metro Line 1 → Xujiahui ต่อ Line 11 สุดสายสถานี Disney Resort (~55 นาที)',
       note: 'ล็อกวันอังคารที่ 8 ธ.ค. คนน้อยกว่าวันหยุด! โซนแนะนำ: Zootopia, TRON, Pirates of the Caribbean และชมพลุหน้าปราสาท',
-      img: null
+      img: 'place_images/disney.jpg'
     },
     {
       id: 'disney_sichuan',
@@ -406,7 +407,7 @@ window.TRIP_DATA = {
       lng: 121.4874,
       metro: 'Metro Line 2 / 10 สถานี East Nanjing Rd ทางออก 6 เดินขึ้นเหนือ 500 ม.',
       note: 'กลุ่มตึกประวัติศาสตร์ต้นกำเนิดเดอะบันด์ บรรยากาศยุโรปคลาสสิกและแกลเลอรีศิลปะ',
-      img: null
+      img: 'place_images/rockbund.jpg'
     },
     {
       id: 'bund',
@@ -502,12 +503,25 @@ window.TRIP_DATA = {
       img: null
     },
     {
+      id: 'xujiahui_cathedral',
+      name: '⛪ โบสถ์คาทอลิกซูเจียฮุ่ย (St. Ignatius Cathedral)',
+      cn: '徐家汇天主堂',
+      zone: 'z4',
+      day: 'd5',
+      timeSlot: '12:00–12:35 น.',
+      lat: 31.1904,
+      lng: 121.4418,
+      metro: 'Metro Line 1 / 9 / 11 สถานี Xujiahui ทางออก 3 เดิน 4 นาที',
+      note: 'มหาวิหารโกธิคอิฐแดงคู่ที่สวยที่สุดในเซี่ยงไฮ้ เข้าฟรี! เปิด อ.–ส. 09:00–16:00 น. (ปิดวันจันทร์ จึงจัดมาไว้วันพฤหัสฯ)',
+      img: 'place_images/xujiahui_cathedral.jpg'
+    },
+    {
       id: 'jumen_ginkgo',
       name: '🍂 ถนนจวี๋เหมิน & 8th Bridge (ใบแปะก๊วย)',
       cn: '局门路 · 八号桥三期',
       zone: 'z5',
       day: 'd5',
-      timeSlot: '12:30–13:20 น.',
+      timeSlot: '12:55–13:35 น.',
       lat: 31.1985,
       lng: 121.4834,
       metro: 'Metro Line 13 สถานี World Expo Museum ทางออก 3 เดิน ~600 ม. (หรือ Line 4/8 Xizang South Rd)',
@@ -551,7 +565,7 @@ window.TRIP_DATA = {
       lng: 121.4998,
       metro: 'Metro Line 2 / 14 สถานี Lujiazui ทางออก 1 หรือ 2',
       note: 'สกายวอล์กวงเวียนใจกลางลู่เจียจุ่ย จุดถ่ายรูปคู่หอไข่มุกและกลุ่มตึกระฟ้าสามพี่น้อง',
-      img: null
+      img: 'place_images/mingzhu_roundabout.jpg'
     },
     {
       id: 'disney_ljz',
@@ -590,7 +604,7 @@ window.TRIP_DATA = {
       lng: 121.4995,
       metro: 'Metro Line 12 สถานี Int\'l Cruise Terminal ทางออก 3 เดิน 450 ม.',
       note: 'จุดถ่ายรูปโดมเงิน "หยดน้ำสีเงิน" คู่ฉากหลังหอไข่มุกและเส้นขอบฟ้าผู่ตงแบบพาโนรามา',
-      img: null
+      img: 'place_images/north_bund.jpg'
     },
     {
       id: 'bund_bull',
@@ -1288,32 +1302,57 @@ window.TRIP_DATA = {
         },
         {
           stepNo: 5,
-          placeId: 'jumen_ginkgo',
-          time: '12:30',
-          mode: 'L13',
-          transitText: 'Metro Line 13 ต่อเดียว (Jiangning Rd → World Expo Museum ทางออก 3) เดิน 600 ม. ชมใบแปะก๊วย',
+          placeId: 'xujiahui_cathedral',
+          time: '12:00',
+          mode: 'L1',
+          transitText: 'Line 13 (Jiangning Rd → Hanzhong Rd) ต่อ Line 1 → Xujiahui ทางออก 3 (หรือ DiDi 15 นาที)',
           coords: [
             [31.2463, 121.4422],
             [31.2443, 121.4446],
             [31.2408, 121.4590],
-            [31.2363, 121.4624],
-            [31.2299, 121.4606],
-            [31.2200, 121.4643],
-            [31.2162, 121.4750],
+            [31.2387, 121.4676],
+            [31.2321, 121.4754],
+            [31.2227, 121.4732],
+            [31.2170, 121.4586],
+            [31.2133, 121.4511],
+            [31.2045, 121.4465],
+            [31.1948, 121.4369],
+            [31.1904, 121.4418]
+          ],
+          segments: [
+            { mode: 'walk', coords: [[31.2463, 121.4422], [31.2443, 121.4446]] },
+            { mode: 'L13', coords: [[31.2443, 121.4446], [31.2408, 121.4590]] },
+            { mode: 'L1', coords: [[31.2408, 121.4590], [31.2387, 121.4676], [31.2321, 121.4754], [31.2227, 121.4732], [31.2170, 121.4586], [31.2133, 121.4511], [31.2045, 121.4465], [31.1948, 121.4369]] },
+            { mode: 'walk', coords: [[31.1948, 121.4369], [31.1904, 121.4418]] }
+          ]
+        },
+        {
+          stepNo: 6,
+          placeId: 'jumen_ginkgo',
+          time: '12:55',
+          mode: 'L9',
+          transitText: 'Metro Line 9 (Xujiahui → Madang Rd) ต่อ Line 13 → World Expo Museum ทางออก 3 เดิน 600 ม.',
+          coords: [
+            [31.1904, 121.4418],
+            [31.1948, 121.4369],
+            [31.1995, 121.4504],
+            [31.2027, 121.4609],
+            [31.2056, 121.4684],
             [31.2095, 121.4765],
             [31.1973, 121.4816],
             [31.1985, 121.4834]
           ],
           segments: [
-            { mode: 'walk', coords: [[31.2463, 121.4422], [31.2443, 121.4446]] },
-            { mode: 'L13', coords: [[31.2443, 121.4446], [31.2408, 121.4590], [31.2363, 121.4624], [31.2299, 121.4606], [31.2200, 121.4643], [31.2162, 121.4750], [31.2095, 121.4765], [31.1973, 121.4816]] },
+            { mode: 'walk', coords: [[31.1904, 121.4418], [31.1948, 121.4369]] },
+            { mode: 'L9', coords: [[31.1948, 121.4369], [31.1995, 121.4504], [31.2027, 121.4609], [31.2056, 121.4684], [31.2095, 121.4765]] },
+            { mode: 'L13', coords: [[31.2095, 121.4765], [31.1973, 121.4816]] },
             { mode: 'walk', coords: [[31.1973, 121.4816], [31.1985, 121.4834]] }
           ]
         },
         {
-          stepNo: 6,
+          stepNo: 7,
           placeId: 'china_art',
-          time: '13:35',
+          time: '13:50',
           mode: 'L8',
           transitText: 'เดินไป Xizang South Rd นั่ง Metro Line 8 → China Art Museum ทางออก 3 (2 ป้าย)',
           coords: [
@@ -1328,9 +1367,9 @@ window.TRIP_DATA = {
           ]
         },
         {
-          stepNo: 7,
+          stepNo: 8,
           placeId: 'map_pudong',
-          time: '14:55',
+          time: '15:00',
           mode: 'L2',
           transitText: 'Line 8 (China Art Museum → People\'s Sq) ต่อ Line 2 → Lujiazui ทางออก 2',
           coords: [
@@ -1350,7 +1389,7 @@ window.TRIP_DATA = {
           ]
         },
         {
-          stepNo: 8,
+          stepNo: 9,
           placeId: 'mingzhu',
           time: '16:15',
           mode: 'walk',
@@ -1362,7 +1401,7 @@ window.TRIP_DATA = {
           ]
         },
         {
-          stepNo: 9,
+          stepNo: 10,
           placeId: 'disney_ljz',
           time: '16:45',
           mode: 'walk',
@@ -1374,7 +1413,7 @@ window.TRIP_DATA = {
           ]
         },
         {
-          stepNo: 10,
+          stepNo: 11,
           placeId: 'holiland',
           time: '17:15',
           mode: 'walk',
@@ -1386,7 +1425,7 @@ window.TRIP_DATA = {
           ]
         },
         {
-          stepNo: 11,
+          stepNo: 12,
           placeId: 'north_bund',
           time: '17:50',
           mode: 'L12',
@@ -1408,7 +1447,7 @@ window.TRIP_DATA = {
           ]
         },
         {
-          stepNo: 12,
+          stepNo: 13,
           placeId: 'bund_bull',
           time: '18:45',
           mode: 'didi',
@@ -1426,7 +1465,7 @@ window.TRIP_DATA = {
           ]
         },
         {
-          stepNo: 13,
+          stepNo: 14,
           placeId: 'yuyuan',
           time: '19:15',
           mode: 'walk',
@@ -1438,7 +1477,7 @@ window.TRIP_DATA = {
           ]
         },
         {
-          stepNo: 14,
+          stepNo: 15,
           placeId: 'taotaoju',
           time: '20:15',
           mode: 'L14',
@@ -1458,7 +1497,7 @@ window.TRIP_DATA = {
           ]
         },
         {
-          stepNo: 15,
+          stepNo: 16,
           placeId: 'xiesanbao',
           time: '21:00',
           mode: 'walk',
@@ -1470,7 +1509,7 @@ window.TRIP_DATA = {
           ]
         },
         {
-          stepNo: 16,
+          stepNo: 17,
           placeId: 'first_food',
           time: '21:30',
           mode: 'walk',
@@ -1482,7 +1521,7 @@ window.TRIP_DATA = {
           ]
         },
         {
-          stepNo: 17,
+          stepNo: 18,
           placeId: 'baos',
           time: '22:00',
           mode: 'walk',
