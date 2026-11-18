@@ -389,11 +389,11 @@ window.TRIP_DATA = {
       cn: '外滩源德国圣诞集市',
       zone: 'z1',
       day: 'd4',
-      timeSlot: '16:15 น.',
+      timeSlot: '18:50–21:30 น. (ปิดท้ายวัน)',
       lat: 31.2426,
       lng: 121.4881,
       metro: 'Metro Line 2 / 10 สถานี East Nanjing Rd ทางออก 6 หรือ Line 12 Tiantong Rd',
-      note: 'ตลาดคริสต์มาสสไตล์เยอรมันสุดคึกคักหน้าโบสถ์ Union Church จุดเช็กอินไฮไลต์ช่วง ธ.ค.',
+      note: 'ตลาดคริสต์มาสสไตล์เยอรมันสุดคึกคักหน้าโบสถ์ Union Church จุดเช็กอินไฮไลต์ช่วง ธ.ค. (วันพุธเปิด 15:00–22:00 น. เข้าช่วง 18:30–19:00 ไฟสวยที่สุด)',
       img: 'place_images/shanghai_christmas_rockbund.jpg'
     },
     {
@@ -402,7 +402,7 @@ window.TRIP_DATA = {
       cn: '洛克·外滩源',
       zone: 'z1',
       day: 'd4',
-      timeSlot: '17:15 น.',
+      timeSlot: '18:40 น.',
       lat: 31.2422,
       lng: 121.4874,
       metro: 'Metro Line 2 / 10 สถานี East Nanjing Rd ทางออก 6 เดินขึ้นเหนือ 500 ม.',
@@ -428,7 +428,7 @@ window.TRIP_DATA = {
       cn: '南京东路步行街',
       zone: 'z1',
       day: 'd4',
-      timeSlot: '19:00 น.',
+      timeSlot: '16:15 น.',
       lat: 31.2368,
       lng: 121.4810,
       metro: 'Metro Line 1 / 2 / 8 People\'s Square หรือ Line 2 / 10 East Nanjing Rd',
@@ -441,7 +441,7 @@ window.TRIP_DATA = {
       cn: '费大厨辣椒炒肉 · 悦荟广场',
       zone: 'z1',
       day: 'd4',
-      timeSlot: '19:30 น. (มื้อเย็น)',
+      timeSlot: '16:55 น. (มื้อเย็น)',
       lat: 31.2374,
       lng: 121.4828,
       metro: 'Metro Line 2 / 10 สถานี East Nanjing Rd ทางออก 2 (Mosaic Mall)',
@@ -454,7 +454,7 @@ window.TRIP_DATA = {
       cn: '港裕记 · 外滩中央广场 3F',
       zone: 'z1',
       day: 'd4',
-      timeSlot: '20:30 น.',
+      timeSlot: '17:30 น.',
       lat: 31.2377,
       lng: 121.4874,
       metro: 'Metro Line 2 / 10 สถานี East Nanjing Rd (อาคาร Bund Central ชั้น 3)',
@@ -1152,66 +1152,30 @@ window.TRIP_DATA = {
         },
         {
           stepNo: 11,
-          placeId: 'christmas_rockbund',
-          time: '16:20',
-          mode: 'L10',
-          transitText: 'Metro Line 1 (Shanghai Station → People\'s Sq) ต่อ Line 2 → East Nanjing Rd เดิน 6 นาที',
+          placeId: 'nanjing_e',
+          time: '16:15',
+          mode: 'L2',
+          transitText: 'Metro Line 1 (Shanghai Station → People\'s Sq) ต่อ Line 2 → East Nanjing Rd ช้อปก่อนค่ำ',
           coords: [
             [31.2497, 121.4550],
             [31.2408, 121.4590],
             [31.2387, 121.4676],
             [31.2321, 121.4754],
             [31.2378, 121.4842],
-            [31.2426, 121.4881]
+            [31.2368, 121.4810]
           ],
           segments: [
             { mode: 'L1', coords: [[31.2497, 121.4550], [31.2408, 121.4590], [31.2387, 121.4676], [31.2321, 121.4754]] },
             { mode: 'L2', coords: [[31.2321, 121.4754], [31.2378, 121.4842]] },
-            { mode: 'walk', coords: [[31.2378, 121.4842], [31.2426, 121.4881]] }
+            { mode: 'walk', coords: [[31.2378, 121.4842], [31.2368, 121.4810]] }
           ]
         },
         {
           stepNo: 12,
-          placeId: 'rock_bund',
-          time: '17:15',
-          mode: 'walk',
-          transitText: 'เดินชมกลุ่มตึกประวัติศาสตร์ย่าน Rockbund ต่อเนื่อง (~2 นาที)',
-          coords: [
-            [31.2426, 121.4881],
-            [31.2422, 121.4874]
-          ]
-        },
-        {
-          stepNo: 13,
-          placeId: 'bund',
-          time: '18:00',
-          mode: 'walk',
-          transitText: 'เดินออกสู่ริมน้ำ The Bund (~5 นาที) ทันชมเปิดไฟหอไข่มุก 18:00 น.',
-          coords: [
-            [31.2422, 121.4874],
-            [31.2415, 121.4896],
-            [31.2395, 121.4901]
-          ]
-        },
-        {
-          stepNo: 14,
-          placeId: 'nanjing_e',
-          time: '19:00',
-          mode: 'walk',
-          transitText: 'เดินเข้าถนนคนเดิน East Nanjing Rd (~6 นาที)',
-          coords: [
-            [31.2395, 121.4901],
-            [31.2385, 121.4865],
-            [31.2377, 121.4840],
-            [31.2368, 121.4810]
-          ]
-        },
-        {
-          stepNo: 15,
           placeId: 'feidachu',
-          time: '19:30',
+          time: '16:55',
           mode: 'walk',
-          transitText: 'เดินต่อบนถนน East Nanjing Rd ถึง Mosaic Mall (~3 นาที)',
+          transitText: 'เดินบนถนน East Nanjing Rd ถึง Mosaic Mall (~3 นาที) ทานมื้อเย็นก่อนคิวค่ำ',
           coords: [
             [31.2368, 121.4810],
             [31.2371, 121.4820],
@@ -1219,15 +1183,50 @@ window.TRIP_DATA = {
           ]
         },
         {
-          stepNo: 16,
+          stepNo: 13,
           placeId: 'gangyuji',
-          time: '20:30',
+          time: '17:30',
           mode: 'walk',
-          transitText: 'เดินย้อนไปฝั่ง Bund Central 3F (~5 นาที) แวะร้าน Gangyuji',
+          transitText: 'เดินต่อบนถนน East Nanjing Rd ไป Bund Central 3F (~5 นาที) แวะร้าน Gangyuji',
           coords: [
             [31.2374, 121.4828],
             [31.2376, 121.4852],
             [31.2377, 121.4874]
+          ]
+        },
+        {
+          stepNo: 14,
+          placeId: 'bund',
+          time: '18:00',
+          mode: 'walk',
+          transitText: 'เดินตรงออกสู่ริมน้ำ The Bund (~4 นาที) ทันชมเปิดไฟหอไข่มุก 18:00 น. ตรง',
+          coords: [
+            [31.2377, 121.4874],
+            [31.2386, 121.4888],
+            [31.2395, 121.4901]
+          ]
+        },
+        {
+          stepNo: 15,
+          placeId: 'rock_bund',
+          time: '18:40',
+          mode: 'walk',
+          transitText: 'เดินขึ้นเหนือเลียบแนวตึกประวัติศาสตร์เข้าสู่ย่าน Rockbund (~5 นาที)',
+          coords: [
+            [31.2395, 121.4901],
+            [31.2415, 121.4896],
+            [31.2422, 121.4874]
+          ]
+        },
+        {
+          stepNo: 16,
+          placeId: 'christmas_rockbund',
+          time: '18:50–21:30',
+          mode: 'walk',
+          transitText: 'เดินเข้างาน Shanghai Christmas Market @ Rockbund (~1 นาที · เข้าช่วง 6–7 โมงเย็น เปิดถึง 22:00 น.)',
+          coords: [
+            [31.2422, 121.4874],
+            [31.2426, 121.4881]
           ]
         }
       ]
