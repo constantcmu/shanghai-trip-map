@@ -1,0 +1,14 @@
+{
+  "name": "shanghai-trip-map",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Shanghai & Suzhou Trip Master Map (Dec 6-11, 2026)",
+  "scripts": {
+    "build:images": "node scripts/build-images.mjs",
+    "validate": "node scripts/validate-data.mjs"
+  },
+  "devDependencies": {
+    "sharp": "^0.35.5"
+  }
+}
