@@ -1,0 +1,26 @@
+name: Validate Trip Data & Assets
+
+on:
+  push:
+    branches:
+      - main
+      - 'feat/*'
+  pull_request:
+    branches:
+      - main
+      - 'feat/*'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Validate trip data, images, HTML & service worker
+        run: node scripts/validate-data.mjs
