@@ -2,21 +2,16 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f172a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Shanghai Map" />
   <title>Shanghai Plan B Master Map (6–11 ธ.ค. 2569)</title>
 
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-    crossorigin=""
-  />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap"
-    rel="stylesheet"
-  />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+  <link rel="stylesheet" href="./vendor/leaflet/leaflet.css" />
 
   <style>
     :root {
@@ -29,6 +24,9 @@
       --accent: #0284c7;
       --accent-soft: #e0f2fe;
       --sidebar-w: 420px;
+      --sheet-h: 50dvh;
+      --font-sans: 'Noto Sans Thai', 'Sukhumvit Set', 'Sarabun', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+      --font-cn: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
       --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.08);
       --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.12);
     }
@@ -36,17 +34,22 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body {
       height: 100%;
-      font-family: 'Noto Sans Thai', 'Inter', sans-serif;
+      height: 100dvh;
+      font-family: var(--font-sans);
       background: var(--bg);
       color: var(--text);
       overflow: hidden;
+      overscroll-behavior: none;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .app {
       display: flex;
       height: 100vh;
+      height: 100dvh;
       width: 100vw;
       position: relative;
+      overflow: hidden;
     }
 
     /* Sidebar */
@@ -61,10 +64,14 @@
       flex-direction: column;
       z-index: 1000;
       box-shadow: 4px 0 24px rgba(15, 23, 42, 0.08);
-      transition: margin-left 0.25s ease, transform 0.25s ease;
+      transition: margin-left 0.25s ease, transform 0.25s ease, height 0.24s cubic-bezier(0.22, 1, 0.36, 1);
     }
     .sidebar.collapsed {
       margin-left: calc(-1 * var(--sidebar-w));
+    }
+
+    .sheet-handle {
+      display: none;
     }
 
     /* Header */
@@ -78,7 +85,13 @@
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      gap: 10px;
+      gap: 8px;
+    }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
     }
     .header-title {
       font-size: 16px;
@@ -109,6 +122,24 @@
       background: rgba(56, 189, 248, 0.28);
       color: #ffffff;
     }
+    .btn-header-toggle {
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: rgba(255, 255, 255, 0.1);
+      color: #e2e8f0;
+      font-family: inherit;
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 6px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s;
+      flex-shrink: 0;
+    }
+    .btn-header-toggle:hover {
+      background: rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+    }
 
     .stats-bar {
       display: flex;
@@ -125,6 +156,45 @@
       padding: 3px 9px;
       border-radius: 999px;
     }
+
+    .sync-bar {
+      margin-top: 8px;
+      padding: 5px 9px;
+      border-radius: 8px;
+      background: rgba(15, 23, 42, 0.42);
+      border: 1px solid rgba(148, 163, 184, 0.24);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 11px;
+      color: #cbd5e1;
+    }
+    .sync-bar.offline {
+      background: rgba(180, 83, 9, 0.35);
+      border-color: rgba(251, 191, 36, 0.55);
+      color: #fef3c7;
+    }
+    .sync-status-text {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .sync-update-btn {
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 10.5px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .sync-update-btn:hover { background: rgba(255, 255, 255, 0.22); }
+    .sync-update-btn:disabled { opacity: 0.6; cursor: default; }
 
     /* Day & Mode Tabs */
     .nav-wrap {
@@ -395,7 +465,7 @@
       line-height: 1.35;
     }
     .step-cn {
-      font-family: 'Noto Sans SC', sans-serif;
+      font-family: var(--font-cn);
       font-size: 11.5px;
       color: var(--muted);
       margin-top: 1px;
@@ -406,11 +476,18 @@
       margin-top: 4px;
       line-height: 1.4;
     }
+    .step-thumb-wrap {
+      width: 64px;
+      height: 64px;
+      flex-shrink: 0;
+      display: block;
+    }
     .step-thumb {
       width: 64px;
       height: 64px;
       border-radius: 8px;
       object-fit: cover;
+      display: block;
       flex-shrink: 0;
       border: 1px solid var(--border);
       background: #e2e8f0;
@@ -523,7 +600,7 @@
       height: 100%;
     }
 
-    .sidebar-toggle {
+    .sidebar-reopen {
       position: absolute;
       top: 14px;
       left: 14px;
@@ -538,11 +615,28 @@
       color: var(--text);
       cursor: pointer;
       box-shadow: var(--shadow-md);
-      display: flex;
+      display: none;
       align-items: center;
       gap: 6px;
     }
-    .sidebar-toggle:hover { background: #f8fafc; }
+    .sidebar-reopen.visible { display: flex; }
+    .sidebar-reopen:hover { background: #f8fafc; }
+    .legend-mobile-btn { display: none; }
+    .map-offline-fallback {
+      position: absolute;
+      inset: 0;
+      z-index: 400;
+      background: #e2e8f0;
+      color: #334155;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+      gap: 6px;
+    }
+    .map-offline-fallback.show { display: flex; }
 
     .map-top-right {
       position: absolute;
@@ -729,7 +823,7 @@
       height: 28px;
       border-radius: 50%;
       color: #ffffff;
-      font-family: 'Inter', sans-serif;
+      font-family: var(--font-sans);
       font-size: 12px;
       font-weight: 800;
       border: 2.5px solid #ffffff;
@@ -776,7 +870,7 @@
       border: none;
       border-radius: 6px;
       padding: 2px 7px;
-      font-family: 'Noto Sans Thai', 'Inter', sans-serif;
+      font-family: var(--font-sans);
       font-size: 11px;
       font-weight: 600;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
@@ -795,7 +889,7 @@
     .leaflet-popup-content {
       margin: 0;
       width: 290px !important;
-      font-family: 'Noto Sans Thai', 'Inter', sans-serif;
+      font-family: var(--font-sans);
     }
     .popup-img {
       width: 100%;
@@ -827,7 +921,7 @@
       line-height: 1.3;
     }
     .popup-cn {
-      font-family: 'Noto Sans SC', sans-serif;
+      font-family: var(--font-cn);
       font-size: 12px;
       color: var(--muted);
       margin-top: 2px;
@@ -985,39 +1079,205 @@
 
     @media (max-width: 768px) {
       :root { --sidebar-w: 100vw; }
-      .sidebar {
-        position: absolute;
-        left: 0;
-        top: 0;
-        bottom: 0;
-        height: 55vh;
+      .app { flex-direction: column; }
+      .map-wrap {
         width: 100vw;
+        height: 100%;
+        height: 100dvh;
+      }
+      .sidebar {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        top: auto;
+        width: 100vw;
+        min-width: 0;
+        height: var(--sheet-h, 50dvh);
+        max-height: 94dvh;
         border-right: none;
-        border-bottom: 1px solid var(--border);
+        border-top: 1px solid rgba(148, 163, 184, 0.35);
+        border-radius: 18px 18px 0 0;
+        box-shadow: 0 -8px 28px rgba(15, 23, 42, 0.22);
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+        z-index: 1000;
       }
       .sidebar.collapsed {
         margin-left: 0;
-        transform: translateY(-100%);
+        transform: none;
       }
-      .app { flex-direction: column; }
+      .sidebar.dragging {
+        transition: none !important;
+      }
+      .sheet-handle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 24px;
+        background: #0f172a;
+        border-radius: 18px 18px 0 0;
+        cursor: grab;
+        touch-action: none;
+        flex-shrink: 0;
+      }
+      .sheet-handle-bar {
+        width: 44px;
+        height: 4px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.38);
+      }
+      .header {
+        padding: 4px 12px 10px;
+      }
+      .header-title { font-size: 14.5px; }
+      .header-sub { font-size: 11px; }
+      .sidebar[data-snap="peek"] .header {
+        padding: 2px 12px 6px;
+      }
+      .sidebar[data-snap="peek"] .header-sub,
+      .sidebar[data-snap="peek"] .stats-bar {
+        display: none;
+      }
+      .sidebar[data-snap="peek"] .sync-bar:not(.offline) {
+        display: none;
+      }
+      .sidebar-body {
+        padding: 10px 12px 16px;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      /* Mobile touch targets >= 44x44px */
+      .btn-add-place,
+      .btn-header-toggle,
+      .day-tab,
+      .zone-pill,
+      .map-ctrl-btn,
+      .measure-btn,
+      .legend-header,
+      .modal-close,
+      .btn {
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .modal-close { min-width: 44px; }
+      .btn-add-place, .btn-header-toggle { padding: 8px 12px; }
+      .nav-wrap { padding: 6px 8px; }
+      .day-tab { padding: 8px 12px; }
+      .sidebar-reopen { display: none !important; }
+
+      .map-top-right {
+        top: calc(8px + env(safe-area-inset-top, 0px));
+        left: calc(8px + env(safe-area-inset-left, 0px));
+        right: calc(8px + env(safe-area-inset-right, 0px));
+        flex-direction: row;
+        align-items: stretch;
+        justify-content: space-between;
+        gap: 4px;
+      }
+      .map-ctrl-btn {
+        flex: 1 1 0;
+        min-width: 0;
+        padding: 4px 5px;
+        font-size: 11px;
+        white-space: nowrap;
+        gap: 3px;
+      }
+      .hide-mobile { display: none; }
+      .legend-mobile-btn { display: inline-flex; }
+
+      .leaflet-popup-content-wrapper {
+        max-height: calc(100dvh - var(--sheet-h, 50dvh) - 92px);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      .leaflet-popup-content {
+        width: min(274px, 78vw) !important;
+      }
+      .popup-img { height: 92px; }
+      @media (max-height: 680px) {
+        .popup-img { height: 72px; }
+      }
+      .popup-body { padding: 8px 10px; }
+      .popup-title { font-size: 13.5px; }
+      .popup-metro, .popup-info {
+        font-size: 11px;
+        margin-top: 4px;
+        line-height: 1.35;
+      }
+      .popup-info {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .popup-actions { margin-top: 7px; gap: 4px; }
+      .popup-btn { padding: 6px 5px; font-size: 11px; }
+
+      .leaflet-bottom.leaflet-left {
+        bottom: calc(var(--sheet-h, 50dvh) + 10px);
+        left: 6px;
+        transition: bottom 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      .measure-panel {
+        left: 52px;
+        right: 8px;
+        bottom: calc(var(--sheet-h, 50dvh) + 8px);
+        min-width: 0;
+        max-width: none;
+        width: auto;
+        padding: 8px 10px;
+        z-index: 915;
+      }
+      .legend-box {
+        display: none;
+        left: 52px;
+        right: 8px;
+        width: auto;
+        bottom: calc(var(--sheet-h, 50dvh) + 8px);
+        z-index: 910;
+      }
+      .legend-body {
+        max-height: 130px;
+      }
+      .legend-box.mobile-open {
+        display: block;
+      }
+      .legend-box.collapsed .legend-body {
+        display: grid;
+      }
       .form-grid { grid-template-columns: 1fr; }
-      .legend-box { width: 205px; bottom: 10px; right: 10px; }
     }
   </style>
 </head>
 <body>
   <div class="app">
-    <!-- Left Collapsible Sidebar -->
-    <aside class="sidebar" id="sidebar">
+    <!-- Left Collapsible Sidebar (Desktop) / Bottom Sheet (Mobile) -->
+    <aside class="sidebar" id="sidebar" data-snap="half">
+      <div class="sheet-handle" id="sheet-handle" title="ลากหรือแตะเพื่อปรับขนาดแผง">
+        <span class="sheet-handle-bar"></span>
+      </div>
       <header class="header">
         <div class="header-top">
-          <div>
+          <div style="min-width:0;">
             <h1 class="header-title" id="app-title">Shanghai Plan B Master Map</h1>
             <p class="header-sub" id="app-subtitle">ทริปเซี่ยงไฮ้ + ซูโจว • 6–11 ธ.ค. 2569</p>
           </div>
-          <button class="btn-add-place" id="btn-open-add" type="button">+ เพิ่มที่เที่ยว</button>
+          <div class="header-actions">
+            <button class="btn-add-place" id="btn-open-add" type="button">+ เพิ่มที่เที่ยว</button>
+            <button class="btn-header-toggle" id="btn-toggle-sidebar" type="button" title="พับ/ขยายแถบ">
+              <span id="toggle-icon">◀</span> <span id="toggle-text">พับ</span>
+            </button>
+          </div>
         </div>
         <div class="stats-bar" id="stats-bar"></div>
+        <div class="sync-bar" id="sync-bar">
+          <span class="sync-status-text" id="sync-status-text">🟢 ออนไลน์ • พร้อมใช้งาน</span>
+          <button class="sync-update-btn" id="btn-update-data" type="button">🔄 อัปเดตข้อมูล</button>
+        </div>
       </header>
 
       <nav class="nav-wrap">
@@ -1029,19 +1289,22 @@
 
     <!-- Full Interactive Map -->
     <section class="map-wrap">
-      <button class="sidebar-toggle" id="btn-toggle-sidebar" type="button">
-        <span id="toggle-icon">◀</span> <span id="toggle-text">ซ่อนแถบ</span>
+      <button class="sidebar-reopen" id="btn-reopen-sidebar" type="button">
+        ▶ แสดงแถบ
       </button>
 
       <div class="map-top-right">
         <button class="map-ctrl-btn" id="btn-toggle-measure" type="button">
-          📏 วัดระยะทาง: <span id="measure-state">ปิด</span>
+          📏 วัดระยะ<span class="hide-mobile">ทาง: <span id="measure-state">ปิด</span></span>
         </button>
         <button class="map-ctrl-btn" id="btn-toggle-labels" type="button">
-          🏷️ ป้ายชื่อ: <span id="labels-state">ปิด</span>
+          🏷️ ป้ายชื่อ<span class="hide-mobile">: <span id="labels-state">ปิด</span></span>
         </button>
         <button class="map-ctrl-btn" id="btn-fit-bounds" type="button">
-          🎯 ซูมพอดีเส้นทาง
+          🎯 ซูมพอดี<span class="hide-mobile">เส้นทาง</span>
+        </button>
+        <button class="map-ctrl-btn legend-mobile-btn" id="btn-toggle-legend-mobile" type="button">
+          🚇 สัญลักษณ์
         </button>
       </div>
 
@@ -1060,6 +1323,10 @@
       </div>
 
       <div id="map"></div>
+      <div class="map-offline-fallback" id="map-offline-fallback">
+        <strong>🗺️ แผนที่กำลังรอโหลดหรืออยู่นอกพื้นที่เชื่อมต่อ</strong>
+        <span style="font-size:12.5px;">คุณยังสามารถอ่านไทม์ไลน์ คำแนะนำ และโน้ตทั้งหมดในแผงด้านข้าง/ด้านล่างได้ครบถ้วน</span>
+      </div>
 
       <!-- Compact Floating Transit Legend -->
       <div class="legend-box" id="legend-box">
@@ -1137,12 +1404,8 @@
     </div>
   </div>
 
-  <script
-    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-    crossorigin=""
-  ></script>
-  <script src="data/trip_data.js"></script>
+  <script src="./vendor/leaflet/leaflet.js"></script>
+  <script src="./data/trip_data.js"></script>
   <script>
     (function () {
       const DATA = window.TRIP_DATA;
@@ -1152,26 +1415,58 @@
       }
 
       const STORAGE_KEY = 'shanghai_planb_custom_places_v1';
+      const UPDATED_AT_KEY = 'shanghai_planb_updated_at_v1';
+      const memoryStorage = {};
+      const safeStorage = {
+        getItem(k) {
+          try {
+            return window.localStorage.getItem(k);
+          } catch {
+            return Object.prototype.hasOwnProperty.call(memoryStorage, k) ? memoryStorage[k] : null;
+          }
+        },
+        setItem(k, v) {
+          memoryStorage[k] = String(v);
+          try {
+            window.localStorage.setItem(k, String(v));
+          } catch {
+            // Private mode / quota exceeded: fallback in memoryStorage
+          }
+        }
+      };
+
+      const mobileMq = window.matchMedia('(max-width: 768px)');
+      const isMobile = () => mobileMq.matches;
+      let mobileSnap = 'half'; // 'peek' | 'half' | 'full'
+
       let currentView = 'overview'; // 'overview' | 'zones' | 'd1'..'d6'
       let selectedZone = 'all';
       let searchQuery = '';
       let showLabels = false;
       let activeStepNo = null;
 
-      // Map setup
-      const map = L.map('map', { zoomControl: false }).setView([31.2304, 121.4737], 12);
-      L.control.zoom({ position: 'bottomleft' }).addTo(map);
+      // Map setup (safe if Leaflet failed to load)
+      const hasLeaflet = typeof window.L !== 'undefined';
+      const map = hasLeaflet
+        ? L.map('map', { zoomControl: false }).setView([31.2304, 121.4737], 12)
+        : null;
 
-      L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}', {
-        subdomains: ['1', '2', '3', '4'],
-        attribution: '&copy; 高德地图 Amap',
-        maxNativeZoom: 18,
-        maxZoom: 19
-      }).addTo(map);
+      if (map) {
+        L.control.zoom({ position: 'bottomleft' }).addTo(map);
+        L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}', {
+          subdomains: ['1', '2', '3', '4'],
+          attribution: '&copy; 高德地图 Amap',
+          maxNativeZoom: 18,
+          maxZoom: 19
+        }).addTo(map);
+      } else {
+        const fb = document.getElementById('map-offline-fallback');
+        if (fb) fb.classList.add('show');
+      }
 
-      const routeLayerGroup = L.layerGroup().addTo(map);
-      const markerLayerGroup = L.layerGroup().addTo(map);
-      const measureLayerGroup = L.layerGroup().addTo(map);
+      const routeLayerGroup = map ? L.layerGroup().addTo(map) : null;
+      const markerLayerGroup = map ? L.layerGroup().addTo(map) : null;
+      const measureLayerGroup = map ? L.layerGroup().addTo(map) : null;
       let markerRefsByPlaceId = {};
       let stepMarkerRefs = {};
       let measureMode = false;
@@ -1237,7 +1532,7 @@
 
       function loadCustomPlaces() {
         try {
-          const raw = localStorage.getItem(STORAGE_KEY);
+          const raw = safeStorage.getItem(STORAGE_KEY);
           const parsed = raw ? JSON.parse(raw) : [];
           return Array.isArray(parsed) ? parsed : [];
         } catch {
@@ -1246,7 +1541,36 @@
       }
 
       function saveCustomPlaces(list) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+        try {
+          safeStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+        } catch {
+          // Ignore storage error cleanly
+        }
+      }
+
+      function buildPlaceImageHtml(imgPath, alt, variant) {
+        if (!imgPath) return '';
+        const match = String(imgPath).match(/^place_images\/([^/]+)\.(jpe?g|png|webp)$/i);
+        if (!match) {
+          const cls = variant === 'full' ? 'popup-img' : 'step-thumb';
+          const dims = variant === 'full' ? 'width="290" height="145" decoding="async"' : 'width="64" height="64" loading="lazy" decoding="async"';
+          return `<img class="${cls}" src="${esc(imgPath)}" ${dims} alt="${esc(alt)}" onerror="this.style.display='none'" />`;
+        }
+        const stem = esc(match[1]);
+        if (variant === 'full') {
+          return `
+            <picture>
+              <source type="image/webp" srcset="place_images/thumb/${stem}.webp 128w, place_images/full/${stem}.webp 800w" sizes="290px" />
+              <img class="popup-img" src="place_images/full/${stem}.jpg" srcset="place_images/thumb/${stem}.jpg 128w, place_images/full/${stem}.jpg 800w" sizes="290px" width="290" height="145" decoding="async" alt="${esc(alt)}" onerror="this.parentNode.style.display='none'" />
+            </picture>
+          `;
+        }
+        return `
+          <picture class="step-thumb-wrap">
+            <source type="image/webp" srcset="place_images/thumb/${stem}.webp" />
+            <img class="step-thumb" src="place_images/thumb/${stem}.jpg" width="64" height="64" loading="lazy" decoding="async" alt="${esc(alt)}" onerror="this.parentNode.style.display='none'" />
+          </picture>
+        `;
       }
 
       function getAllPlaces() {
@@ -1267,9 +1591,7 @@
         const zone = DATA.zones[place.zone] || { shortName: place.zone, color: '#0284c7' };
         const amapUrl = `https://uri.amap.com/marker?position=${place.lng},${place.lat}&name=${encodeURIComponent(place.cn || place.name)}`;
         const gmapUrl = `https://www.google.com/maps/search/?api=1&query=${place.lat},${place.lng}`;
-        const imgHtml = place.img
-          ? `<img class="popup-img" src="${esc(place.img)}" alt="${esc(place.name)}" onerror="this.style.display='none'" />`
-          : '';
+        const imgHtml = buildPlaceImageHtml(place.img, place.name, 'full');
         const stepBadge = stepInfo
           ? `<span class="popup-badge" style="background:#0f172a;">Step ${esc(stepInfo.stepNo)} • ${esc(stepInfo.time)}</span>`
           : '';
@@ -1414,9 +1736,7 @@
           const cardsHtml = filtered.length
             ? filtered.map((p) => {
                 const z = DATA.zones[p.zone] || { shortName: p.zone, color: '#64748b' };
-                const thumb = p.img
-                  ? `<img class="step-thumb" src="${esc(p.img)}" alt="${esc(p.name)}" onerror="this.style.display='none'" />`
-                  : '';
+                const thumb = buildPlaceImageHtml(p.img, p.name, 'thumb');
                 const delBtn = p.isCustom
                   ? `<button class="btn-del-custom" data-del-id="${esc(p.id)}" type="button">ลบหมุดนี้</button>`
                   : '';
@@ -1496,9 +1816,7 @@
             const place = placeMap[step.placeId] || { id: step.placeId, name: step.placeId, zone: 'z1' };
             const zone = DATA.zones[place.zone] || { shortName: place.zone, color: '#0284c7' };
             const tStyle = getTransitStyle(step.mode);
-            const thumb = place.img
-              ? `<img class="step-thumb" src="${esc(place.img)}" alt="${esc(place.name)}" onerror="this.style.display='none'" />`
-              : '';
+            const thumb = buildPlaceImageHtml(place.img, place.name, 'thumb');
 
             const { totalMeters, walkMeters } = getStepDistanceStats(step);
             const distChip = totalMeters > 0
@@ -1583,8 +1901,44 @@
         });
       }
 
+      // Mobile Bottom Sheet Helpers
+      function getSnapPx(snap) {
+        const vh = window.innerHeight || 844;
+        if (snap === 'peek') return Math.max(142, Math.round(vh * 0.25));
+        if (snap === 'full') return Math.round(vh * 0.92);
+        return Math.round(vh * 0.50);
+      }
+
+      function applyMobileSnap(snap) {
+        mobileSnap = snap;
+        const sb = document.getElementById('sidebar');
+        if (!sb) return;
+        sb.dataset.snap = snap;
+        const h = getSnapPx(snap);
+        document.documentElement.style.setProperty('--sheet-h', `${h}px`);
+        if (isMobile()) {
+          sb.style.height = `${h}px`;
+          const iconEl = document.getElementById('toggle-icon');
+          const textEl = document.getElementById('toggle-text');
+          if (iconEl) iconEl.textContent = snap === 'peek' ? '▴' : '▾';
+          if (textEl) textEl.textContent = snap === 'peek' ? 'กาง' : 'ย่อ';
+        } else {
+          sb.style.height = '';
+          const iconEl = document.getElementById('toggle-icon');
+          const textEl = document.getElementById('toggle-text');
+          const collapsed = sb.classList.contains('collapsed');
+          if (iconEl) iconEl.textContent = collapsed ? '▶' : '◀';
+          if (textEl) textEl.textContent = collapsed ? 'แสดง' : 'พับ';
+        }
+      }
+
+      function getVisibleMapBottomPad() {
+        return isMobile() ? getSnapPx(mobileSnap) + 20 : 45;
+      }
+
       // Map Rendering
       function renderMap() {
+        if (!map || !routeLayerGroup || !markerLayerGroup) return;
         routeLayerGroup.clearLayers();
         markerLayerGroup.clearLayers();
         markerRefsByPlaceId = {};
@@ -1758,24 +2112,51 @@
         }
 
         if (boundsPoints.length > 0) {
-          map.fitBounds(boundsPoints, { padding: [45, 45], maxZoom: 15 });
+          if (isMobile()) {
+            map.fitBounds(boundsPoints, {
+              paddingTopLeft: [24, 64],
+              paddingBottomRight: [24, getVisibleMapBottomPad()],
+              maxZoom: 15
+            });
+          } else {
+            map.fitBounds(boundsPoints, { padding: [45, 45], maxZoom: 15 });
+          }
         }
       }
 
-      function focusPlace(placeId) {
-        const marker = markerRefsByPlaceId[placeId];
-        if (!marker) return;
+      function focusMarkerVisible(marker) {
+        if (!map || !marker) return;
         const ll = marker.getLatLng();
-        map.setView(ll, Math.max(map.getZoom(), 15), { animate: true });
+        const targetZoom = Math.max(map.getZoom(), 15);
+        if (isMobile()) {
+          if (mobileSnap === 'full') applyMobileSnap('half');
+          const sheetH = getSnapPx(mobileSnap);
+          const mapH = map.getSize().y || window.innerHeight || 844;
+          const visibleH = Math.max(180, mapH - sheetH);
+          const desiredMarkerY = visibleH - 14;
+          const deltaY = (mapH / 2) - desiredMarkerY;
+          const markerPt = map.project(ll, targetZoom);
+          const centerLatLng = map.unproject(L.point(markerPt.x, markerPt.y + deltaY), targetZoom);
+          if (marker.getPopup()) {
+            marker.getPopup().options.autoPan = false;
+          }
+          map.setView(centerLatLng, targetZoom, { animate: true });
+          marker.openPopup();
+          setTimeout(() => {
+            if (marker.getPopup()) marker.getPopup().options.autoPan = true;
+          }, 300);
+          return;
+        }
+        map.setView(ll, targetZoom, { animate: true });
         marker.openPopup();
       }
 
+      function focusPlace(placeId) {
+        focusMarkerVisible(markerRefsByPlaceId[placeId]);
+      }
+
       function focusStep(stepNo, placeId) {
-        const marker = stepMarkerRefs[String(stepNo)] || markerRefsByPlaceId[placeId];
-        if (!marker) return;
-        const ll = marker.getLatLng();
-        map.setView(ll, Math.max(map.getZoom(), 15), { animate: true });
-        marker.openPopup();
+        focusMarkerVisible(stepMarkerRefs[String(stepNo)] || markerRefsByPlaceId[placeId]);
       }
 
       // Transit Legend
@@ -1876,6 +2257,7 @@
 
       // Measure Distance Mode
       function renderMeasureOverlay() {
+        if (!measureLayerGroup) return;
         measureLayerGroup.clearLayers();
         const countEl = document.getElementById('measure-count');
         const totalEl = document.getElementById('measure-total');
@@ -1951,9 +2333,13 @@
       }
 
       function toggleMeasureMode(force) {
+        if (!map) return;
         measureMode = typeof force === 'boolean' ? force : !measureMode;
         if (!measureMode) {
           measurePoints = [];
+        } else if (isMobile()) {
+          document.getElementById('legend-box').classList.remove('mobile-open');
+          document.getElementById('btn-toggle-legend-mobile').classList.remove('active');
         }
         const btn = document.getElementById('btn-toggle-measure');
         const stateEl = document.getElementById('measure-state');
@@ -1973,50 +2359,57 @@
       }
 
       window.startMeasureFrom = function (lat, lng, label) {
+        if (!map) return;
         measurePoints = [{ lat, lng, label }];
         map.closePopup();
         toggleMeasureMode(true);
       };
 
-      map.on('click', (e) => {
-        if (measureMode) {
-          addMeasurePoint(e.latlng.lat, e.latlng.lng, `จุดที่ ${measurePoints.length + 1}`);
-        }
-      });
+      if (map) {
+        map.on('click', (e) => {
+          if (measureMode) {
+            addMeasurePoint(e.latlng.lat, e.latlng.lng, `จุดที่ ${measurePoints.length + 1}`);
+          }
+        });
 
-      map.on('contextmenu', (e) => {
-        if (measureMode && measurePoints.length > 0) {
-          L.DomEvent.preventDefault(e);
-          measurePoints.pop();
-          renderMeasureOverlay();
-        }
-      });
+        map.on('contextmenu', (e) => {
+          if (measureMode && measurePoints.length > 0) {
+            L.DomEvent.preventDefault(e);
+            measurePoints.pop();
+            renderMeasureOverlay();
+          }
+        });
 
-      map.on('popupopen', (e) => {
-        const el = e.popup && e.popup.getElement();
-        if (!el) return;
-        const btn = el.querySelector('.js-measure-from');
-        if (btn) {
-          btn.addEventListener('click', () => {
-            window.startMeasureFrom(
-              Number(btn.dataset.lat),
-              Number(btn.dataset.lng),
-              btn.dataset.name || 'จุดเริ่มต้น'
-            );
-          });
-        }
-        const delBtn = el.querySelector('.js-delete-custom');
-        if (delBtn) {
-          delBtn.addEventListener('click', () => {
-            const delId = delBtn.dataset.delId;
-            saveCustomPlaces(loadCustomPlaces().filter((x) => x.id !== delId));
-            map.closePopup();
-            renderHeader();
-            renderSidebarContent();
-            renderMap();
-          });
-        }
-      });
+        map.on('popupopen', (e) => {
+          const el = e.popup && e.popup.getElement();
+          if (!el) return;
+          if (isMobile() && e.popup.options && e.popup.options.autoPan !== false) {
+            e.popup.options.autoPanPaddingTopLeft = L.point(12, 64);
+            e.popup.options.autoPanPaddingBottomRight = L.point(12, getSnapPx(mobileSnap) + 16);
+          }
+          const btn = el.querySelector('.js-measure-from');
+          if (btn) {
+            btn.addEventListener('click', () => {
+              window.startMeasureFrom(
+                Number(btn.dataset.lat),
+                Number(btn.dataset.lng),
+                btn.dataset.name || 'จุดเริ่มต้น'
+              );
+            });
+          }
+          const delBtn = el.querySelector('.js-delete-custom');
+          if (delBtn) {
+            delBtn.addEventListener('click', () => {
+              const delId = delBtn.dataset.delId;
+              saveCustomPlaces(loadCustomPlaces().filter((x) => x.id !== delId));
+              map.closePopup();
+              renderHeader();
+              renderSidebarContent();
+              renderMap();
+            });
+          }
+        });
+      }
 
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && measureMode) {
@@ -2035,14 +2428,94 @@
       });
       document.getElementById('btn-measure-close').addEventListener('click', () => toggleMeasureMode(false));
 
-      // Global Controls
-      document.getElementById('btn-toggle-sidebar').addEventListener('click', () => {
+      // Mobile Sheet + Desktop Sidebar Controls
+      function initSheetAndSidebar() {
         const sb = document.getElementById('sidebar');
-        const collapsed = sb.classList.toggle('collapsed');
-        document.getElementById('toggle-icon').textContent = collapsed ? '▶' : '◀';
-        document.getElementById('toggle-text').textContent = collapsed ? 'แสดงแถบ' : 'ซ่อนแถบ';
-        setTimeout(() => map.invalidateSize(), 260);
-      });
+        const reopenBtn = document.getElementById('btn-reopen-sidebar');
+        const handle = document.getElementById('sheet-handle');
+
+        applyMobileSnap(mobileSnap);
+
+        document.getElementById('btn-toggle-sidebar').addEventListener('click', () => {
+          if (isMobile()) {
+            const next = mobileSnap === 'peek' ? 'half' : 'peek';
+            applyMobileSnap(next);
+            if (map) setTimeout(() => map.invalidateSize(), 250);
+            return;
+          }
+          const collapsed = sb.classList.toggle('collapsed');
+          reopenBtn.classList.toggle('visible', collapsed);
+          applyMobileSnap(mobileSnap);
+          if (map) setTimeout(() => map.invalidateSize(), 260);
+        });
+
+        reopenBtn.addEventListener('click', () => {
+          sb.classList.remove('collapsed');
+          reopenBtn.classList.remove('visible');
+          applyMobileSnap(mobileSnap);
+          if (map) setTimeout(() => map.invalidateSize(), 260);
+        });
+
+        if (handle) {
+          let dragStartY = 0;
+          let dragStartH = 0;
+          let dragging = false;
+          let moved = false;
+
+          handle.addEventListener('pointerdown', (e) => {
+            if (!isMobile()) return;
+            dragging = true;
+            moved = false;
+            dragStartY = e.clientY;
+            dragStartH = sb.getBoundingClientRect().height;
+            sb.classList.add('dragging');
+            try { handle.setPointerCapture(e.pointerId); } catch {}
+          });
+
+          handle.addEventListener('pointermove', (e) => {
+            if (!dragging || !isMobile()) return;
+            const dy = dragStartY - e.clientY;
+            if (Math.abs(dy) > 6) moved = true;
+            const minH = getSnapPx('peek') - 20;
+            const maxH = getSnapPx('full');
+            const nextH = Math.max(minH, Math.min(maxH, dragStartH + dy));
+            sb.style.height = `${nextH}px`;
+            document.documentElement.style.setProperty('--sheet-h', `${nextH}px`);
+          });
+
+          const endDrag = (e) => {
+            if (!dragging) return;
+            dragging = false;
+            sb.classList.remove('dragging');
+            try { handle.releasePointerCapture(e.pointerId); } catch {}
+            if (!isMobile()) return;
+
+            if (!moved) {
+              const order = ['peek', 'half', 'full'];
+              const nextSnap = order[(order.indexOf(mobileSnap) + 1) % order.length];
+              applyMobileSnap(nextSnap);
+            } else {
+              const curH = sb.getBoundingClientRect().height;
+              const candidates = [
+                { name: 'peek', h: getSnapPx('peek') },
+                { name: 'half', h: getSnapPx('half') },
+                { name: 'full', h: getSnapPx('full') }
+              ];
+              candidates.sort((a, b) => Math.abs(a.h - curH) - Math.abs(b.h - curH));
+              applyMobileSnap(candidates[0].name);
+            }
+            if (map) setTimeout(() => map.invalidateSize(), 240);
+          };
+
+          handle.addEventListener('pointerup', endDrag);
+          handle.addEventListener('pointercancel', endDrag);
+        }
+
+        window.addEventListener('resize', () => {
+          applyMobileSnap(mobileSnap);
+          if (map) map.invalidateSize();
+        });
+      }
 
       document.getElementById('btn-toggle-labels').addEventListener('click', (e) => {
         showLabels = !showLabels;
@@ -2057,17 +2530,141 @@
 
       document.getElementById('legend-toggle').addEventListener('click', () => {
         const box = document.getElementById('legend-box');
+        if (isMobile()) {
+          box.classList.remove('mobile-open');
+          document.getElementById('btn-toggle-legend-mobile').classList.remove('active');
+          return;
+        }
         const collapsed = box.classList.toggle('collapsed');
         document.getElementById('legend-caret').textContent = collapsed ? '▸' : '▾';
       });
 
+      document.getElementById('btn-toggle-legend-mobile').addEventListener('click', (e) => {
+        const box = document.getElementById('legend-box');
+        const opening = !box.classList.contains('mobile-open');
+        if (opening && measureMode) {
+          toggleMeasureMode(false);
+        }
+        box.classList.toggle('mobile-open', opening);
+        e.currentTarget.classList.toggle('active', opening);
+      });
+
+      // Offline / Service Worker Support
+      function formatSyncTime(iso) {
+        if (!iso) return 'พร้อมใช้งาน';
+        try {
+          const d = new Date(iso);
+          if (Number.isNaN(d.getTime())) return 'พร้อมใช้งาน';
+          return d.toLocaleString('th-TH', {
+            day: 'numeric',
+            month: 'short',
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+        } catch {
+          return 'พร้อมใช้งาน';
+        }
+      }
+
+      function renderSyncBar(isoOverride) {
+        const bar = document.getElementById('sync-bar');
+        const textEl = document.getElementById('sync-status-text');
+        if (!bar || !textEl) return;
+        const iso = isoOverride || safeStorage.getItem(UPDATED_AT_KEY);
+        if (isoOverride) safeStorage.setItem(UPDATED_AT_KEY, isoOverride);
+        const timeStr = iso ? `ข้อมูลล่าสุด ${formatSyncTime(iso)}` : 'พร้อมใช้งานออฟไลน์';
+        const online = navigator.onLine !== false;
+        bar.classList.toggle('offline', !online);
+        textEl.textContent = online ? `🟢 ออนไลน์ • ${timeStr}` : `🟠 ออฟไลน์ • ${timeStr}`;
+      }
+
+      function sendSwMessage(payload) {
+        return new Promise((resolve) => {
+          const ctrl = navigator.serviceWorker && navigator.serviceWorker.controller;
+          if (!ctrl) return resolve(null);
+          const mc = new MessageChannel();
+          const t = setTimeout(() => resolve(null), 4000);
+          mc.port1.onmessage = (ev) => {
+            clearTimeout(t);
+            resolve(ev.data);
+          };
+          ctrl.postMessage(payload, [mc.port2]);
+        });
+      }
+
+      function initOfflineSupport() {
+        if (!safeStorage.getItem(UPDATED_AT_KEY)) {
+          safeStorage.setItem(UPDATED_AT_KEY, new Date().toISOString());
+        }
+        renderSyncBar();
+
+        window.addEventListener('online', () => renderSyncBar());
+        window.addEventListener('offline', () => renderSyncBar());
+
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.register('./sw.js', { scope: './' })
+            .then(async (reg) => {
+              if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+              const status = await sendSwMessage({ type: 'GET_STATUS' });
+              if (status && status.updatedAt) {
+                renderSyncBar(status.updatedAt);
+              }
+            })
+            .catch(() => {
+              // Silent fallback when opened via file:// or restricted context
+            });
+
+          navigator.serviceWorker.addEventListener('message', (ev) => {
+            if (ev.data && ev.data.type === 'DATA_UPDATED' && ev.data.updatedAt) {
+              renderSyncBar(ev.data.updatedAt);
+            }
+          });
+        }
+
+        const updateBtn = document.getElementById('btn-update-data');
+        if (updateBtn) {
+          updateBtn.addEventListener('click', async () => {
+            if (navigator.onLine === false) {
+              const prev = document.getElementById('sync-status-text').textContent;
+              document.getElementById('sync-status-text').textContent = '🟠 ออฟไลน์ — ใช้ข้อมูลที่บันทึกไว้ในเครื่อง';
+              setTimeout(() => { document.getElementById('sync-status-text').textContent = prev; }, 2200);
+              return;
+            }
+            updateBtn.disabled = true;
+            updateBtn.textContent = '⏳ กำลังอัปเดต...';
+            try {
+              const swRes = await sendSwMessage({ type: 'FORCE_UPDATE_DATA' });
+              if (swRes && swRes.ok) {
+                renderSyncBar(swRes.updatedAt);
+                updateBtn.textContent = '✅ อัปเดตแล้ว';
+                setTimeout(() => window.location.reload(), 450);
+                return;
+              }
+              const res = await fetch(`./data/trip_data.js?t=${Date.now()}`, { cache: 'reload' });
+              if (!res.ok) throw new Error('HTTP ' + res.status);
+              renderSyncBar(new Date().toISOString());
+              updateBtn.textContent = '✅ อัปเดตแล้ว';
+              setTimeout(() => window.location.reload(), 450);
+            } catch {
+              updateBtn.textContent = '⚠️ ไม่สำเร็จ';
+              setTimeout(() => {
+                updateBtn.textContent = '🔄 อัปเดตข้อมูล';
+                updateBtn.disabled = false;
+              }, 1800);
+            }
+          });
+        }
+      }
+
       // Init
+      initSheetAndSidebar();
       renderHeader();
       renderTabs();
       renderLegend();
       renderSidebarContent();
       renderMap();
       initModal();
+      initOfflineSupport();
     })();
   </script>
 </body>
