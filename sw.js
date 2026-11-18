@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v3';
+const CACHE_VERSION = 'v4';
 const SHELL_CACHE = `shanghai-shell-${CACHE_VERSION}`;
 const DATA_CACHE = `shanghai-data-${CACHE_VERSION}`;
 const IMAGE_CACHE = `shanghai-img-${CACHE_VERSION}`;

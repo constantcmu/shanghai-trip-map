@@ -1206,32 +1206,45 @@
       .legend-mobile-btn { display: inline-flex; }
 
       .leaflet-popup-content-wrapper {
-        max-height: calc(100dvh - var(--sheet-h, 50dvh) - var(--map-top-clear, 60px) - 52px);
+        max-height: min(215px, calc(100dvh - var(--sheet-h, 50dvh) - var(--map-top-clear, 60px) - 52px));
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
+        border-radius: 12px;
       }
       .leaflet-popup-content {
-        width: min(274px, 78vw) !important;
+        width: min(236px, 68vw) !important;
       }
-      .popup-img { height: 92px; }
+      .popup-img { height: 64px; }
       @media (max-height: 680px) {
-        .popup-img { height: 72px; }
+        .popup-img { height: 54px; }
       }
-      .popup-body { padding: 8px 10px; }
-      .popup-title { font-size: 13.5px; }
+      .popup-body { padding: 7px 9px; }
+      .popup-badges { gap: 3px; margin-bottom: 4px; }
+      .popup-badge { font-size: 9.5px; padding: 1px 6px; }
+      .popup-title { font-size: 12.5px; line-height: 1.25; }
+      .popup-cn { font-size: 11px; }
       .popup-metro, .popup-info {
-        font-size: 11px;
-        margin-top: 4px;
-        line-height: 1.35;
+        font-size: 10.5px;
+        margin-top: 3px;
+        line-height: 1.3;
       }
+      .popup-metro { padding: 4px 6px; border-radius: 6px; }
       .popup-info {
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
       }
-      .popup-actions { margin-top: 7px; gap: 4px; }
-      .popup-btn { padding: 6px 5px; font-size: 11px; }
+      .popup-actions { margin-top: 6px; gap: 4px; flex-wrap: wrap; }
+      .popup-btn { padding: 5px 6px; font-size: 10.5px; }
+      .leaflet-tooltip.place-label {
+        font-size: 10px;
+        padding: 1px 5px;
+        max-width: 135px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
 
       .leaflet-bottom.leaflet-left {
         bottom: calc(var(--sheet-h, 50dvh) + 10px);
