@@ -1183,24 +1183,28 @@
         left: calc(8px + env(safe-area-inset-left, 0px));
         right: calc(8px + env(safe-area-inset-right, 0px));
         flex-direction: row;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
         align-items: center;
-        justify-content: flex-end;
-        gap: 5px;
+        justify-content: flex-start;
+        gap: 4px;
       }
+      .map-top-right::-webkit-scrollbar { display: none; }
       .map-ctrl-btn {
-        flex: 0 1 auto;
+        flex: 0 0 auto;
         min-width: 0;
-        padding: 5px 9px;
+        padding: 4px 8px;
         font-size: 11px;
         white-space: nowrap;
-        gap: 4px;
+        gap: 3px;
       }
       .hide-mobile { display: none; }
       .legend-mobile-btn { display: inline-flex; }
 
       .leaflet-popup-content-wrapper {
-        max-height: calc(100dvh - var(--sheet-h, 50dvh) - 92px);
+        max-height: calc(100dvh - var(--sheet-h, 50dvh) - var(--map-top-clear, 64px) - 18px);
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
       }
@@ -1230,6 +1234,11 @@
       .leaflet-bottom.leaflet-left {
         bottom: calc(var(--sheet-h, 50dvh) + 10px);
         left: 6px;
+        transition: bottom 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      .leaflet-bottom.leaflet-right {
+        bottom: calc(var(--sheet-h, 50dvh) + 2px);
+        right: 4px;
         transition: bottom 0.24s cubic-bezier(0.22, 1, 0.36, 1);
       }
 
@@ -1759,26 +1768,26 @@
         ▶ แสดงแถบ
       </button>
 
-      <div class="map-top-right">
-        <button class="map-ctrl-btn" id="btn-gps-locate" type="button" aria-pressed="false">
+      <div class="map-top-right" id="map-top-right">
+        <button class="map-ctrl-btn" id="btn-gps-locate" type="button" aria-pressed="false" aria-label="ฉันอยู่ไหน (GPS)" title="ฉันอยู่ไหน (GPS)">
           📍 <span class="hide-mobile">ฉันอยู่ไหน</span>
         </button>
-        <button class="map-ctrl-btn" id="btn-gps-recenter" type="button" style="display:none;" title="เลื่อนแผนที่กลับมายังตำแหน่งฉัน">
+        <button class="map-ctrl-btn" id="btn-gps-recenter" type="button" style="display:none;" aria-label="เลื่อนแผนที่กลับมายังตำแหน่งฉัน" title="เลื่อนแผนที่กลับมายังตำแหน่งฉัน">
           🧭 ตำแหน่งฉัน
         </button>
-        <button class="map-ctrl-btn" id="btn-toggle-layer" type="button" aria-pressed="false">
+        <button class="map-ctrl-btn" id="btn-toggle-layer" type="button" aria-pressed="false" aria-label="สลับแผนที่ถนนหรือดาวเทียม" title="สลับแผนที่ถนน/ดาวเทียม">
           🛰️ <span class="hide-mobile" id="layer-state">ดาวเทียม</span>
         </button>
-        <button class="map-ctrl-btn" id="btn-toggle-measure" type="button" aria-pressed="false">
+        <button class="map-ctrl-btn" id="btn-toggle-measure" type="button" aria-pressed="false" aria-label="วัดระยะทาง" title="วัดระยะทาง">
           📏 วัดระยะ<span class="hide-mobile">ทาง: <span id="measure-state">ปิด</span></span>
         </button>
-        <button class="map-ctrl-btn" id="btn-toggle-labels" type="button" aria-pressed="false">
+        <button class="map-ctrl-btn" id="btn-toggle-labels" type="button" aria-pressed="false" aria-label="แสดงหรือซ่อนป้ายชื่อบนแผนที่" title="แสดง/ซ่อนป้ายชื่อ">
           🏷️ ป้ายชื่อ<span class="hide-mobile">: <span id="labels-state">ปิด</span></span>
         </button>
-        <button class="map-ctrl-btn" id="btn-fit-bounds" type="button">
+        <button class="map-ctrl-btn" id="btn-fit-bounds" type="button" aria-label="ซูมพอดีเส้นทาง" title="ซูมพอดีเส้นทาง">
           🎯 ซูมพอดี<span class="hide-mobile">เส้นทาง</span>
         </button>
-        <button class="map-ctrl-btn legend-mobile-btn" id="btn-toggle-legend-mobile" type="button" aria-pressed="false">
+        <button class="map-ctrl-btn legend-mobile-btn" id="btn-toggle-legend-mobile" type="button" aria-pressed="false" aria-label="สัญลักษณ์เส้นทาง" title="สัญลักษณ์เส้นทาง">
           🚇 สัญลักษณ์
         </button>
       </div>
@@ -3331,6 +3340,7 @@
         document.documentElement.style.setProperty('--sheet-h', `${h}px`);
         if (isMobile()) {
           sb.style.height = `${h}px`;
+          getMapTopClearPx();
           const iconEl = document.getElementById('toggle-icon');
           const textEl = document.getElementById('toggle-text');
           if (iconEl) iconEl.textContent = snap === 'peek' ? '▴' : '▾';
@@ -3551,8 +3561,9 @@
 
         if (boundsPoints.length > 0) {
           if (isMobile()) {
+            const topPad = getMapTopClearPx();
             map.fitBounds(boundsPoints, {
-              paddingTopLeft: [24, 64],
+              paddingTopLeft: [24, topPad],
               paddingBottomRight: [24, getVisibleMapBottomPad()],
               maxZoom: 15
             });
@@ -3562,16 +3573,32 @@
         }
       }
 
+      function getMapTopClearPx() {
+        const bar = document.getElementById('map-top-right');
+        const mapEl = document.getElementById('map');
+        let clear = 60;
+        if (bar && mapEl) {
+          const barRect = bar.getBoundingClientRect();
+          const mapRect = mapEl.getBoundingClientRect();
+          if (barRect.height > 0) {
+            clear = Math.max(56, Math.ceil(barRect.bottom - mapRect.top) + 8);
+          }
+        }
+        document.documentElement.style.setProperty('--map-top-clear', `${clear}px`);
+        return clear;
+      }
+
       function focusMarkerVisible(marker) {
         if (!map || !marker) return;
         const ll = marker.getLatLng();
         const targetZoom = Math.max(map.getZoom(), 15);
         if (isMobile()) {
           if (mobileSnap === 'full') applyMobileSnap('half');
+          const topClear = getMapTopClearPx();
           const sheetH = getSnapPx(mobileSnap);
           const mapH = map.getSize().y || window.innerHeight || 844;
-          const visibleH = Math.max(180, mapH - sheetH);
-          const desiredMarkerY = visibleH - 14;
+          const visibleBottom = mapH - sheetH;
+          const desiredMarkerY = Math.max(topClear + 140, visibleBottom - 16);
           const deltaY = (mapH / 2) - desiredMarkerY;
           const markerPt = map.project(ll, targetZoom);
           const centerLatLng = map.unproject(L.point(markerPt.x, markerPt.y + deltaY), targetZoom);
@@ -4242,11 +4269,14 @@
         measureMode = typeof force === 'boolean' ? force : !measureMode;
         if (!measureMode) {
           measurePoints = [];
-        } else if (isMobile()) {
-          document.getElementById('legend-box').classList.remove('mobile-open');
-          const lm = document.getElementById('btn-toggle-legend-mobile');
-          lm.classList.remove('active');
-          lm.setAttribute('aria-pressed', 'false');
+        } else {
+          map.closePopup();
+          if (isMobile()) {
+            document.getElementById('legend-box').classList.remove('mobile-open');
+            const lm = document.getElementById('btn-toggle-legend-mobile');
+            lm.classList.remove('active');
+            lm.setAttribute('aria-pressed', 'false');
+          }
         }
         const btn = document.getElementById('btn-toggle-measure');
         const stateEl = document.getElementById('measure-state');
@@ -4350,7 +4380,7 @@
           const el = e.popup && e.popup.getElement();
           if (!el) return;
           if (isMobile() && e.popup.options && e.popup.options.autoPan !== false) {
-            e.popup.options.autoPanPaddingTopLeft = L.point(12, 64);
+            e.popup.options.autoPanPaddingTopLeft = L.point(12, getMapTopClearPx());
             e.popup.options.autoPanPaddingBottomRight = L.point(12, getSnapPx(mobileSnap) + 16);
           }
           const mBtn = el.querySelector('.js-measure-from');
